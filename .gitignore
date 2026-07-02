@@ -1,0 +1,4 @@
+bazel-*
+_registry/
+_site/
+MODULE.bazel.lock
