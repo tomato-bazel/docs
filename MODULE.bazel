@@ -1,0 +1,25 @@
+module(
+    name = "tomato_docs",
+    version = "0.0.0",
+)
+
+# tomato_mdbook (the brand-themed mdBook macro) comes from rules_tomato; it wraps
+# rules_mdbook + stages the theme. tomato_brand carries @tomato_brand//mdbook:theme.
+bazel_dep(name = "rules_tomato", version = "0.1.0")
+bazel_dep(name = "rules_mdbook", version = "0.3.1")
+bazel_dep(name = "tomato_brand", version = "0.0.1")
+bazel_dep(name = "bazel_skylib", version = "1.8.2")
+bazel_dep(name = "rules_python", version = "1.7.0")
+
+mdbook = use_extension("@rules_mdbook//mdbook:extensions.bzl", "mdbook")
+use_repo(mdbook, "mdbook", "mdbook_mermaid")
+register_toolchains("@mdbook//:mdbook_toolchain_def")
+
+# Building @tomato_brand//mdbook:theme regenerates the favicon (the tomato mark)
+# via tomato_brand's shapely-based generator, which needs a default Python 3.12
+# toolchain (tomato_brand pins its wheels to cp312). Set it here at the root.
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(
+    is_default = True,
+    python_version = "3.12",
+)

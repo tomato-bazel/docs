@@ -1,0 +1,17 @@
+"""tbzl.dev — the tomato-bazel docs site, built with tomato_mdbook.
+
+`bazel build //:site` renders the book (book.toml + src/) to site.tar.gz (HTML),
+staging the tomato brand theme (@tomato_brand//mdbook:theme) so it's branded by
+construction. Deployed to GitHub Pages at https://tbzl.dev/ (see
+.github/workflows/docs.yml). The `modules` page (src/modules.md) is generated
+from the registry by tools/gen_modules.py before the build.
+"""
+
+load("@rules_tomato//tomato:defs.bzl", "tomato_mdbook")
+
+package(default_visibility = ["//visibility:public"])
+
+tomato_mdbook(
+    name = "site",
+    theme = "@tomato_brand//mdbook:theme",
+)

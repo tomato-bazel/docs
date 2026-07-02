@@ -1,0 +1,6 @@
+# Resolve modules from the tomato-bazel registry (registry.tbzl.dev) first, then
+# the BCR. Registry deps are public, so no credential helper is needed.
+common --registry=https://registry.tbzl.dev/
+common --registry=https://bcr.bazel.build/
+
+common --enable_bzlmod

@@ -1,0 +1,63 @@
+name: docs
+
+# Build the tbzl.dev mdBook site (tomato_mdbook + @tomato_brand//mdbook:theme) and
+# publish to GitHub Pages. The `modules` page is regenerated from the live registry
+# each build (+ nightly), so newly-published modules show up without a code change.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "book.toml"
+      - "BUILD.bazel"
+      - "MODULE.bazel"
+      - "tools/**"
+      - ".github/workflows/docs.yml"
+  schedule:
+    - cron: "17 7 * * *"   # nightly — pick up newly-published registry modules
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: regenerate the modules page from the registry
+        run: |
+          git clone --depth 1 https://github.com/tomato-bazel/bazel-registry _registry
+          python3 tools/gen_modules.py --registry _registry --out src/modules.md
+          rm -rf _registry
+
+      - uses: bazel-contrib/setup-bazel@0.13.0
+        with:
+          bazelisk-cache: true
+          disk-cache: true
+          repository-cache: true
+
+      - name: build the site
+        run: bazel build //:site
+
+      - name: stage _site
+        run: |
+          mkdir -p _site
+          tar -xzf bazel-bin/site.tar.gz -C _site
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deploy
+        uses: actions/deploy-pages@v4
