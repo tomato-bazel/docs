@@ -3,19 +3,28 @@ import "../styles/docs.css";
 import { NAV, flatNav } from "../lib/nav";
 
 interface Heading { depth: number; slug: string; text: string; }
+interface Crumb { label: string; href?: string; }
 interface Props {
   title: string;
   description?: string;
   headings?: Heading[];
   badge?: string;
   editPath?: string;
+  breadcrumbs?: Crumb[];
 }
-const { title, description = "tomato-bazel documentation — the Bazel registry and rules_* for a hermetic, bzlmod-first workflow.", headings = [], badge, editPath } = Astro.props;
+const { title, description = "tomato-bazel documentation — the Bazel registry and rules_* for a hermetic, bzlmod-first workflow.", headings = [], badge, editPath, breadcrumbs } = Astro.props;
 
 const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const norm = (h: string) => h.replace(/\/+$/, "") || "/";
-const activeGroup = NAV.find((g) => g.items.some((it) => norm(it.href) === path));
-const crumbs = ["Docs", activeGroup?.group, title].filter(Boolean) as string[];
+// active on the exact page, or on a child page of a section root (e.g. a module
+// detail page keeps "Modules" highlighted).
+const isActive = (href: string) => { const n = norm(href); return n === path || (n !== "/" && path.startsWith(n + "/")); };
+const activeGroup = NAV.find((g) => g.items.some((it) => isActive(it.href)));
+const crumbs: Crumb[] = breadcrumbs ?? [
+  { label: "Docs", href: "/" },
+  ...(activeGroup ? [{ label: activeGroup.group } as Crumb] : []),
+  { label: title },
+];
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const editHref = editPath
   ? `https://github.com/tomato-bazel/docs/edit/main/src/content/docs/${editPath}`
@@ -74,26 +83,23 @@ const navIndex = flatNav();
   <div class="shell">
     <aside class="side" id="sidebar">
       <nav>
-        {NAV.map((g) => {
-          const groupActive = g.items.some((it) => norm(it.href) === path);
-          return (
-            <div class={`navgroup${groupActive ? "" : ""}`}>
-              <button class="gh">
-                <svg class="tw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
-                <span>{g.group}</span>
-                {g.badge && <span class={`badge b-${g.badge}`}>{g.badge}</span>}
-              </button>
-              <div class="items">
-                {g.items.map((it) => (
-                  <a href={it.href} class={norm(it.href) === path ? "active" : ""} aria-current={norm(it.href) === path ? "page" : undefined}>
-                    {it.title}
-                    {it.badge && <span class={`badge b-${it.badge}`} style="margin-left:8px">{it.badge}</span>}
-                  </a>
-                ))}
-              </div>
+        {NAV.map((g) => (
+          <div class="navgroup">
+            <button class="gh">
+              <svg class="tw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+              <span>{g.group}</span>
+              {g.badge && <span class={`badge b-${g.badge}`}>{g.badge}</span>}
+            </button>
+            <div class="items">
+              {g.items.map((it) => (
+                <a href={it.href} class={isActive(it.href) ? "active" : ""} aria-current={isActive(it.href) ? "page" : undefined}>
+                  {it.title}
+                  {it.badge && <span class={`badge b-${it.badge}`} style="margin-left:8px">{it.badge}</span>}
+                </a>
+              ))}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </nav>
     </aside>
 
@@ -103,7 +109,7 @@ const navIndex = flatNav();
           {crumbs.map((c, i) => (
             <>
               {i > 0 && <span class="sep">/</span>}
-              {i < crumbs.length - 1 ? <a href="/">{c}</a> : <span>{c}</span>}
+              {c.href && i < crumbs.length - 1 ? <a href={c.href}>{c.label}</a> : <span>{c.label}</span>}
             </>
           ))}
         </div>

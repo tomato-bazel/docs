@@ -41,6 +41,16 @@ export function initDocs(): void {
     });
     pre.appendChild(btn);
   });
+  // explicit .code blocks (module detail pages) — wire their copy buttons
+  document.querySelectorAll<HTMLButtonElement>(".code .copy").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const pre = btn.closest(".code")?.querySelector("pre");
+      if (!pre) return;
+      const txt = ((pre as HTMLElement).innerText || "").replace(/^\$\s?/gm, "");
+      const done = () => { btn.textContent = "Copied ✓"; setTimeout(() => (btn.textContent = "Copy"), 1300); };
+      if (navigator.clipboard?.writeText) navigator.clipboard.writeText(txt).then(done, done); else done();
+    });
+  });
 
   // ── scrollspy TOC ──
   const tocLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>(".toc a[href^='#']"));

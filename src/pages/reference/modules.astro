@@ -34,7 +34,7 @@ const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 
         <h2 id={g.slug} class="mcat" style="margin-top:34px">{g.cat} · {g.items.length}</h2>
         <div class="modgrid">
           {g.items.map((m) => (
-            <a class="modcard" data-name={m.name} href={m.source || "https://github.com/tomato-bazel/bazel-registry"}>
+            <a class="modcard" data-name={m.name} href={`/reference/modules/${m.name}/`}>
               <div class="mn">{m.name}</div>
               <div class="mm"><span class="mv">{m.latest}</span><span>{m.versions} version{m.versions === 1 ? "" : "s"}</span></div>
             </a>

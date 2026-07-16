@@ -40,9 +40,11 @@ def main():
             "name": name,
             "latest": versions[-1] if versions else "",
             "versions": len(versions),
+            "versions_list": versions,
             "homepage": meta.get("homepage", "") or "",
             "repository": repo,
             "source": repo_url(repo) or meta.get("homepage", ""),
+            "registry": f"https://registry.tbzl.dev/modules/{name}/",
             "category": category(name, repo),
         })
 
