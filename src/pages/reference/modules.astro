@@ -1,0 +1,67 @@
+---
+import Doc from "../../layouts/Doc.astro";
+import data from "../../data/modules.json";
+
+type Mod = { name: string; latest: string; versions: number; source: string; category: string };
+const mods = data.modules as Mod[];
+const ORDER = ["Bazel rules", "Modules & tooling"];
+const groups = ORDER.map((cat) => ({
+  cat,
+  slug: cat.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
+  items: mods.filter((m) => m.category === cat),
+}));
+const headings = groups.map((g) => ({ depth: 2, slug: g.slug, text: g.cat }));
+const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 0;
+---
+<Doc title="Modules" description={`Every module in the tomato-bazel registry — ${data.count} total, generated from the registry.`} headings={headings} editPath="../../tools/gen_modules.py">
+  <p>
+    <strong>{data.count} modules</strong> in the
+    <a class="link" href="https://github.com/tomato-bazel/bazel-registry">tomato-bazel registry</a>
+    ({rulesCount} <code class="ic">rules_*</code>). This page is generated from the registry on every
+    build. Add it to your <code class="ic">.bazelrc</code> with
+    <code class="ic">common --registry=https://registry.tbzl.dev/</code>, then
+    <code class="ic">bazel_dep</code> on any of the below.
+  </p>
+
+  <div class="modfilter">
+    <input id="modq" type="text" placeholder="Filter modules…" aria-label="Filter modules" />
+    <span class="ct" id="modct">{data.count} shown</span>
+  </div>
+
+  <div class="modref" id="modref">
+    {groups.map((g) => (
+      <section data-cat>
+        <h2 id={g.slug} class="mcat" style="margin-top:34px">{g.cat} · {g.items.length}</h2>
+        <div class="modgrid">
+          {g.items.map((m) => (
+            <a class="modcard" data-name={m.name} href={m.source || "https://github.com/tomato-bazel/bazel-registry"}>
+              <div class="mn">{m.name}</div>
+              <div class="mm"><span class="mv">{m.latest}</span><span>{m.versions} version{m.versions === 1 ? "" : "s"}</span></div>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <script is:inline>
+    (function () {
+      var q = document.getElementById("modq"), ct = document.getElementById("modct");
+      var cards = Array.prototype.slice.call(document.querySelectorAll(".modcard"));
+      var secs = Array.prototype.slice.call(document.querySelectorAll("[data-cat]"));
+      if (!q) return;
+      q.addEventListener("input", function () {
+        var v = q.value.trim().toLowerCase(), n = 0;
+        cards.forEach(function (c) {
+          var hit = !v || c.dataset.name.toLowerCase().indexOf(v) > -1;
+          c.style.display = hit ? "" : "none"; if (hit) n++;
+        });
+        secs.forEach(function (s) {
+          var any = Array.prototype.some.call(s.querySelectorAll(".modcard"), function (c) { return c.style.display !== "none"; });
+          s.style.display = any ? "" : "none";
+        });
+        ct.textContent = n + " shown";
+      });
+    })();
+  </script>
+</Doc>

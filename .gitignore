@@ -1,4 +1,8 @@
-bazel-*
-_registry/
-_site/
-MODULE.bazel.lock
+node_modules/
+dist/
+.astro/
+.registry/
+src_md_migrate/
+__pycache__/
+*.pyc
+.DS_Store

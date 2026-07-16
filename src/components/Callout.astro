@@ -1,0 +1,18 @@
+---
+interface Props { type?: "note" | "tip" | "warn" | "imp" | "def"; title?: string; }
+const { type = "note", title } = Astro.props;
+const DEFAULTS: Record<string, string> = { note: "Note", tip: "Try it", warn: "Warning", imp: "Important", def: "Definition" };
+const cls = type === "def" ? "note" : type;
+const heading = title || DEFAULTS[type] || "Note";
+const ICON: Record<string, string> = {
+  note: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+  def: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/>',
+  tip: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.5.4.9 1 1 1.7l.1.5h5l.1-.5c.1-.7.5-1.3 1-1.7A6 6 0 0 0 12 3Z"/>',
+  warn: '<path d="M12 3 2.5 20h19L12 3Z"/><path d="M12 10v4M12 17v.5"/>',
+  imp: '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16v.5"/>',
+};
+---
+<div class={`cal ${cls}`}>
+  <svg class="ci" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" set:html={ICON[type] || ICON.note}></svg>
+  <div><p class="ct">{heading}</p><slot /></div>
+</div>

@@ -1,16 +1,18 @@
 name: docs
 
-# Build the tbzl.dev mdBook site (tomato_mdbook + @tomato_brand//mdbook:theme) and
-# publish to GitHub Pages. The `modules` page is regenerated from the live registry
-# each build (+ nightly), so newly-published modules show up without a code change.
+# Build the docs.tbzl.dev site (Astro + Pagefind full-text search) and publish to
+# GitHub Pages. The Modules reference (src/data/modules.json) is regenerated from
+# the live registry each build — so newly-published modules appear without a code
+# change (also nightly). Replaces the previous mdBook build.
 on:
   push:
     branches: [main]
     paths:
       - "src/**"
-      - "book.toml"
-      - "BUILD.bazel"
-      - "MODULE.bazel"
+      - "public/**"
+      - "astro.config.mjs"
+      - "package.json"
+      - "package-lock.json"
       - "tools/**"
       - ".github/workflows/docs.yml"
   schedule:
@@ -35,29 +37,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: regenerate the modules page from the registry
+      - name: regenerate the Modules reference from the registry
         run: |
-          git clone --depth 1 https://github.com/tomato-bazel/bazel-registry _registry
-          python3 tools/gen_modules.py --registry _registry --out src/modules.md
-          rm -rf _registry
+          git clone --depth 1 https://github.com/tomato-bazel/bazel-registry .registry
+          python3 tools/gen_modules.py --registry .registry --out src/data/modules.json
+          rm -rf .registry
 
-      - uses: bazel-contrib/setup-bazel@0.13.0
+      - uses: actions/setup-node@v4
         with:
-          bazelisk-cache: true
-          disk-cache: true
-          repository-cache: true
-
-      - name: build the site
-        run: bazel build //:site
-
-      - name: stage _site
-        run: |
-          mkdir -p _site
-          tar -xzf bazel-bin/site.tar.gz -C _site
+          node-version: "20"
+      - run: npm ci
+      - run: npm run build   # astro build && pagefind --site dist
 
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: _site
+          path: dist
       - id: deploy
         uses: actions/deploy-pages@v4

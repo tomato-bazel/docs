@@ -1,0 +1,78 @@
+---
+title: Blast radius
+description: The set of targets a change can break is a property of the graph — its reverse-dependencies — not a guess about folders.
+badge: stable
+editPath: concepts/blast-radius.mdx
+---
+import Callout from "../../../components/Callout.astro";
+import BlastGraph from "../../../components/BlastGraph.astro";
+
+The set of targets a change can break is a property of the graph, not a guess about folders. tomato-bazel computes it as the reverse-dependencies of what you changed — the literal blast radius — and everything downstream (which tests to run, whether a green is real) follows from it.
+
+## What it is
+
+Every change touches some files. The **blast radius** of that change is the set of build targets that could behave differently because of it — the targets that *transitively depend on* the ones you edited. In Bazel terms, that's `rdeps`: reverse-dependencies over the real target graph.
+
+Package-heuristic CI selects tests by directory and hopes. That over-runs on a small change and, worse, under-runs when a graph edge reaches a target in a folder you never touched. The graph already knows the truth — so we ask it directly.
+
+<BlastGraph />
+
+<Callout type="def">
+Blast radius(`C`) = `rdeps(//…, C)` — the targets that transitively depend on the change `C`, computed from the real Bazel graph.
+</Callout>
+
+## The graph is the oracle
+
+[modgraph](https://github.com/tomato-bazel/modgraph) loads your Bazel target graph once, freezes it, and serves lock-free reads over gRPC. Because it holds the actual dependency edges, a reverse-dependency query returns exactly the affected set — no directory heuristics, no manual test matrix.
+
+- **Precise selection.** Run the tests in the blast radius, filtered to test targets — nothing less, nothing more.
+- **Graph-breaking changes are visible.** Edit a `BUILD` file or a toolchain and the radius widens to match; the runner says so with a reason.
+- **Cross-module reach.** The MCP layer walks reverse-dependency edges *across* module boundaries — the blast radius of a target across the whole constellation.
+
+## Computing blast radius
+
+Ask the graph from the CLI, or let a push do it. From a workspace pointed at tbzl:
+
+```bash
+$ tbzl graph rdeps //lib:greet
+# 6 targets — the blast radius of changing //lib:greet
+//lib:greet_test
+//svc:api
+//svc:worker
+//app:server        (test)
+//app:batch         (test)
+//cli:tool
+```
+
+On a push, the runner derives the impacted **test** set from the changed files by the same reverse-dependency traversal, then runs them on your RBE — content-hashed, so an unchanged test is skipped at the cache layer.
+
+```bash
+# resolve tbzl modules, then build on your own executors
+common --registry=https://registry.tbzl.dev/
+build  --config=rbe
+```
+
+## Query reference
+
+The same queries the console runs are gRPC calls and agent-callable MCP tools. All reads; `run_build` is the one write, confirm-gated.
+
+| Query | Signature | Returns |
+| --- | --- | --- |
+| `rdeps` | `rdeps(//…, target)` | The blast radius — targets that transitively depend on `target`. |
+| `deps` | `deps(target)` | The forward closure — everything `target` depends on. |
+| `somepath` | `somepath(a, b)` | One dependency path from `a` to `b`, or empty. |
+| `kind` | `kind(test, set)` | Filter a set to targets of a rule kind (e.g. tests). |
+| `stats` | `stats()` | Graph size — target and edge counts. |
+
+<Callout type="warn" title="A green that tested nothing isn't a pass">
+`assess_merge` refuses to call a build safe if a changed source file has no test in its reverse-dependencies. The blast radius is what makes that check possible: it's how we know whether a change was actually exercised.
+</Callout>
+
+## See also
+
+- [Using the registry](/using-the-registry/) — point Bazel at tbzl and resolve modules.
+- [Modules reference](/reference/modules/) — every published module, including the graph tooling.
+
+<Callout type="tip">
+Point one workspace at the registry and run `tbzl graph rdeps //your:target` — you'll see a change's real reach before you ever push.
+</Callout>

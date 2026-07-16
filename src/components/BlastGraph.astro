@@ -1,0 +1,61 @@
+---
+// A small, theme-aware blast-radius figure: changing //lib:greet lights its
+// reverse-dependencies. Static (clean for docs); redraws on theme change.
+---
+<figure class="gfig">
+  <div class="gwrap"><canvas id="brg" width="720" height="300"></canvas></div>
+  <figcaption class="gcap">Changing <b>//lib:greet</b> lights its reverse-dependencies — 6 targets, 2 of them tests. Nodes outside that set are provably unaffected.</figcaption>
+</figure>
+
+<script>
+  (function () {
+    var cv = document.getElementById("brg");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var root = document.documentElement;
+    function css(v) { return getComputedStyle(root).getPropertyValue(v).trim(); }
+    var nodes = [
+      { id: "lib:greet", x: .10, y: .5, r: 15, changed: true },
+      { id: "lib:fmt", x: .30, y: .20, r: 11, lit: true },
+      { id: "lib:io", x: .30, y: .80, r: 11, lit: true },
+      { id: "svc:api", x: .52, y: .30, r: 12, lit: true },
+      { id: "svc:worker", x: .52, y: .66, r: 12, lit: true },
+      { id: "app:server", x: .76, y: .24, r: 13, lit: true, test: true },
+      { id: "app:batch", x: .76, y: .72, r: 12, lit: true, test: true },
+      { id: "cli:tool", x: .90, y: .5, r: 11, lit: true },
+      { id: "x:util", x: .30, y: .5, r: 8, off: true },
+      { id: "x:vendor", x: .52, y: .04, r: 7, off: true }
+    ];
+    var E = [[0,1],[0,2],[0,8],[1,3],[2,4],[3,5],[4,5],[4,6],[3,7],[6,7]];
+    function hexA(hex, a) {
+      var h = hex.replace("#", ""); if (h.length === 3) h = h.replace(/(.)/g, "$1$1");
+      return "rgba(" + parseInt(h.slice(0,2),16) + "," + parseInt(h.slice(2,4),16) + "," + parseInt(h.slice(4,6),16) + "," + a + ")";
+    }
+    function draw() {
+      var W = cv.clientWidth || 720, H = cv.clientHeight || 300, DPR = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+      var accent = css("--accent-bright") || "#E64A33", leaf = css("--leaf") || "#3FA34D",
+          edge = css("--edge"), node = css("--node"), muted = css("--muted"), head = css("--head"), faint = css("--faint");
+      function P(n) { return { x: 24 + n.x * (W - 48), y: 22 + n.y * (H - 44) }; }
+      E.forEach(function (e) {
+        var a = nodes[e[0]], b = nodes[e[1]], pa = P(a), pb = P(b), on = (a.lit || a.changed) && (b.lit || b.changed);
+        ctx.strokeStyle = on ? accent : edge; ctx.globalAlpha = on ? .9 : .5; ctx.lineWidth = on ? 1.8 : 1;
+        ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.lineTo(pb.x, pb.y); ctx.stroke(); ctx.globalAlpha = 1;
+      });
+      nodes.forEach(function (n) {
+        var p = P(n), fill = (n.changed || n.lit) ? accent : node;
+        if (n.lit || n.changed) { ctx.beginPath(); ctx.arc(p.x, p.y, n.r + 6, 0, 7); ctx.fillStyle = hexA(accent, .14); ctx.fill(); }
+        ctx.beginPath(); ctx.arc(p.x, p.y, n.r, 0, 7); ctx.fillStyle = n.off ? node : fill; ctx.fill();
+        if (n.test) { ctx.beginPath(); ctx.arc(p.x, p.y, n.r + 3.5, 0, 7); ctx.strokeStyle = leaf; ctx.lineWidth = 1.6; ctx.stroke(); }
+        ctx.font = "600 11px ui-monospace,Menlo,monospace"; ctx.textAlign = "center"; ctx.textBaseline = "top";
+        ctx.fillStyle = n.off ? faint : ((n.lit || n.changed) ? head : muted);
+        ctx.fillText("//" + n.id, p.x, p.y + n.r + 5);
+      });
+    }
+    draw();
+    window.addEventListener("resize", draw);
+    new MutationObserver(draw).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    var mq = matchMedia("(prefers-color-scheme:dark)");
+    if (mq.addEventListener) mq.addEventListener("change", draw);
+  })();
+</script>

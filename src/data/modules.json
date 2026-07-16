@@ -1,0 +1,654 @@
+{
+  "generated_from": "https://github.com/tomato-bazel/bazel-registry",
+  "count": 72,
+  "modules": [
+    {
+      "name": "botnoc",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/fastverk/botnoc",
+      "repository": "github:fastverk/botnoc",
+      "source": "https://github.com/fastverk/botnoc",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "brand",
+      "latest": "0.3.1",
+      "versions": 4,
+      "homepage": "https://github.com/fastverk/brand",
+      "repository": "github:fastverk/brand",
+      "source": "https://github.com/fastverk/brand",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "brando",
+      "latest": "0.1.0",
+      "versions": 2,
+      "homepage": "https://github.com/mattmarshall/brando",
+      "repository": "github:mattmarshall/brando",
+      "source": "https://github.com/mattmarshall/brando",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "buildbarn",
+      "latest": "0.0.2",
+      "versions": 2,
+      "homepage": "https://github.com/fastverk/buildbarn",
+      "repository": "github:fastverk/buildbarn",
+      "source": "https://github.com/fastverk/buildbarn",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "fastverk-app",
+      "latest": "0.0.2",
+      "versions": 2,
+      "homepage": "https://github.com/fastverk/fastverk-app",
+      "repository": "github:fastverk/fastverk-app",
+      "source": "https://github.com/fastverk/fastverk-app",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "forge",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/fastverk/forge",
+      "repository": "github:fastverk/forge",
+      "source": "https://github.com/fastverk/forge",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "fvkit",
+      "latest": "0.0.9",
+      "versions": 9,
+      "homepage": "https://github.com/fastverk/fvkit",
+      "repository": "github:fastverk/fvkit",
+      "source": "https://github.com/fastverk/fvkit",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "meridian",
+      "latest": "0.2.6",
+      "versions": 9,
+      "homepage": "https://github.com/mattmarshall/meridian",
+      "repository": "github:mattmarshall/meridian",
+      "source": "https://github.com/mattmarshall/meridian",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "meridian_schemas",
+      "latest": "0.12.0",
+      "versions": 7,
+      "homepage": "https://github.com/meridian-ux/meridian-schemas",
+      "repository": "github:meridian-ux/meridian-schemas",
+      "source": "https://github.com/meridian-ux/meridian-schemas",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "meridian_tui",
+      "latest": "0.3.0",
+      "versions": 3,
+      "homepage": "https://github.com/meridian-ux/meridian-tui",
+      "repository": "github:meridian-ux/meridian-tui",
+      "source": "https://github.com/meridian-ux/meridian-tui",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "meridian_uiview_core",
+      "latest": "0.3.1",
+      "versions": 6,
+      "homepage": "https://github.com/meridian-ux/meridian-uiview-core",
+      "repository": "github:meridian-ux/meridian-uiview-core",
+      "source": "https://github.com/meridian-ux/meridian-uiview-core",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "meridian_web",
+      "latest": "0.5.0",
+      "versions": 10,
+      "homepage": "https://github.com/meridian-ux/meridian-web",
+      "repository": "github:meridian-ux/meridian-web",
+      "source": "https://github.com/meridian-ux/meridian-web",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "pinax",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/mattmarshall/pinax",
+      "repository": "github:mattmarshall/pinax",
+      "source": "https://github.com/mattmarshall/pinax",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "rules_agentic_ide",
+      "latest": "0.0.4",
+      "versions": 4,
+      "homepage": "https://github.com/tomato-bazel/rules_agentic_ide",
+      "repository": "github:tomato-bazel/rules_agentic_ide",
+      "source": "https://github.com/tomato-bazel/rules_agentic_ide",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_aip",
+      "latest": "0.2.2",
+      "versions": 4,
+      "homepage": "https://github.com/tomato-bazel/rules_aip",
+      "repository": "github:tomato-bazel/rules_aip",
+      "source": "https://github.com/tomato-bazel/rules_aip",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_astro",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_astro",
+      "repository": "github:tomato-bazel/rules_astro",
+      "source": "https://github.com/tomato-bazel/rules_astro",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_autoconf",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_autoconf",
+      "repository": "github:tomato-bazel/rules_autoconf",
+      "source": "https://github.com/tomato-bazel/rules_autoconf",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_beam",
+      "latest": "0.0.2",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_beam",
+      "repository": "github:tomato-bazel/rules_beam",
+      "source": "https://github.com/tomato-bazel/rules_beam",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_bibtex",
+      "latest": "0.0.6",
+      "versions": 6,
+      "homepage": "https://github.com/tomato-bazel/rules_bibtex",
+      "repository": "github:tomato-bazel/rules_bibtex",
+      "source": "https://github.com/tomato-bazel/rules_bibtex",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_bun",
+      "latest": "0.4.0",
+      "versions": 5,
+      "homepage": "https://github.com/tomato-bazel/rules_bun",
+      "repository": "github:tomato-bazel/rules_bun",
+      "source": "https://github.com/tomato-bazel/rules_bun",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_cc_cross",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_cc_cross",
+      "repository": "github:tomato-bazel/rules_cc_cross",
+      "source": "https://github.com/tomato-bazel/rules_cc_cross",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_cc_host",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_cc_host",
+      "repository": "github:tomato-bazel/rules_cc_host",
+      "source": "https://github.com/tomato-bazel/rules_cc_host",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_chrome",
+      "latest": "0.1.1",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_chrome",
+      "repository": "github:tomato-bazel/rules_chrome",
+      "source": "https://github.com/tomato-bazel/rules_chrome",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_ci",
+      "latest": "0.2.0",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_ci",
+      "repository": "github:tomato-bazel/rules_ci",
+      "source": "https://github.com/tomato-bazel/rules_ci",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_ci_ir",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_ci_ir",
+      "repository": "github:tomato-bazel/rules_ci_ir",
+      "source": "https://github.com/tomato-bazel/rules_ci_ir",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_cloudformation",
+      "latest": "0.8.0",
+      "versions": 11,
+      "homepage": "https://github.com/tomato-bazel/rules_cloudformation",
+      "repository": "github:tomato-bazel/rules_cloudformation",
+      "source": "https://github.com/tomato-bazel/rules_cloudformation",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_docker",
+      "latest": "0.2.6",
+      "versions": 8,
+      "homepage": "https://github.com/fastverk/rules_docker_compose",
+      "repository": "github:fastverk/rules_docker_compose",
+      "source": "https://github.com/fastverk/rules_docker_compose",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_eslint",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_eslint",
+      "repository": "github:tomato-bazel/rules_eslint",
+      "source": "https://github.com/tomato-bazel/rules_eslint",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_fastverk",
+      "latest": "0.0.3",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_fastverk",
+      "repository": "github:tomato-bazel/rules_fastverk",
+      "source": "https://github.com/tomato-bazel/rules_fastverk",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_fastverk_plugin",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_fastverk_plugin",
+      "repository": "github:tomato-bazel/rules_fastverk_plugin",
+      "source": "https://github.com/tomato-bazel/rules_fastverk_plugin",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_github",
+      "latest": "0.1.2",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_github",
+      "repository": "github:tomato-bazel/rules_github",
+      "source": "https://github.com/tomato-bazel/rules_github",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_gitlab",
+      "latest": "0.3.4",
+      "versions": 10,
+      "homepage": "https://github.com/tomato-bazel/rules_gitlab",
+      "repository": "github:tomato-bazel/rules_gitlab",
+      "source": "https://github.com/tomato-bazel/rules_gitlab",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_graphviz",
+      "latest": "0.2.0",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_graphviz",
+      "repository": "github:tomato-bazel/rules_graphviz",
+      "source": "https://github.com/tomato-bazel/rules_graphviz",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_helm",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_helm",
+      "repository": "github:tomato-bazel/rules_helm",
+      "source": "https://github.com/tomato-bazel/rules_helm",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_huggingface",
+      "latest": "0.0.3",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_huggingface",
+      "repository": "github:tomato-bazel/rules_huggingface",
+      "source": "https://github.com/tomato-bazel/rules_huggingface",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_jena",
+      "latest": "0.3.2",
+      "versions": 8,
+      "homepage": "https://github.com/tomato-bazel/rules_jena",
+      "repository": "github:tomato-bazel/rules_jena",
+      "source": "https://github.com/tomato-bazel/rules_jena",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_jsonschema",
+      "latest": "0.3.0",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_jsonschema",
+      "repository": "github:tomato-bazel/rules_jsonschema",
+      "source": "https://github.com/tomato-bazel/rules_jsonschema",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_lang",
+      "latest": "0.4.0",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_lang",
+      "repository": "github:tomato-bazel/rules_lang",
+      "source": "https://github.com/tomato-bazel/rules_lang",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_lean",
+      "latest": "0.5.4",
+      "versions": 20,
+      "homepage": "https://github.com/tomato-bazel/rules_lean",
+      "repository": "github:tomato-bazel/rules_lean",
+      "source": "https://github.com/tomato-bazel/rules_lean",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_lora",
+      "latest": "0.1.3",
+      "versions": 38,
+      "homepage": "https://github.com/tomato-bazel/rules_lora",
+      "repository": "github:tomato-bazel/rules_lora",
+      "source": "https://github.com/tomato-bazel/rules_lora",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_macvm",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_macvm",
+      "repository": "github:tomato-bazel/rules_macvm",
+      "source": "https://github.com/tomato-bazel/rules_macvm",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_markdown",
+      "latest": "0.0.3",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_markdown",
+      "repository": "github:tomato-bazel/rules_markdown",
+      "source": "https://github.com/tomato-bazel/rules_markdown",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_mdbook",
+      "latest": "0.3.1",
+      "versions": 4,
+      "homepage": "https://github.com/tomato-bazel/rules_mdbook",
+      "repository": "github:tomato-bazel/rules_mdbook",
+      "source": "https://github.com/tomato-bazel/rules_mdbook",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_meridian",
+      "latest": "0.2.1",
+      "versions": 3,
+      "homepage": "https://github.com/mattmarshall/meridian",
+      "repository": "github:mattmarshall/meridian",
+      "source": "https://github.com/mattmarshall/meridian",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_meson",
+      "latest": "0.0.1",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_meson",
+      "repository": "github:tomato-bazel/rules_meson",
+      "source": "https://github.com/tomato-bazel/rules_meson",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_nextjs",
+      "latest": "0.3.0",
+      "versions": 4,
+      "homepage": "https://github.com/tomato-bazel/rules_nextjs",
+      "repository": "github:tomato-bazel/rules_nextjs",
+      "source": "https://github.com/tomato-bazel/rules_nextjs",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_openapi",
+      "latest": "0.4.0",
+      "versions": 5,
+      "homepage": "https://github.com/tomato-bazel/rules_openapi",
+      "repository": "github:tomato-bazel/rules_openapi",
+      "source": "https://github.com/tomato-bazel/rules_openapi",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_podman",
+      "latest": "0.0.2",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_podman",
+      "repository": "github:tomato-bazel/rules_podman",
+      "source": "https://github.com/tomato-bazel/rules_podman",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_postgres",
+      "latest": "0.8.0",
+      "versions": 7,
+      "homepage": "https://github.com/tomato-bazel/rules_postgres",
+      "repository": "github:tomato-bazel/rules_postgres",
+      "source": "https://github.com/tomato-bazel/rules_postgres",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_puml",
+      "latest": "0.0.2",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_puml",
+      "repository": "github:tomato-bazel/rules_puml",
+      "source": "https://github.com/tomato-bazel/rules_puml",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_rdf",
+      "latest": "0.4.0",
+      "versions": 5,
+      "homepage": "https://github.com/tomato-bazel/rules_rdf",
+      "repository": "github:tomato-bazel/rules_rdf",
+      "source": "https://github.com/tomato-bazel/rules_rdf",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_readme",
+      "latest": "0.0.3",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_readme",
+      "repository": "github:tomato-bazel/rules_readme",
+      "source": "https://github.com/tomato-bazel/rules_readme",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_runpod",
+      "latest": "0.0.11",
+      "versions": 10,
+      "homepage": "https://github.com/fastverk/rules_runpod",
+      "repository": "github:fastverk/rules_runpod",
+      "source": "https://github.com/fastverk/rules_runpod",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_schema_org",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_schema_org",
+      "repository": "github:tomato-bazel/rules_schema_org",
+      "source": "https://github.com/tomato-bazel/rules_schema_org",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_spec",
+      "latest": "0.5.1",
+      "versions": 7,
+      "homepage": "https://github.com/fastverk/rules_spec",
+      "repository": "github:fastverk/rules_spec",
+      "source": "https://github.com/fastverk/rules_spec",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_ssh_tui",
+      "latest": "0.0.5",
+      "versions": 5,
+      "homepage": "https://github.com/tomato-bazel/rules_ssh_tui",
+      "repository": "github:tomato-bazel/rules_ssh_tui",
+      "source": "https://github.com/tomato-bazel/rules_ssh_tui",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_storybook",
+      "latest": "0.2.0",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_storybook",
+      "repository": "github:tomato-bazel/rules_storybook",
+      "source": "https://github.com/tomato-bazel/rules_storybook",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_systemd",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_systemd",
+      "repository": "github:tomato-bazel/rules_systemd",
+      "source": "https://github.com/tomato-bazel/rules_systemd",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_tap",
+      "latest": "0.0.3",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_tap",
+      "repository": "github:tomato-bazel/rules_tap",
+      "source": "https://github.com/tomato-bazel/rules_tap",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_tectonic",
+      "latest": "0.2.0",
+      "versions": 3,
+      "homepage": "https://github.com/tomato-bazel/rules_tectonic",
+      "repository": "github:tomato-bazel/rules_tectonic",
+      "source": "https://github.com/tomato-bazel/rules_tectonic",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_tla",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_tla",
+      "repository": "github:tomato-bazel/rules_tla",
+      "source": "https://github.com/tomato-bazel/rules_tla",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_tomato",
+      "latest": "0.1.1",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_tomato",
+      "repository": "github:tomato-bazel/rules_tomato",
+      "source": "https://github.com/tomato-bazel/rules_tomato",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_uv",
+      "latest": "0.7.4",
+      "versions": 12,
+      "homepage": "https://github.com/tomato-bazel/rules_uv",
+      "repository": "github:tomato-bazel/rules_uv",
+      "source": "https://github.com/tomato-bazel/rules_uv",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_vite",
+      "latest": "0.1.1",
+      "versions": 2,
+      "homepage": "https://github.com/tomato-bazel/rules_vite",
+      "repository": "github:tomato-bazel/rules_vite",
+      "source": "https://github.com/tomato-bazel/rules_vite",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_vscode",
+      "latest": "0.0.2",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_vscode",
+      "repository": "github:tomato-bazel/rules_vscode",
+      "source": "https://github.com/tomato-bazel/rules_vscode",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_walkthrough",
+      "latest": "0.1.0",
+      "versions": 1,
+      "homepage": "https://github.com/fastverk/rules_walkthrough",
+      "repository": "github:fastverk/rules_walkthrough",
+      "source": "https://github.com/fastverk/rules_walkthrough",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_web",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_web",
+      "repository": "github:tomato-bazel/rules_web",
+      "source": "https://github.com/tomato-bazel/rules_web",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "rules_xsd",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/rules_xsd",
+      "repository": "github:tomato-bazel/rules_xsd",
+      "source": "https://github.com/tomato-bazel/rules_xsd",
+      "category": "Bazel rules"
+    },
+    {
+      "name": "spec",
+      "latest": "0.6.0",
+      "versions": 2,
+      "homepage": "https://github.com/fastverk/spec",
+      "repository": "github:fastverk/spec",
+      "source": "https://github.com/fastverk/spec",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "tomato_brand",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/tomato-bazel/brand",
+      "repository": "github:tomato-bazel/brand",
+      "source": "https://github.com/tomato-bazel/brand",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "vpn",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/fastverk/vpn",
+      "repository": "github:fastverk/vpn",
+      "source": "https://github.com/fastverk/vpn",
+      "category": "Modules & tooling"
+    },
+    {
+      "name": "wave",
+      "latest": "0.0.1",
+      "versions": 1,
+      "homepage": "https://github.com/fastverk/wave",
+      "repository": "github:fastverk/wave",
+      "source": "https://github.com/fastverk/wave",
+      "category": "Modules & tooling"
+    }
+  ]
+}

@@ -1,0 +1,147 @@
+---
+import "../styles/docs.css";
+import { NAV, flatNav } from "../lib/nav";
+
+interface Heading { depth: number; slug: string; text: string; }
+interface Props {
+  title: string;
+  description?: string;
+  headings?: Heading[];
+  badge?: string;
+  editPath?: string;
+}
+const { title, description = "tomato-bazel documentation — the Bazel registry and rules_* for a hermetic, bzlmod-first workflow.", headings = [], badge, editPath } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const norm = (h: string) => h.replace(/\/+$/, "") || "/";
+const activeGroup = NAV.find((g) => g.items.some((it) => norm(it.href) === path));
+const crumbs = ["Docs", activeGroup?.group, title].filter(Boolean) as string[];
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const editHref = editPath
+  ? `https://github.com/tomato-bazel/docs/edit/main/src/content/docs/${editPath}`
+  : "https://github.com/tomato-bazel/docs";
+const navIndex = flatNav();
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script is:inline>
+    // set theme before paint to avoid a flash
+    try { var t = localStorage.getItem("tbzl-docs-theme"); if (t) document.documentElement.setAttribute("data-theme", t); } catch (e) {}
+  </script>
+  <title>{title} — tomato-bazel docs</title>
+  <meta name="description" content={description} />
+  <link rel="icon" type="image/png" href="/assets/tomato-mark.png" />
+  <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site).href} />
+  <meta property="og:title" content={`${title} — tomato-bazel docs`} />
+  <meta property="og:description" content={description} />
+  <meta property="og:type" content="article" />
+</head>
+<body>
+  <header class="top">
+    <button class="iconbtn menu-btn" id="menuBtn" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a class="brand" href="/" aria-label="tomato-bazel docs home">
+      <img src="/assets/tomato-mark.png" alt="" width="26" height="26" />
+      <b>tomato<span class="dot">·</span>bazel</b><span class="kind">docs</span>
+    </a>
+    <span class="ver" id="verBtn">v0 · latest <span class="car">▾</span></span>
+    <div class="search">
+      <button class="search-trigger" id="searchTrigger" aria-label="Search the docs">
+        <svg class="mag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="lbl">Search the docs…</span>
+        <span class="kbd">⌘K</span>
+      </button>
+    </div>
+    <div class="hicons">
+      <button class="iconbtn" id="themeBtn" aria-label="Toggle theme">
+        <svg class="theme-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.5M12 19v2.5M4.5 4.5l1.8 1.8M17.7 17.7l1.8 1.8M2.5 12H5M19 12h2.5M4.5 19.5l1.8-1.8M17.7 6.3l1.8-1.8"/></svg>
+        <svg class="theme-dark" viewBox="0 0 24 24" fill="currentColor"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z"/></svg>
+      </button>
+      <a class="iconbtn" href="https://github.com/tomato-bazel" aria-label="GitHub">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.1.68-.22.68-.49 0-.24-.01-.88-.01-1.73-2.78.62-3.37-1.37-3.37-1.37-.46-1.18-1.11-1.5-1.11-1.5-.9-.63.07-.62.07-.62 1 .07 1.53 1.05 1.53 1.05.89 1.56 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.36-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.35 9.35 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.35 4.8-4.58 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.48-.01 2.82 0 .27.18.6.69.49A10.02 10.02 0 0 0 22 12.25C22 6.58 17.52 2 12 2Z"/></svg>
+      </a>
+      <a class="iconbtn" href="https://tbzl.dev" aria-label="tbzl.dev">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17 17 7M8 7h9v9"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <div class="scrim2" id="scrim2"></div>
+  <div class="shell">
+    <aside class="side" id="sidebar">
+      <nav>
+        {NAV.map((g) => {
+          const groupActive = g.items.some((it) => norm(it.href) === path);
+          return (
+            <div class={`navgroup${groupActive ? "" : ""}`}>
+              <button class="gh">
+                <svg class="tw" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg>
+                <span>{g.group}</span>
+                {g.badge && <span class={`badge b-${g.badge}`}>{g.badge}</span>}
+              </button>
+              <div class="items">
+                {g.items.map((it) => (
+                  <a href={it.href} class={norm(it.href) === path ? "active" : ""} aria-current={norm(it.href) === path ? "page" : undefined}>
+                    {it.title}
+                    {it.badge && <span class={`badge b-${it.badge}`} style="margin-left:8px">{it.badge}</span>}
+                  </a>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </nav>
+    </aside>
+
+    <div class="main">
+      <article data-pagefind-body data-pagefind-meta={`title:${title}`}>
+        <div class="crumb">
+          {crumbs.map((c, i) => (
+            <>
+              {i > 0 && <span class="sep">/</span>}
+              {i < crumbs.length - 1 ? <a href="/">{c}</a> : <span>{c}</span>}
+            </>
+          ))}
+        </div>
+        <div class="h1row"><h1>{title}</h1>{badge && <span class={`badge b-${badge}`}>{badge}</span>}</div>
+        <slot />
+      </article>
+
+      <nav class="toc" aria-label="On this page">
+        {toc.length > 0 && <div class="tl">On this page</div>}
+        {toc.map((h) => (
+          <a href={`#${h.slug}`} class={h.depth === 3 ? "sub" : ""}>{h.text}</a>
+        ))}
+        <div class="feedback"><a href={editHref}>Edit this page ↗</a></div>
+      </nav>
+    </div>
+  </div>
+
+  <div class="pal-scrim" id="palScrim" role="dialog" aria-modal="true" aria-label="Search">
+    <div class="pal">
+      <div class="in">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="palInput" type="text" placeholder="Search concepts, guides, modules…" autocomplete="off" spellcheck="false" aria-label="Search the docs" />
+        <span class="esc">esc</span>
+      </div>
+      <div class="res" id="palRes"></div>
+      <div class="foot">
+        <span><span class="k">↑</span><span class="k">↓</span> navigate</span>
+        <span><span class="k">↵</span> open</span>
+        <span><span class="k">esc</span> close</span>
+        <span style="margin-left:auto" id="palEngine">tomato-bazel search</span>
+      </div>
+    </div>
+  </div>
+
+  <script type="application/json" id="navindex" set:html={JSON.stringify(navIndex)}></script>
+  <script>
+    import { initDocs } from "../lib/client.ts";
+    initDocs();
+  </script>
+</body>
+</html>
