@@ -8,4 +8,8 @@ const docs = defineCollection({
     editPath: z.string().optional(),
   }),
 });
-export const collections = { docs };
+const moduledocs = defineCollection({
+  type: "content",
+  schema: z.object({ title: z.string().optional(), module: z.string().optional() }),
+});
+export const collections = { docs, moduledocs };

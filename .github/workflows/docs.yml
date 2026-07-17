@@ -37,10 +37,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: regenerate the Modules reference from the registry
+      - name: regenerate the module reference from the registry + repos
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git clone --depth 1 https://github.com/tomato-bazel/bazel-registry .registry
-          python3 tools/gen_modules.py --registry .registry --out src/data/modules.json
+          python3 tools/gen_modules.py --registry .registry \
+            --out src/data/modules.json --content src/content/moduledocs --fetch
           rm -rf .registry
 
       - uses: actions/setup-node@v4

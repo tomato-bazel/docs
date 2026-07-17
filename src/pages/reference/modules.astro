@@ -2,7 +2,7 @@
 import Doc from "../../layouts/Doc.astro";
 import data from "../../data/modules.json";
 
-type Mod = { name: string; latest: string; versions: number; source: string; category: string };
+type Mod = { name: string; latest: string; versions: number; source: string; category: string; description?: string; used_by?: string[] };
 const mods = data.modules as Mod[];
 const ORDER = ["Bazel rules", "Modules & tooling"];
 const groups = ORDER.map((cat) => ({
@@ -34,9 +34,10 @@ const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 
         <h2 id={g.slug} class="mcat" style="margin-top:34px">{g.cat} · {g.items.length}</h2>
         <div class="modgrid">
           {g.items.map((m) => (
-            <a class="modcard" data-name={m.name} href={`/reference/modules/${m.name}/`}>
+            <a class="modcard" data-name={m.name} data-desc={m.description || ""} href={`/reference/modules/${m.name}/`}>
               <div class="mn">{m.name}</div>
-              <div class="mm"><span class="mv">{m.latest}</span><span>{m.versions} version{m.versions === 1 ? "" : "s"}</span></div>
+              {m.description && <div class="mdesc">{m.description}</div>}
+              <div class="mm"><span class="mv">{m.latest}</span><span>{m.versions} version{m.versions === 1 ? "" : "s"}</span>{m.used_by && m.used_by.length > 0 && <span>· {m.used_by.length} dependent{m.used_by.length === 1 ? "" : "s"}</span>}</div>
             </a>
           ))}
         </div>
@@ -53,7 +54,8 @@ const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 
       q.addEventListener("input", function () {
         var v = q.value.trim().toLowerCase(), n = 0;
         cards.forEach(function (c) {
-          var hit = !v || c.dataset.name.toLowerCase().indexOf(v) > -1;
+          var hay = (c.dataset.name + " " + (c.dataset.desc || "")).toLowerCase();
+          var hit = !v || hay.indexOf(v) > -1;
           c.style.display = hit ? "" : "none"; if (hit) n++;
         });
         secs.forEach(function (s) {

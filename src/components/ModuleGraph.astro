@@ -1,0 +1,52 @@
+---
+interface Props { name: string; deps: string[]; usedBy: string[]; }
+const { name, deps, usedBy } = Astro.props;
+---
+<figure class="gfig">
+  <div class="gwrap"><canvas id="modgraph" width="720" height="300"></canvas></div>
+  <figcaption class="gcap"><b>{name}</b> in the registry graph — <span style="color:var(--muted)">what it depends on (left)</span> and what depends on it (right).</figcaption>
+</figure>
+
+<script define:vars={{ name, deps, usedBy }}>
+  (function () {
+    var cv = document.getElementById("modgraph");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    var root = document.documentElement;
+    var css = function (v) { return getComputedStyle(root).getPropertyValue(v).trim(); };
+    var L = deps.slice(0, 7), R = usedBy.slice(0, 7);
+    var moreL = deps.length - L.length, moreR = usedBy.length - R.length;
+    function hexA(hex, a) {
+      var h = hex.replace("#", ""); if (h.length === 3) h = h.replace(/(.)/g, "$1$1");
+      return "rgba(" + parseInt(h.slice(0,2),16) + "," + parseInt(h.slice(2,4),16) + "," + parseInt(h.slice(4,6),16) + "," + a + ")";
+    }
+    function col(y, n, i) { return n <= 1 ? y * 0.5 : 0.12 + (i / (n - 1)) * 0.76; }
+    function draw() {
+      var W = cv.clientWidth || 720, H = cv.clientHeight || 300, DPR = Math.min(window.devicePixelRatio || 1, 2);
+      cv.width = W * DPR; cv.height = H * DPR; ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+      var accent = css("--accent-bright") || "#E64A33", leaf = css("--leaf") || "#3FA34D",
+          edge = css("--edge"), node = css("--node"), muted = css("--muted"), head = css("--head");
+      var cx = W / 2, cy = H / 2, lx = W * 0.16, rx = W * 0.84;
+      function py(i, n) { return 30 + col(0.5, n, i) * (H - 60); }
+      function label(x, y, t, c, align) {
+        ctx.font = "600 11px ui-monospace,Menlo,monospace"; ctx.textAlign = align; ctx.textBaseline = "middle";
+        ctx.fillStyle = c; ctx.fillText(t, x, y);
+      }
+      // edges
+      L.forEach(function (d, i) { var y = py(i, L.length); ctx.strokeStyle = edge; ctx.lineWidth = 1.1; ctx.beginPath(); ctx.moveTo(lx, y); ctx.lineTo(cx, cy); ctx.stroke(); });
+      R.forEach(function (d, i) { var y = py(i, R.length); ctx.strokeStyle = accent; ctx.globalAlpha = .85; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(rx, y); ctx.stroke(); ctx.globalAlpha = 1; });
+      // side nodes
+      L.forEach(function (d, i) { var y = py(i, L.length); ctx.beginPath(); ctx.arc(lx, y, 5, 0, 7); ctx.fillStyle = node; ctx.fill(); ctx.strokeStyle = css("--line-2"); ctx.stroke(); label(lx - 10, y, "//" + d, muted, "right"); });
+      R.forEach(function (d, i) { var y = py(i, R.length); ctx.beginPath(); ctx.arc(rx, y, 5, 0, 7); ctx.fillStyle = accent; ctx.fill(); label(rx + 10, y, d, head, "left"); });
+      if (moreL > 0) label(lx - 10, H - 16, "+" + moreL + " more", css("--faint"), "right");
+      if (moreR > 0) label(rx + 10, H - 16, "+" + moreR + " more", css("--faint"), "left");
+      // center node
+      ctx.beginPath(); ctx.arc(cx, cy, 22, 0, 7); ctx.fillStyle = hexA(accent, .14); ctx.fill();
+      ctx.beginPath(); ctx.arc(cx, cy, 15, 0, 7); ctx.fillStyle = accent; ctx.fill();
+      label(cx, cy + 30, name, head, "center");
+    }
+    draw();
+    window.addEventListener("resize", draw);
+    new MutationObserver(draw).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  })();
+</script>

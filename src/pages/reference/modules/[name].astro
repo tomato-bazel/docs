@@ -1,57 +1,74 @@
 ---
+import { getCollection, render } from "astro:content";
 import Doc from "../../../layouts/Doc.astro";
+import ModuleGraph from "../../../components/ModuleGraph.astro";
 import data from "../../../data/modules.json";
 
-type Mod = {
-  name: string; latest: string; versions: number; versions_list: string[];
-  source: string; registry: string; category: string; homepage: string;
-};
+interface Dep { name: string; version: string; dev: boolean; in_registry: boolean; }
+interface VDetail { version: string; integrity: string; url: string; }
+interface Mod {
+  name: string; latest: string; versions: number; versions_list: string[]; versions_detail: VDetail[];
+  source: string; homepage: string; registry: string; category: string; description?: string;
+  maintainers: { name: string; github?: string }[]; yanked: string[]; compatibility_level: number | null;
+  deps: Dep[]; used_by: string[]; has_readme: boolean; docs: { slug: string; title: string }[];
+}
 
 export function getStaticPaths() {
   return (data.modules as Mod[]).map((mod) => ({ params: { name: mod.name }, props: { mod } }));
 }
-
 const { mod } = Astro.props as { mod: Mod };
 const kind = mod.category === "Bazel rules" ? "Bazel ruleset" : "module";
-const recent = [...mod.versions_list].reverse();
+
+// pull the fetched README + Stardoc docs from the moduledocs collection
+const all = await getCollection("moduledocs");
+const byId = new Map(all.map((e) => [e.id.replace(/\.md$/, ""), e]));
+const readmeEntry = mod.has_readme ? byId.get(`${mod.name}/readme`) : undefined;
+let ReadmeContent: any = null;
+let readmeHeadings: { depth: number; slug: string; text: string }[] = [];
+if (readmeEntry) { const r = await render(readmeEntry); ReadmeContent = r.Content; readmeHeadings = r.headings.filter((h) => h.depth === 2); }
+
+const docRenders: { title: string; slug: string; Content: any }[] = [];
+for (const d of mod.docs) {
+  const e = byId.get(`${mod.name}/${d.slug}`);
+  if (e) { const r = await render(e); docRenders.push({ title: d.title, slug: d.slug, Content: r.Content }); }
+}
+
+const hasDeps = mod.deps.length > 0 || mod.used_by.length > 0;
 const headings = [
-  { depth: 2, slug: "install", text: "Install" },
+  ...readmeHeadings,
+  ...(docRenders.length ? [{ depth: 2, slug: "rules", text: "Rules & providers" }] : []),
+  ...(hasDeps ? [{ depth: 2, slug: "dependencies", text: "Dependencies" }] : []),
   { depth: 2, slug: "versions", text: "Versions" },
 ];
 const crumbs = [
-  { label: "Docs", href: "/" },
-  { label: "Reference" },
-  { label: "Modules", href: "/reference/modules/" },
-  { label: mod.name },
+  { label: "Docs", href: "/" }, { label: "Reference" },
+  { label: "Modules", href: "/reference/modules/" }, { label: mod.name },
 ];
+const shortIntegrity = (s: string) => (s ? s.replace(/^sha256-/, "").slice(0, 16) + "…" : "");
+const recent = [...mod.versions_detail].reverse();
 ---
 <Doc
   title={mod.name}
-  description={`${mod.name} — a ${kind} in the tomato-bazel registry (latest ${mod.latest}). Resolve it from registry.tbzl.dev.`}
+  description={mod.description || `${mod.name} — a ${kind} in the tomato-bazel registry (latest ${mod.latest}).`}
   headings={headings}
   breadcrumbs={crumbs}
   editPath="../../tools/gen_modules.py"
 >
-  <p><code class="ic">{mod.name}</code> is a {kind} published to the <a class="link" href="/using-the-registry/">tomato-bazel registry</a>. This page is generated from the registry, so it never drifts from what's published.</p>
+  <p>{mod.description || `${mod.name} is a ${kind} published to the tomato-bazel registry.`}</p>
 
   <div class="tbl"><div class="tbl-scroll"><table><tbody>
     <tr><th>Latest</th><td><code>{mod.latest}</code></td></tr>
-    <tr><th>Versions</th><td>{mod.versions}</td></tr>
+    <tr><th>Versions</th><td>{mod.versions}{mod.yanked.length > 0 && <span style="color:var(--muted)"> · {mod.yanked.length} yanked</span>}</td></tr>
     <tr><th>Category</th><td>{mod.category}</td></tr>
+    {mod.compatibility_level != null && <tr><th>Compat level</th><td>{mod.compatibility_level}</td></tr>}
+    {mod.maintainers.length > 0 && (
+      <tr><th>Maintainers</th><td>{mod.maintainers.map((m, i) => (
+        <>{i > 0 && ", "}{m.github ? <a class="link" href={`https://github.com/${m.github}`}>{m.name || m.github}</a> : m.name}</>
+      ))}</td></tr>
+    )}
     <tr><th>Registry</th><td><a class="link" href={mod.registry}>{mod.registry}</a></td></tr>
     {mod.source && <tr><th>Source</th><td><a class="link" href={mod.source}>{mod.source.replace("https://", "")}</a></td></tr>}
   </tbody></table></div></div>
-
-  <h2 id="install">Install<a class="anchor" href="#install">#</a></h2>
-  <p>Add the registry to your <code class="ic">.bazelrc</code> (ahead of the BCR), then depend on it in <code class="ic">MODULE.bazel</code>:</p>
-
-  <div class="code">
-    <button class="copy" type="button">Copy</button>
-    <div class="cbar"><span class="fn">.bazelrc</span><span class="lang">config</span></div>
-    <pre><span class="tok-c"># registry.tbzl.dev first, then the BCR</span>
-common <span class="tok-k">--registry</span>=https://registry.tbzl.dev/
-common <span class="tok-k">--registry</span>=https://bcr.bazel.build/</pre>
-  </div>
 
   <div class="code">
     <button class="copy" type="button">Copy</button>
@@ -66,13 +83,63 @@ common <span class="tok-k">--registry</span>=https://bcr.bazel.build/</pre>
     </a></p>
   )}
 
+  {ReadmeContent ? <ReadmeContent /> : (
+    <p style="color:var(--muted)">No README was published for this module. Its API, dependencies, and versions are below.</p>
+  )}
+
+  {docRenders.length > 0 && (
+    <>
+      <h2 id="rules">Rules &amp; providers<a class="anchor" href="#rules">#</a></h2>
+      <p style="color:var(--muted)">Generated with <a class="link" href="https://github.com/bazelbuild/stardoc">Stardoc</a> from the module's <code class="ic">.bzl</code> sources.</p>
+      {docRenders.map((d) => (
+        <div class="stardoc"><h3 id={d.slug}>{d.title}</h3><d.Content /></div>
+      ))}
+    </>
+  )}
+
+  {hasDeps && (
+    <>
+      <h2 id="dependencies">Dependencies<a class="anchor" href="#dependencies">#</a></h2>
+      <ModuleGraph name={mod.name} deps={mod.deps.map((d) => d.name)} usedBy={mod.used_by} />
+      {mod.deps.length > 0 && (
+        <>
+          <h3>Depends on</h3>
+          <div class="deprow">{mod.deps.map((d) => (
+            d.in_registry
+              ? <a class="depchip" href={`/reference/modules/${d.name}/`}>{d.name}<span class="dv">{d.version}</span>{d.dev && <span class="dtag">dev</span>}</a>
+              : <span class="depchip ext">{d.name}<span class="dv">{d.version}</span>{d.dev && <span class="dtag">dev</span>}</span>
+          ))}</div>
+        </>
+      )}
+      {mod.used_by.length > 0 && (
+        <>
+          <h3>Used by <span style="color:var(--muted);font-weight:400">({mod.used_by.length} in the registry)</span></h3>
+          <div class="deprow">{mod.used_by.map((u) => (
+            <a class="depchip used" href={`/reference/modules/${u}/`}>{u}</a>
+          ))}</div>
+        </>
+      )}
+    </>
+  )}
+
   <h2 id="versions">Versions<a class="anchor" href="#versions">#</a></h2>
-  <p>{mod.versions} published version{mod.versions === 1 ? "" : "s"}, newest first. Each resolves to an immutable, integrity-checked entry.</p>
-  <div class="vchips">
-    {recent.map((v, i) => (
-      <span class={`vchip${i === 0 ? " latest" : ""}`}>{v}{i === 0 && <span class="tag">latest</span>}</span>
-    ))}
-  </div>
+  <p style="color:var(--muted)">{mod.versions} published version{mod.versions === 1 ? "" : "s"}, newest first. Each resolves to an immutable, integrity-checked archive.</p>
+  <div class="tbl"><div class="tbl-scroll"><table>
+    <thead><tr><th>Version</th><th>Integrity (sha256)</th><th>Source archive</th></tr></thead>
+    <tbody>
+      {recent.map((v, i) => (
+        <tr>
+          <td>
+            <code style={mod.yanked.includes(v.version) ? "text-decoration:line-through;opacity:.6" : ""}>{v.version}</code>
+            {i === 0 && <span class="badge b-stable" style="margin-left:8px">latest</span>}
+            {mod.yanked.includes(v.version) && <span class="badge b-design" style="margin-left:8px">yanked</span>}
+          </td>
+          <td><code title={v.integrity} style="font-size:11.5px">{shortIntegrity(v.integrity) || "—"}</code></td>
+          <td>{v.url ? <a class="link" href={v.url} style="font-size:12.5px">tag archive ↗</a> : "—"}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table></div></div>
 
   <p style="margin-top:28px"><a class="link" href="/reference/modules/">← All modules</a></p>
 </Doc>

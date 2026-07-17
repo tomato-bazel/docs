@@ -315,3 +315,26 @@ article .h1row + p{font-size:19px;line-height:1.55;color:var(--muted);margin:16p
 .vchip{font-family:var(--mono);font-size:12.5px;color:var(--muted);border:1px solid var(--line-2);border-radius:8px;padding:5px 10px;display:inline-flex;align-items:center;gap:7px;}
 .vchip.latest{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-wash);}
 .vchip .tag{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);opacity:.8;}
+
+/* dependency chips (module detail) */
+.deprow{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 20px;}
+.depchip{display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12.5px;color:var(--head);
+  border:1px solid var(--line-2);border-radius:8px;padding:5px 10px;transition:border-color .14s,background .14s;}
+a.depchip:hover{border-color:var(--accent);background:var(--accent-wash);}
+.depchip.ext{color:var(--muted);border-style:dashed;}
+.depchip.used{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 32%,transparent);background:var(--accent-wash);}
+.depchip .dv{color:var(--muted);font-size:11px;}
+.depchip .dtag{font-size:9px;letter-spacing:.05em;text-transform:uppercase;color:var(--amber);border:1px solid color-mix(in srgb,var(--amber) 34%,transparent);border-radius:4px;padding:0 4px;}
+
+/* Stardoc-rendered API blocks */
+.stardoc{margin-top:8px;}
+.stardoc h3{font-family:var(--mono);color:var(--accent);letter-spacing:.01em;padding-top:6px;border-top:1px solid var(--line);margin-top:26px;}
+.stardoc :global(h1),.stardoc :global(h2){display:none;} /* stardoc file title/section — we supply our own h3 */
+.stardoc :global(table){font-size:13px;}
+.stardoc :global(h3){font-size:15px;color:var(--head);font-family:var(--display);margin-top:22px;}
+.stardoc :global(h4){font-size:13.5px;color:var(--head);font-family:var(--mono);margin-top:16px;}
+
+/* module index card description */
+.modcard .mdesc{color:var(--muted);font-size:12px;line-height:1.45;margin-top:7px;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.modcard .mm{margin-top:9px;flex-wrap:wrap;}

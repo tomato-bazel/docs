@@ -1,0 +1,158 @@
+---
+title: "Overview"
+module: "rules_nextjs"
+---
+
+Bazel rules for [Next.js](https://nextjs.org/). Runs `next build` as a
+hermetic Bazel action with the workspace's deps as explicit inputs and
+the `.next/` tree as the declared output.
+
+- **rule**: `next_build` — see [docs/defs.md](https://github.com/tomato-bazel/rules_nextjs/blob/main/docs/defs.md).
+- **rule/macro**: `next_standalone` — turn an `output = "standalone"` build into a `bazel run`-able server **and** a deployable bundle for `pkg_tar`/`oci_image`.
+- **provider**: `NextBuildInfo` — wraps the `.next` output tree so future rules (deploy targets, `oci_image` wrappers, doc-site extractors) can consume builds programmatically.
+
+## Install
+
+Add the registry to your `.bazelrc`:
+
+```
+common --registry=https://raw.githubusercontent.com/fastverk/bazel-registry/main/
+common --registry=https://bcr.bazel.build/
+```
+
+In your `MODULE.bazel`:
+
+```python
+bazel_dep(name = "rules_nextjs", version = "0.1.0")
+```
+
+You'll also need `aspect_rules_js` (or equivalent) to expose `next` as a `js_binary`-compatible target — this rule consumes the CLI via `next_bin`, doesn't bring its own.
+
+## Quick start
+
+```python
+load("@npm//:my-app/next/package_json.bzl", next_bin_gen = "bin")
+load("@rules_nextjs//next:defs.bzl", "next_build")
+
+# Real js_binary wrapping node_modules/next/dist/bin/next. The rule needs
+# an executable target — `:node_modules/next/dir` is a directory and
+# cannot be exec'd directly. aspect_rules_js generates `bin.next_binary`
+# for any npm package that declares a bin in its package.json.
+next_bin_gen.next_binary(name = "next_cli")
+
+next_build(
+    name = "build",
+    srcs = glob(["src/**/*", "public/**/*"]) + [
+        "next.config.ts",
+        "tsconfig.json",
+    ],
+    deps = [
+        "//packages/some-lib:lib",
+        ":node_modules/next",
+        ":node_modules/react",
+        ":node_modules/react-dom",
+    ],
+    data = [
+        # Runtime assets dropped into public/ before the build.
+        "//db/migrations:bundle",
+    ],
+    next_bin = ":next_cli",
+)
+```
+
+`bazel build //:build` produces `bazel-bin/build.out/` containing the full
+`.next/` tree (`standalone/`, `static/`, trace files).
+
+## Standalone: runnable server + deployable bundle
+
+`next build`'s `output: 'standalone'` emits the self-contained server
+(`.next/standalone`) and the hashed client assets (`.next/static`) as
+*siblings* — neither runs on its own. `next_standalone` re-stitches them
+into one tree (matching the hand-written `Dockerfile` COPY layout) and
+exposes it two ways:
+
+```python
+load("@rules_nextjs//next:defs.bzl", "next_build", "next_standalone")
+
+next_build(
+    name = "build",
+    # ... as above ...
+    output = "standalone",  # the default; static/vercel get no runnable
+    next_bin = ":next_cli",
+)
+
+next_standalone(
+    name = "app",
+    build = ":build",
+    next_bin = ":next_cli",  # borrowed for the hermetic Node
+)
+```
+
+- `bazel run //:app` — serve the app on the hermetic Node (honors
+  `PORT` / `HOSTNAME`).
+- `//:app.bundle` — a `TreeArtifact` ready for an image:
+
+  ```python
+  load("@rules_pkg//pkg:tar.bzl", "pkg_tar")
+  load("@rules_oci//oci:defs.bzl", "oci_image")
+
+  pkg_tar(name = "app_layer", srcs = ["//:app.bundle"], package_dir = "/app")
+  oci_image(
+      name = "image",
+      base = "@distroless_nodejs",
+      tars = [":app_layer"],
+      workdir = "/app",
+      # The bundle drops a fixed-name entry shim at its root (it discovers the
+      # nested server.js for you), so the cmd never changes per app:
+      cmd = ["__next_standalone_server.cjs"],
+  )
+  ```
+
+The standalone server resolves `/_next/static/*` relative to the cwd, so
+the runnable and the entry shim both `cd` to the bundle root, where
+`.next/static` is re-stitched.
+
+> `next_build` repairs the standalone `node_modules` so dynamic runtime
+> requires (e.g. `next`'s require-hook → `styled-jsx`) resolve — without
+> it the deref'd standalone crashes on boot. The trade-off is a heavier
+> `node_modules` than a pnpm-built standalone; see the CHANGELOG `0.3.0`
+> note.
+
+## Hermeticity
+
+The rule forces three Next.js env vars:
+
+- `NEXT_TELEMETRY_DISABLED=1`
+- `NEXT_PRIVATE_STANDALONE=1`
+- `NODE_ENV=production`
+
+The rest of the hermeticity scrub lives in each app's `next.config.ts` — `rules_nextjs` deliberately doesn't try to patch from the outside. Consumer-side checklist:
+
+| Bring under control | How |
+| --- | --- |
+| Font CDN fetches | Vendor under `public/fonts/` or use `next/font/local`; `next/font/google` reaches `fonts.googleapis.com` at build time |
+| Image optimizer pre-fetches | `images: { unoptimized: true }` or explicit `remotePatterns` |
+| Build-time network from instrumentation | Audit `instrumentation*.ts` for module-init side effects |
+| Next version | Pin via root `package.json` catalog |
+
+Validate the scrub by building with `--network none` after the migration lands.
+
+## Compatibility
+
+- **Bazel**: 7.4+, bzlmod required.
+- **Next.js**: 14+ tested. Earlier versions may work — `next build <app-dir>` and the env-var contract have been stable.
+- **Workspace shape**: assumes `aspect_rules_js`-style npm linking (`:node_modules/next/dir`).
+
+## Contributing
+
+Reference docs (`docs/defs.md`) are stardoc-generated. After editing rule docstrings:
+
+```sh
+bazel run //docs:update
+```
+
+CI gates this via `bazel test //docs/...`.
+
+## License
+
+MIT.

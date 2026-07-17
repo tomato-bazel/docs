@@ -1,34 +1,178 @@
 #!/usr/bin/env python3
-"""Generate src/data/modules.json from a bazel-registry checkout.
+"""Generate the module/rule reference from the registry (+ optional repo fetch).
 
-The reusable "rules documentation into the reference" plumbing (was: emitted
-mdBook markdown; now: emits JSON the Astro reference page renders + Pagefind
-indexes). Reads <registry>/modules/*/metadata.json and records every module
-(latest version, version count, source repo, category). Run in CI before the
-Astro build. Stdlib only.
+The reusable "rules documentation into the reference" plumbing, deepened. All
+output is GENERATED so the docs never drift from what's published:
+
+  src/data/modules.json            structured facts, deps, registry reverse-deps,
+                                   per-version integrity, maintainers, compat,
+                                   yanked, repo description, and which docs exist.
+  src/content/moduledocs/<name>/   fetched README + checked-in Stardoc docs/*.md
+    readme.md, <doc>.md            (with relative links rewritten to the repo),
+                                   rendered by Astro on each detail page.
+
+Registry-derived data is always regenerated (reads the local checkout). Repo
+content (README + docs/*.md) is fetched only with --fetch (needs GH_TOKEN /
+GITHUB_TOKEN for rate limits + private repos degrade gracefully). Without --fetch
+the committed content files are kept and modules.json reflects them.
+
+Usage:
+  python3 tools/gen_modules.py --registry .registry \
+    --out src/data/modules.json --content src/content/moduledocs [--fetch]
+Stdlib only.
 """
-import argparse, json, os
+import argparse, base64, json, os, re, sys, urllib.request
 from pathlib import Path
+
+TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
+UA = {"User-Agent": "tbzl-docs-gen", "Accept": "application/vnd.github+json"}
+if TOKEN:
+    UA["Authorization"] = "Bearer " + TOKEN
+
+
+def gh(path):
+    try:
+        req = urllib.request.Request("https://api.github.com" + path, headers=UA)
+        with urllib.request.urlopen(req, timeout=25) as r:
+            return json.load(r)
+    except Exception:
+        return None
+
+
+def owner_repo(repo):
+    return repo[len("github:"):] if repo.startswith("github:") else ""
 
 
 def repo_url(repo):
-    return "https://github.com/" + repo[len("github:"):] if repo.startswith("github:") else repo
+    or_ = owner_repo(repo)
+    return "https://github.com/" + or_ if or_ else ""
 
 
-def category(name, repo):
-    if name.startswith("rules_"):
-        return "Bazel rules"
-    return "Modules & tooling"
+def category(name):
+    return "Bazel rules" if name.startswith("rules_") else "Modules & tooling"
+
+
+BDEP = re.compile(r'bazel_dep\(\s*name\s*=\s*"([^"]+)"\s*,\s*version\s*=\s*"([^"]*)"(.*?)\)', re.S)
+COMPAT = re.compile(r'compatibility_level\s*=\s*(\d+)')
+
+
+def parse_module_bazel(text):
+    deps = []
+    for m in BDEP.finditer(text or ""):
+        deps.append({"name": m.group(1), "version": m.group(2), "dev": "dev_dependency" in m.group(3) and "True" in m.group(3)})
+    cl = COMPAT.search(text or "")
+    return {"deps": deps, "compatibility_level": int(cl.group(1)) if cl else None}
+
+
+LINK = re.compile(r'(!?)\[([^\]]*)\]\(([^)]+)\)')
+
+
+def rewrite_links(md, repo, branch):
+    """Rewrite relative markdown links/images to absolute repo URLs so they work
+    when the README is served from docs.tbzl.dev."""
+    or_ = owner_repo(repo)
+    if not or_:
+        return md
+    blob = f"https://github.com/{or_}/blob/{branch}/"
+    raw = f"https://raw.githubusercontent.com/{or_}/{branch}/"
+
+    def repl(m):
+        bang, text, target = m.group(1), m.group(2), m.group(3).strip()
+        low = target.lower()
+        if low.startswith(("http://", "https://", "#", "mailto:", "//")):
+            return m.group(0)
+        clean = target.lstrip("./")
+        return f"{bang}[{text}]({(raw if bang else blob) + clean})"
+
+    return LINK.sub(repl, md)
+
+
+def strip_lead_h1(md):
+    lines = md.splitlines()
+    i = 0
+    while i < len(lines) and not lines[i].strip():
+        i += 1
+    if i < len(lines) and lines[i].startswith("# "):
+        i += 1
+        while i < len(lines) and not lines[i].strip():
+            i += 1
+        return "\n".join(lines[i:])
+    return md
+
+
+def slugify(s):
+    return re.sub(r"[^a-z0-9]+", "-", s.lower()).strip("-")
+
+
+def write_doc(content_dir, name, slug, title, body):
+    d = Path(content_dir) / name
+    d.mkdir(parents=True, exist_ok=True)
+    fm = f"---\ntitle: {json.dumps(title)}\nmodule: {json.dumps(name)}\n---\n\n"
+    (d / f"{slug}.md").write_text(fm + body.rstrip() + "\n")
+
+
+def fetch_repo_docs(repo, name, content_dir):
+    """Fetch README + docs/*.md for a module repo. Returns (description, has_readme,
+    [{'slug','title'}]). Degrades to (None, False, []) on any failure/private repo."""
+    or_ = owner_repo(repo)
+    if not or_:
+        return None, False, []
+    info = gh(f"/repos/{or_}")
+    if not info:
+        return None, False, []
+    branch = info.get("default_branch") or "main"
+    desc = (info.get("description") or "").strip() or None
+
+    has_readme = False
+    rd = gh(f"/repos/{or_}/readme")
+    if rd and rd.get("content"):
+        body = base64.b64decode(rd["content"]).decode("utf-8", "replace")
+        body = rewrite_links(strip_lead_h1(body), repo, branch)
+        write_doc(content_dir, name, "readme", "Overview", body)
+        has_readme = True
+
+    docs = []
+    tree = gh(f"/repos/{or_}/git/trees/{branch}?recursive=1")
+    if tree and isinstance(tree.get("tree"), list):
+        md_paths = [t["path"] for t in tree["tree"]
+                    if t.get("type") == "blob"
+                    and re.match(r"docs/[^/]+\.md$", t.get("path", ""))
+                    and os.path.basename(t["path"]).lower() not in ("readme.md", "index.md")]
+        for path in sorted(md_paths):
+            f = gh(f"/repos/{or_}/contents/{path}?ref={branch}")
+            if not (f and f.get("content")):
+                continue
+            body = base64.b64decode(f["content"]).decode("utf-8", "replace")
+            body = rewrite_links(body, repo, branch)
+            base = os.path.splitext(os.path.basename(path))[0]
+            docs.append({"slug": "doc-" + slugify(base), "title": base})
+            write_doc(content_dir, name, "doc-" + slugify(base), base, body)
+    return desc, has_readme, docs
+
+
+def existing_docs(content_dir, name):
+    d = Path(content_dir) / name
+    if not d.is_dir():
+        return False, []
+    has_readme = (d / "readme.md").is_file()
+    docs = []
+    for f in sorted(d.glob("doc-*.md")):
+        m = re.search(r"^title:\s*(.+)$", f.read_text(), re.M)
+        title = json.loads(m.group(1)) if m else f.stem
+        docs.append({"slug": f.stem, "title": title})
+    return has_readme, docs
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--registry", required=True, help="path to a bazel-registry checkout")
+    ap.add_argument("--registry", required=True)
     ap.add_argument("--out", default="src/data/modules.json")
+    ap.add_argument("--content", default="src/content/moduledocs")
+    ap.add_argument("--fetch", action="store_true", help="fetch README + docs/*.md from repos")
     args = ap.parse_args()
 
     mroot = Path(args.registry) / "modules"
-    mods = []
+    raw = {}
     for name in sorted(os.listdir(mroot)):
         meta_path = mroot / name / "metadata.json"
         if not meta_path.is_file():
@@ -36,28 +180,66 @@ def main():
         meta = json.loads(meta_path.read_text())
         versions = meta.get("versions", []) or []
         repo = (meta.get("repository") or [""])[0]
-        mods.append({
-            "name": name,
-            "latest": versions[-1] if versions else "",
-            "versions": len(versions),
-            "versions_list": versions,
+        # per-version provenance (source.json is local + cheap)
+        vdetail = []
+        for v in versions:
+            sj = mroot / name / v / "source.json"
+            if sj.is_file():
+                s = json.loads(sj.read_text())
+                vdetail.append({"version": v, "integrity": s.get("integrity", ""), "url": s.get("url", "")})
+            else:
+                vdetail.append({"version": v, "integrity": "", "url": ""})
+        latest = versions[-1] if versions else ""
+        mb = mroot / name / latest / "MODULE.bazel"
+        parsed = parse_module_bazel(mb.read_text() if mb.is_file() else "")
+        raw[name] = {
+            "name": name, "latest": latest, "versions": len(versions),
+            "versions_list": versions, "versions_detail": vdetail,
+            "repository": repo, "source": repo_url(repo),
             "homepage": meta.get("homepage", "") or "",
-            "repository": repo,
-            "source": repo_url(repo) or meta.get("homepage", ""),
             "registry": f"https://registry.tbzl.dev/modules/{name}/",
-            "category": category(name, repo),
-        })
+            "category": category(name),
+            "maintainers": meta.get("maintainers", []) or [],
+            "yanked": sorted((meta.get("yanked_versions") or {}).keys()),
+            "compatibility_level": parsed["compatibility_level"],
+            "deps": parsed["deps"],
+        }
 
+    # registry reverse-deps ("used by"): who bazel_deps on each module (latest)
+    known = set(raw)
+    for m in raw.values():
+        m["used_by"] = sorted(
+            other["name"] for other in raw.values()
+            if other["name"] != m["name"] and any(d["name"] == m["name"] for d in other["deps"])
+        )
+        # keep only registry-known deps flagged for linking; keep all for display
+        for d in m["deps"]:
+            d["in_registry"] = d["name"] in known
+
+    # repo content (README + docs/*.md)
+    for name, m in raw.items():
+        if args.fetch:
+            desc, has_readme, docs = fetch_repo_docs(m["repository"], name, args.content)
+        else:
+            has_readme, docs = existing_docs(args.content, name)
+            desc = None
+        if desc:
+            m["description"] = desc
+        m["has_readme"] = has_readme
+        m["docs"] = docs
+
+    mods = [raw[k] for k in sorted(raw)]
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
-    payload = {
+    out.write_text(json.dumps({
         "generated_from": "https://github.com/tomato-bazel/bazel-registry",
         "count": len(mods),
         "modules": mods,
-    }
-    out.write_text(json.dumps(payload, indent=2) + "\n")
-    print(f"wrote {out} ({len(mods)} modules, "
-          f"{sum(1 for m in mods if m['category']=='Bazel rules')} rules)")
+    }, indent=2) + "\n")
+    rules = sum(1 for m in mods if m["category"] == "Bazel rules")
+    withdoc = sum(1 for m in mods if m.get("has_readme") or m.get("docs"))
+    print(f"wrote {out} ({len(mods)} modules, {rules} rules, {withdoc} with README/docs)"
+          + (" [fetched]" if args.fetch else " [registry-only]"))
 
 
 if __name__ == "__main__":
