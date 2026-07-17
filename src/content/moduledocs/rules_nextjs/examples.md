@@ -1,0 +1,49 @@
+---
+title: "Usage"
+module: "rules_nextjs"
+---
+
+Real usage, taken from the module's `examples/`.
+
+### examples/minimal-app/BUILD.bazel
+
+```starlark
+load("@npm//:defs.bzl", "npm_link_all_packages")
+load("@npm//:next/package_json.bzl", next_bin = "bin")
+load("@rules_nextjs//next:defs.bzl", "next_build", "next_standalone")
+
+package(default_visibility = ["//visibility:public"])
+
+npm_link_all_packages(name = "node_modules")
+
+next_bin.next_binary(name = "next_cli")
+
+next_build(
+    name = "build",
+    srcs = glob([
+        "src/**/*",
+    ]) + [
+        "next.config.mjs",
+        "package.json",
+        "tsconfig.json",
+    ],
+    deps = [
+        ":node_modules/@types/node",
+        ":node_modules/@types/react",
+        ":node_modules/next",
+        ":node_modules/react",
+        ":node_modules/react-dom",
+        ":node_modules/typescript",
+    ],
+    next_bin = ":next_cli",
+    output = "standalone",
+)
+
+# `bazel build //:standalone.bundle` → deployable run tree (pkg_tar/oci input).
+# `bazel run   //:standalone`        → serve it locally on $PORT (default 3000).
+next_standalone(
+    name = "standalone",
+    build = ":build",
+    next_bin = ":next_cli",
+)
+```

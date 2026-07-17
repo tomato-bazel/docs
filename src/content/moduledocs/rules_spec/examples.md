@@ -1,0 +1,32 @@
+---
+title: "Usage"
+module: "rules_spec"
+---
+
+Real usage, taken from the module's `examples/`.
+
+### examples/diff_gate/BUILD.bazel
+
+```starlark
+load("@spec//tools:diff.bzl", "emit_diff_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# Stand-in for a real emitter (lean_emit / genrule): produces a file
+# byte-identical to the committed copy, so the gate passes.
+genrule(
+    name = "generated",
+    srcs = ["committed.txt"],
+    outs = ["generated.txt"],
+    cmd = "cp $< $@",
+)
+
+# Smoke: the gate is green when the generated artifact matches the committed
+# copy. (The failure path — drift → exit 1 — is exercised by real consumers.)
+emit_diff_test(
+    name = "generated_diff_test",
+    generated = ":generated",
+    committed = "committed.txt",
+    update_target = "//examples/diff_gate:update_generated",
+)
+```

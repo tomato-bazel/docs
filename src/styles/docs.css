@@ -395,3 +395,19 @@ a.depchip:hover{border-color:var(--accent);background:var(--accent-wash);}
    double it (markdown tables have no wrapper and keep their own border). */
 .tbl table{border:0;border-radius:0;margin:0;}
 .tbl tbody:first-child tr:first-child th,.tbl tbody:first-child tr:first-child td{border-top:0;}
+
+/* changelog (version headings demoted to h3) */
+.changelog :global(h3){font-family:var(--mono);font-size:14px;color:var(--head);font-weight:600;
+  margin-top:20px;padding-top:12px;border-top:1px solid var(--line);letter-spacing:0;}
+.changelog :global(h3):first-child{border-top:0;padding-top:0;margin-top:6px;}
+.changelog :global(ul){margin-top:10px;}
+
+/* command-palette filter chips */
+.pal-filters{display:flex;align-items:center;gap:7px;padding:9px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+.pal-filters .flabel{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);}
+.fchip{font-family:var(--mono);font-size:11.5px;color:var(--muted);border:1px solid var(--line-2);border-radius:999px;
+  padding:3px 10px;cursor:pointer;background:none;display:inline-flex;gap:5px;align-items:center;}
+.fchip span{color:var(--faint);font-size:10px;}
+.fchip:hover{color:var(--head);border-color:var(--faint);}
+.fchip.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent);background:var(--accent-wash);}
+.fchip.on span{color:var(--accent);}

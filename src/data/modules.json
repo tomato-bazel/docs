@@ -134,7 +134,9 @@
           "slug": "doc-gitlab-integration-design",
           "title": "gitlab-integration-design"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "brand",
@@ -214,7 +216,9 @@
       ],
       "description": "fastverk visual identity \u2014 parametric mark generator, per-platform icons, and a tectonic brandbook",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "brando",
@@ -291,7 +295,9 @@
         "tomato_brand"
       ],
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "buildbarn",
@@ -360,7 +366,9 @@
           "slug": "doc-rbe",
           "title": "rbe"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "fastverk-app",
@@ -454,7 +462,9 @@
       "used_by": [],
       "description": "fastverk macOS app \u2014 menu-bar tray + settings + daemon-aware cred-helper, on the fvkit core",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "forge",
@@ -526,7 +536,9 @@
       ],
       "description": "Generic forge contract (ForgeService) + GitHub/GitLab adapters.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "fvkit",
@@ -640,7 +652,9 @@
       ],
       "description": "fastverk core/runtime \u2014 fvkit platform library + fvd daemon + gRPC contract",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "meridian",
@@ -853,7 +867,9 @@
           "slug": "doc-uiview-wasm-serde-oneof-issue",
           "title": "uiview-wasm-serde-oneof-issue"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": false
     },
     {
       "name": "meridian_schemas",
@@ -968,7 +984,9 @@
       ],
       "description": "The framework- and brand-neutral root of the meridian design language: proto contracts (PanelDescriptor + Theme), @meridian/proto-ts, and the WebRenderer seam.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "meridian_tui",
@@ -1044,7 +1062,9 @@
       "used_by": [],
       "description": "The ratatui terminal renderer of the meridian design language (native-Rust PanelDescriptor renderer).",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "meridian_uiview_core",
@@ -1152,7 +1172,9 @@
       ],
       "description": "The shared platform-neutral Rust core of the meridian design language: prost types + ProtoPaths + RequestBuilder + render helpers + the wasm bundle the web renderer consumes.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "meridian_web",
@@ -1290,7 +1312,9 @@
       ],
       "description": "The web-components renderer of the meridian design language (reference, React-free): the web toolkit, theme binding, and the meridian_panel_bundle rule.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "pinax",
@@ -1396,7 +1420,9 @@
       "used_by": [],
       "description": "Document-to-structure extraction. Apache Beam pipeline (PDF today; DOCX next) emitting typed DocumentPart records \u2014 paragraphs, headings, tables, embedded images.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "rules_agentic_ide",
@@ -1495,7 +1521,9 @@
           "slug": "doc-upgrading",
           "title": "upgrading"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_aip",
@@ -1573,7 +1601,9 @@
       ],
       "description": "Bazel rules for Google AIP (aip.dev) proto linting \u2014 shared api-linter toolchain + aip_proto_lint test rule + aip_proto_library deps macro.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_astro",
@@ -1631,7 +1661,9 @@
       "used_by": [],
       "description": "Bazel rules for building Astro sites hermetically (astro_site / astro_dev)",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "rules_autoconf",
@@ -1706,7 +1738,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_beam",
@@ -1770,7 +1804,9 @@
       "used_by": [],
       "description": "Bazel-idiomatic Apache Beam pipeline packaging + cross-runner deployment (DirectRunner, Dataflow, Flink, Spark)",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_bibtex",
@@ -1870,7 +1906,9 @@
       "used_by": [],
       "description": "Bazel-idiomatic BibTeX citations (arxiv/DOI/manual) + cite-lint + research-graph aspect",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_bun",
@@ -1986,7 +2024,9 @@
           "slug": "doc-toolchains",
           "title": "toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_cc_cross",
@@ -2050,7 +2090,9 @@
       "used_by": [],
       "description": "Hermetic ARM/RISC-V/x86 cross-compiler toolchains for embedded Bazel builds (seL4, microkit, bare-metal).",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_cc_host",
@@ -2089,7 +2131,9 @@
       ],
       "used_by": [],
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_chrome",
@@ -2192,7 +2236,9 @@
           "slug": "doc-toolchains",
           "title": "toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_ci",
@@ -2307,7 +2353,9 @@
           "slug": "doc-versioning",
           "title": "VERSIONING"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_ci_ir",
@@ -2380,7 +2428,9 @@
           "slug": "doc-versioning",
           "title": "VERSIONING"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_cloudformation",
@@ -2535,7 +2585,9 @@
           "slug": "doc-schema-source",
           "title": "SCHEMA_SOURCE"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_docker",
@@ -2655,7 +2707,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_eslint",
@@ -2725,7 +2779,9 @@
       "used_by": [],
       "description": "Hermetic eslint runner \u2014 lint a workspace's @npm eslint binary under Bazel",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_fastverk",
@@ -2789,7 +2845,9 @@
       "used_by": [],
       "description": "fastverk foundation module \u2014 fastverk_* macros + the dependency BOM + shared .bazelrc",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "rules_fastverk_plugin",
@@ -2855,7 +2913,9 @@
       ],
       "description": "The portable fastverk console-plugin build macro (fastverk_plugin + rust_service_image).",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "rules_github",
@@ -2935,7 +2995,9 @@
           "slug": "doc-repositories",
           "title": "repositories"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_gitlab",
@@ -3072,7 +3134,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_graphviz",
@@ -3131,7 +3195,9 @@
         "spec"
       ],
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_helm",
@@ -3183,7 +3249,9 @@
       "used_by": [],
       "description": "Chart-as-a-module: build, lint, and publish Helm charts in Bazel (the Helm analog of rules_oci).",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_huggingface",
@@ -3259,7 +3327,9 @@
       "used_by": [],
       "description": "Bazel-idiomatic HuggingFace toolchain: hf_model / hf_upload / hf_inference_endpoint",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_jena",
@@ -3422,7 +3492,9 @@
           "slug": "doc-rules",
           "title": "rules"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_jsonschema",
@@ -3550,7 +3622,9 @@
           "slug": "doc-write-source-files",
           "title": "write_source_files"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_lang",
@@ -3660,7 +3734,9 @@
           "slug": "doc-sql",
           "title": "sql"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_lean",
@@ -3847,7 +3923,9 @@
           "slug": "doc-lean",
           "title": "lean"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_lora",
@@ -4170,7 +4248,9 @@
           "slug": "doc-hermetic-runners-roadmap",
           "title": "hermetic-runners-roadmap"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_macvm",
@@ -4251,7 +4331,9 @@
           "slug": "doc-vm-toolchains",
           "title": "vm_toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_markdown",
@@ -4334,7 +4416,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_mdbook",
@@ -4432,7 +4516,9 @@
           "slug": "doc-toolchains",
           "title": "toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_meridian",
@@ -4587,7 +4673,9 @@
           "slug": "doc-uiview-wasm-serde-oneof-issue",
           "title": "uiview-wasm-serde-oneof-issue"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": false
     },
     {
       "name": "rules_meson",
@@ -4653,7 +4741,9 @@
       ],
       "description": "Hermetic meson + ninja for Bazel.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_nextjs",
@@ -4740,7 +4830,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_openapi",
@@ -4870,7 +4962,9 @@
           "slug": "doc-toolchains",
           "title": "toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_podman",
@@ -4957,7 +5051,9 @@
           "slug": "doc-toolchains",
           "title": "toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_postgres",
@@ -5102,7 +5198,9 @@
           "slug": "doc-extensions",
           "title": "extensions"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_puml",
@@ -5183,7 +5281,9 @@
           "slug": "doc-pdf-provider-proposal",
           "title": "pdf-provider-proposal"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_rdf",
@@ -5326,7 +5426,9 @@
           "slug": "doc-validate",
           "title": "validate"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_readme",
@@ -5415,7 +5517,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_runpod",
@@ -5547,7 +5651,9 @@
       ],
       "description": "Bazel-native RunPod GPU pod orchestration. Rust CLI + TUI + typed Starlark macros (runpod_manifest / runpod_job / runpod_pod). Lifted from prime-transformer/tools/runpod-cli.",
       "has_readme": false,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_schema_org",
@@ -5617,7 +5723,9 @@
       "used_by": [],
       "description": "Sha-pinned schema.org vocabulary + grounding tables via rules_rdf / rules_jena",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_spec",
@@ -5741,7 +5849,9 @@
           "slug": "doc-rfc-001b-crystallization-math",
           "title": "rfc-001b-crystallization-math"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": false
     },
     {
       "name": "rules_ssh_tui",
@@ -5849,7 +5959,9 @@
       ],
       "description": "SSH-fronted TUI launcher: russh server + login-shell oci_image",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_storybook",
@@ -5942,7 +6054,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_systemd",
@@ -6000,7 +6114,9 @@
       "used_by": [],
       "description": "Bazel-idiomatic systemd unit provisioning: typed unit rules + providers + an aspect that emits the /etc/systemd/system layer with enable-symlinks",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_tap",
@@ -6070,7 +6186,9 @@
       "used_by": [],
       "description": "Public Bazel rules + prebuilt CLI for tap (test selection / impact / flake / culprit). Engine is private in fastverk/tap.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_tectonic",
@@ -6139,7 +6257,9 @@
       ],
       "description": "Bazel rules to compile LaTeX into PDFs via tectonic.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_tla",
@@ -6185,7 +6305,9 @@
       "used_by": [],
       "description": "rules_tla \u2014 hermetic Bazel rules for TLA+ model checking (TLC via a pinned tla2tools.jar); tla_library + tla_check as bazel test targets",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_tomato",
@@ -6243,7 +6365,9 @@
       "used_by": [],
       "description": "fastverk foundation module \u2014 fastverk_* macros + the dependency BOM + shared .bazelrc",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "rules_uv",
@@ -6405,7 +6529,9 @@
           "slug": "doc-uv-toolchains",
           "title": "uv_toolchains"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_vite",
@@ -6490,7 +6616,9 @@
           "slug": "doc-defs",
           "title": "defs"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_vscode",
@@ -6559,7 +6687,9 @@
       ],
       "used_by": [],
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_walkthrough",
@@ -6617,7 +6747,9 @@
       "used_by": [],
       "description": "Bazel rules for declarative slide-deck rendering \u2014 walkthrough.v1.Walkthrough JSON \u2192 self-contained static site (renderer JS + KaTeX + marked + per-deck data sidecars).",
       "has_readme": false,
-      "docs": []
+      "docs": [],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "rules_web",
@@ -6669,7 +6801,9 @@
       "used_by": [],
       "description": "Bazel toolchain types and rules for W3C/WHATWG web-standards specs (webidl/html/css/js) \u2014 decoupled from impl modules.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "rules_xsd",
@@ -6754,7 +6888,9 @@
           "slug": "doc-providers",
           "title": "providers"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": true
     },
     {
       "name": "spec",
@@ -6908,7 +7044,9 @@
           "slug": "doc-rfc-001b-crystallization-math",
           "title": "rfc-001b-crystallization-math"
         }
-      ]
+      ],
+      "has_examples": true,
+      "has_changelog": false
     },
     {
       "name": "tomato_brand",
@@ -6971,7 +7109,9 @@
       ],
       "used_by": [],
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": false
     },
     {
       "name": "vpn",
@@ -7124,7 +7264,9 @@
           "slug": "doc-private-plane-access",
           "title": "private-plane-access"
         }
-      ]
+      ],
+      "has_examples": false,
+      "has_changelog": true
     },
     {
       "name": "wave",
@@ -7200,7 +7342,9 @@
       "used_by": [],
       "description": "Cross-repo dependency-cascade engine + CLI \u2014 not Renovate.",
       "has_readme": true,
-      "docs": []
+      "docs": [],
+      "has_examples": false,
+      "has_changelog": true
     }
   ]
 }

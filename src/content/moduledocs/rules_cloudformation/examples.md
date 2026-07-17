@@ -1,0 +1,172 @@
+---
+title: "Usage"
+module: "rules_cloudformation"
+---
+
+Real usage, taken from the module's `examples/`.
+
+### examples/smoke/BUILD.bazel
+
+```starlark
+load(
+    "@rules_cloudformation//cloudformation:defs.bzl",
+    "cloudformation_aws_ec2_instance",
+    "cloudformation_aws_s3_bucket",
+    "cloudformation_aws_s3_bucket_policy",
+)
+load(
+    "@rules_cloudformation//cloudformation:intrinsics.bzl",
+    "cloudformation_aws_cloudformation_init",
+    "cloudformation_aws_cloudformation_interface",
+)
+load(
+    "@rules_cloudformation//cloudformation:stack.bzl",
+    "cfn_equals",
+    "cfn_find_in_map",
+    "cfn_getatt",
+    "cfn_if",
+    "cfn_ref",
+    "cloudformation_stack",
+)
+load("@rules_cloudformation//cloudformation:parameter.bzl", "cloudformation_parameter")
+load("@rules_cloudformation//cloudformation:condition.bzl", "cloudformation_condition")
+load("@rules_cloudformation//cloudformation:mapping.bzl", "cloudformation_mapping")
+load(
+    "@rules_cloudformation//cloudformation:deploy.bzl",
+    "cloudformation_down",
+    "cloudformation_up",
+)
+load("@bazel_skylib//rules:diff_test.bzl", "diff_test")
+
+package(default_visibility = ["//visibility:public"])
+
+# Declare an S3 bucket via the schema-derived typed rule. The rule
+# enforces every property's JSON Schema type at Bazel-loading time
+# — pass an integer to BucketName and the load fails with a clear
+# error. The output is a JSON shard the consumer's stack-aggregator
+# rule would pick up.
+cloudformation_aws_s3_bucket(
+    name = "smoke_bucket",
+    # Per-kind item-name attr. v0.3 namespaces this with the full
+    # AWS_Service_Resource id (was `bucket_name` in v0.2 when kinds
+    # were hand-enumerated with a short tag).
+    aws_s3_bucket_name = "smoke-bucket",
+    BucketName = "smoke-bucket",
+    VersioningConfiguration = '{"Status": "Enabled"}',
+)
+
+# Lock down the shard's bytes so a regression in the schema codegen
+# (e.g. an attr renamed, dropped, or stringified differently) shows
+# up as a Bazel test failure.
+diff_test(
+    name = "smoke_bucket_shard_stable",
+    file1 = "expected_smoke_bucket.json",
+    file2 = ":smoke_bucket",
+)
+
+# AWS::CloudFormation::Init — a config-set tree attached to an
+# EC2-like resource's `Metadata`. Hand-authored rule (lives outside
+# the Resource Spec).
+cloudformation_aws_cloudformation_init(
+    name = "smoke_init",
+    target_resource_name = "WebServer",
+    config_sets = '{"default": ["install", "config"]}',
+    configs = json.encode({
+        "install": {
+            "packages": {"yum": {"httpd": []}},
+        },
+        "config": {
+            "files": {
+                "/etc/httpd/conf.d/site.conf": {
+                    "content": "ServerName localhost\n",
+                    "mode": "000644",
+                },
+            },
+        },
+    }),
+)
+
+diff_test(
+    name = "smoke_init_shard_stable",
+    file1 = "expected_smoke_init.json",
+    file2 = ":smoke_init",
+)
+
+# AWS::CloudFormation::Interface — top-level template metadata that
+# groups Parameters for the AWS console UI.
+cloudformation_aws_cloudformation_interface(
+    name = "smoke_interface",
+    parameter_groups = json.encode([
+        {
+            "Label": {"default": "Network"},
+            "Parameters": ["VpcId", "SubnetIds"],
+        },
+    ]),
+    parameter_labels = '{"VpcId": {"default": "Which VPC?"}}',
+)
+
+diff_test(
+    name = "smoke_interface_shard_stable",
+    file1 = "expected_smoke_interface.json",
+    file2 = ":smoke_interface",
+)
+
+# ---- cloudformation_stack: aggregate shards into a CFN template ----
+# PascalCase target names because the v0.4 aggregator uses
+# label.name as the CFN logical id (which must be alphanumeric).
+
+cloudformation_aws_s3_bucket(
+    name = "SmokeBucket",
+    aws_s3_bucket_name = "smoke-bucket",
+    BucketName = "smoke-bucket",
+)
+
+cloudformation_aws_ec2_instance(
+    name = "WebServer",
+    aws_ec2_instance_name = "web-server",
+    ImageId = "ami-0abcdef1234567890",
+    InstanceType = "t3.micro",
+)
+
+cloudformation_aws_cloudformation_init(
+    name = "WebServerInit",
+    target_resource_name = "WebServer",
+    config_sets = '{"default": ["install"]}',
+    configs = json.encode({
+        "install": {"packages": {"yum": {"httpd": []}}},
+    }),
+)
+
+cloudformation_aws_cloudformation_interface(
+    name = "StackInterface",
+    parameter_groups = json.encode([
+        {
+            "Label": {"default": "Compute"},
+            "Parameters": ["InstanceType"],
+        },
+    ]),
+)
+
+cloudformation_aws_s3_bucket_policy(
+    name = "SmokeBucketPolicy",
+    Bucket = cfn_ref("SmokeBucket"),
+    PolicyDocument = json.encode({
+        "Version": "2012-10-17",
+        "Statement": [{
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": cfn_getatt("SmokeBucket", "Arn"),
+        }],
+    }),
+)
+
+cloudformation_stack(
+    name = "smoke_stack",
+    description = "Smoke stack: one bucket + bucket policy with refs + one EC2 with cfn-init metadata + a parameter-group block.",
+    resources = [
+        ":SmokeBucket",
+        ":SmokeBucketPolicy",
+        ":WebServer",
+# … truncated — see the repo for the full example
+```

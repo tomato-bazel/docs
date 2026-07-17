@@ -126,62 +126,94 @@ def write_doc(content_dir, name, slug, title, body):
     (d / f"{slug}.md").write_text(fm + body.rstrip() + "\n")
 
 
+def _get_file(or_, path, branch):
+    f = gh(f"/repos/{or_}/contents/{path}?ref={branch}")
+    if f and f.get("content"):
+        return base64.b64decode(f["content"]).decode("utf-8", "replace")
+    return None
+
+
 def fetch_repo_docs(repo, name, content_dir):
-    """Fetch README + docs/*.md for a module repo. Returns (description, has_readme,
-    [{'slug','title'}]). Degrades to (None, False, []) on any failure/private repo."""
+    """Fetch README, docs/*.md (Stardoc), examples/ BUILD files, and CHANGELOG for a
+    module repo. Returns a dict of what was written. Degrades gracefully."""
+    out = {"description": None, "has_readme": False, "docs": [], "has_examples": False, "has_changelog": False}
     or_ = owner_repo(repo)
     if not or_:
-        return None, False, []
+        return out
     info = gh(f"/repos/{or_}")
     if not info:
-        return None, False, []
+        return out
     branch = info.get("default_branch") or "main"
-    desc = (info.get("description") or "").strip() or None
+    out["description"] = (info.get("description") or "").strip() or None
 
-    # Discover docs/*.md first, so the README's links to them can map to on-page anchors.
     tree = gh(f"/repos/{or_}/git/trees/{branch}?recursive=1")
-    md_paths = []
-    if tree and isinstance(tree.get("tree"), list):
-        md_paths = sorted(
-            t["path"] for t in tree["tree"]
-            if t.get("type") == "blob" and re.match(r"docs/[^/]+\.md$", t.get("path", ""))
-            and os.path.basename(t["path"]).lower() not in ("readme.md", "index.md")
-        )
+    paths = [t["path"] for t in tree["tree"]] if (tree and isinstance(tree.get("tree"), list)) else []
+
+    # Stardoc docs (discover first, so README links can map to on-page anchors)
+    md_paths = sorted(p for p in paths
+                      if re.match(r"docs/[^/]+\.md$", p)
+                      and os.path.basename(p).lower() not in ("readme.md", "index.md"))
     doc_anchors = {p: "#doc-" + slugify(os.path.splitext(os.path.basename(p))[0]) for p in md_paths}
 
-    has_readme = False
+    # README
     rd = gh(f"/repos/{or_}/readme")
     if rd and rd.get("content"):
         body = base64.b64decode(rd["content"]).decode("utf-8", "replace")
         body = rewrite_links(strip_lead_h1(body), repo, branch, base_dir="", doc_anchors=doc_anchors)
         write_doc(content_dir, name, "readme", "Overview", body)
-        has_readme = True
+        out["has_readme"] = True
 
-    docs = []
+    # docs/*.md
     for path in md_paths:
-        f = gh(f"/repos/{or_}/contents/{path}?ref={branch}")
-        if not (f and f.get("content")):
+        body = _get_file(or_, path, branch)
+        if body is None:
             continue
-        body = base64.b64decode(f["content"]).decode("utf-8", "replace")
-        body = demote_headings(body, 1)  # rule names ## -> ### (nest under our h2)
-        body = rewrite_links(body, repo, branch, base_dir="docs", doc_anchors=doc_anchors)
+        body = rewrite_links(demote_headings(body, 1), repo, branch, base_dir="docs", doc_anchors=doc_anchors)
         base = os.path.splitext(os.path.basename(path))[0]
-        docs.append({"slug": "doc-" + slugify(base), "title": base})
+        out["docs"].append({"slug": "doc-" + slugify(base), "title": base})
         write_doc(content_dir, name, "doc-" + slugify(base), base, body)
-    return desc, has_readme, docs
+
+    # examples/ BUILD files -> a Usage doc (real, copyable target usage)
+    ex = sorted((p for p in paths if re.match(r"examples?/.*BUILD(\.bazel)?$", p)),
+                key=lambda p: (p.count("/"), p))[:6]
+    parts = []
+    for p in ex:
+        code = _get_file(or_, p, branch)
+        if code is None:
+            continue
+        lines = code.splitlines()
+        if len(lines) > 160:
+            lines = lines[:160] + ["# … truncated — see the repo for the full example"]
+        parts.append(f"### {p}\n\n```starlark\n" + "\n".join(lines).rstrip() + "\n```\n")
+    if parts:
+        write_doc(content_dir, name, "examples", "Usage",
+                  "Real usage, taken from the module's `examples/`.\n\n" + "\n".join(parts))
+        out["has_examples"] = True
+
+    # CHANGELOG
+    cl = next((p for p in paths if p.lower() in ("changelog.md", "changelog")), None)
+    if cl:
+        body = _get_file(or_, cl, branch)
+        if body:
+            body = rewrite_links(demote_headings(strip_lead_h1(body), 1), repo, branch, base_dir="", doc_anchors=doc_anchors)
+            write_doc(content_dir, name, "changelog", "Changelog", body)
+            out["has_changelog"] = True
+    return out
 
 
 def existing_docs(content_dir, name):
     d = Path(content_dir) / name
+    out = {"description": None, "has_readme": False, "docs": [], "has_examples": False, "has_changelog": False}
     if not d.is_dir():
-        return False, []
-    has_readme = (d / "readme.md").is_file()
-    docs = []
+        return out
+    out["has_readme"] = (d / "readme.md").is_file()
+    out["has_examples"] = (d / "examples.md").is_file()
+    out["has_changelog"] = (d / "changelog.md").is_file()
     for f in sorted(d.glob("doc-*.md")):
         m = re.search(r"^title:\s*(.+)$", f.read_text(), re.M)
         title = json.loads(m.group(1)) if m else f.stem
-        docs.append({"slug": f.stem, "title": title})
-    return has_readme, docs
+        out["docs"].append({"slug": f.stem, "title": title})
+    return out
 
 
 def main():
@@ -237,17 +269,15 @@ def main():
         for d in m["deps"]:
             d["in_registry"] = d["name"] in known
 
-    # repo content (README + docs/*.md)
+    # repo content (README + docs/*.md + examples + changelog)
     for name, m in raw.items():
-        if args.fetch:
-            desc, has_readme, docs = fetch_repo_docs(m["repository"], name, args.content)
-        else:
-            has_readme, docs = existing_docs(args.content, name)
-            desc = None
-        if desc:
-            m["description"] = desc
-        m["has_readme"] = has_readme
-        m["docs"] = docs
+        info = fetch_repo_docs(m["repository"], name, args.content) if args.fetch else existing_docs(args.content, name)
+        if info.get("description"):
+            m["description"] = info["description"]
+        m["has_readme"] = info["has_readme"]
+        m["docs"] = info["docs"]
+        m["has_examples"] = info["has_examples"]
+        m["has_changelog"] = info["has_changelog"]
 
     mods = [raw[k] for k in sorted(raw)]
     out = Path(args.out)

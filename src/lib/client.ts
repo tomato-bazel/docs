@@ -76,6 +76,7 @@ export function initDocs(): void {
   let navIndex: NavEntry[] = [];
   try { navIndex = JSON.parse(document.getElementById("navindex")?.textContent || "[]"); } catch (e) {}
   let results: Result[] = [], sel = 0, open = false, reqId = 0;
+  let filterSection: string | null = null;
 
   let pf: any = null; // Pagefind module, false if unavailable
   async function ensurePagefind(): Promise<any> {
@@ -118,14 +119,44 @@ export function initDocs(): void {
   async function pagefindSearch(q: string): Promise<Result[]> {
     const mod = await ensurePagefind();
     if (!mod) return fallbackSearch(q);
-    const r = await mod.search(q);
-    const data = await Promise.all(r.results.slice(0, 8).map((x: any) => x.data()));
-    return data.map((d: any) => ({
-      title: (d.meta && d.meta.title) || d.url,
-      snip: d.excerpt || "",
-      url: d.url,
-      group: groupFor(d.url),
-    }));
+    const opts = filterSection ? { filters: { section: [filterSection] } } : undefined;
+    const r = await mod.search(q, opts);
+    const pages = await Promise.all(r.results.slice(0, 6).map((x: any) => x.data()));
+    const out: Result[] = [];
+    for (const d of pages) {
+      const pageTitle = (d.meta && d.meta.title) || d.url;
+      // heading-level hits: jump straight to the matching section
+      const subs = (d.sub_results || []).filter((s: any) => s.url && s.url.indexOf("#") > -1).slice(0, 3);
+      if (subs.length) {
+        for (const s of subs) out.push({ title: s.title || pageTitle, snip: s.excerpt || "", url: s.url, group: pageTitle });
+      } else {
+        out.push({ title: pageTitle, snip: d.excerpt || "", url: d.url, group: groupFor(d.url) });
+      }
+      if (out.length >= 10) break;
+    }
+    return out;
+  }
+
+  async function renderFilters() {
+    const box = document.getElementById("palFilters");
+    if (!box) return;
+    const mod = await ensurePagefind();
+    if (!mod || !mod.filters) { (box as HTMLElement).hidden = true; return; }
+    let fs: any = {};
+    try { fs = await mod.filters(); } catch (e) { (box as HTMLElement).hidden = true; return; }
+    const sec = fs.section || {};
+    const vals = Object.keys(sec).sort();
+    if (!vals.length) { (box as HTMLElement).hidden = true; return; }
+    (box as HTMLElement).hidden = false;
+    box.innerHTML = '<span class="flabel">In</span>' + vals.map((v) =>
+      '<button class="fchip' + (filterSection === v ? " on" : "") + '" data-f="' + esc(v) + '">' + esc(v) + ' <span>' + sec[v] + "</span></button>"
+    ).join("");
+    box.querySelectorAll<HTMLButtonElement>(".fchip").forEach((b) => {
+      b.addEventListener("click", () => {
+        filterSection = filterSection === b.dataset.f ? null : (b.dataset.f as string);
+        renderFilters(); render(input.value);
+      });
+    });
   }
 
   function hlTitle(text: string, q: string) {
@@ -180,7 +211,7 @@ export function initDocs(): void {
     resBox.querySelector(".r.sel")?.scrollIntoView({ block: "nearest" });
   }
   function choose() { const it = results[sel]; if (it) location.href = it.url; }
-  function openPal() { open = true; scrim.classList.add("open"); input.value = ""; render(""); setTimeout(() => input.focus(), 10); ensurePagefind(); }
+  function openPal() { open = true; scrim.classList.add("open"); input.value = ""; render(""); setTimeout(() => input.focus(), 10); ensurePagefind().then(() => renderFilters()); }
   function closePal() { open = false; scrim.classList.remove("open"); }
 
   document.getElementById("searchTrigger")?.addEventListener("click", openPal);

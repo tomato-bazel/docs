@@ -11,6 +11,7 @@ interface Mod {
   source: string; homepage: string; registry: string; category: string; description?: string;
   maintainers: { name: string; github?: string }[]; yanked: string[]; compatibility_level: number | null;
   deps: Dep[]; used_by: string[]; has_readme: boolean; docs: { slug: string; title: string }[];
+  has_examples?: boolean; has_changelog?: boolean;
 }
 
 export function getStaticPaths() {
@@ -38,12 +39,19 @@ for (const d of mod.docs) {
   }
 }
 
+let ExamplesContent: any = null;
+if (mod.has_examples) { const e = byId.get(`${mod.name}/examples`); if (e) ExamplesContent = (await render(e)).Content; }
+let ChangelogContent: any = null;
+if (mod.has_changelog) { const e = byId.get(`${mod.name}/changelog`); if (e) ChangelogContent = (await render(e)).Content; }
+
 const hasDeps = mod.deps.length > 0 || mod.used_by.length > 0;
 const headings = [
   ...readmeHeadings,
+  ...(ExamplesContent ? [{ depth: 2, slug: "usage", text: "Usage" }] : []),
   ...(docRenders.length ? [{ depth: 2, slug: "rules", text: "Rules & providers" }, ...ruleHeadings] : []),
   ...(hasDeps ? [{ depth: 2, slug: "dependencies", text: "Dependencies" }] : []),
   { depth: 2, slug: "versions", text: "Versions" },
+  ...(ChangelogContent ? [{ depth: 2, slug: "changelog", text: "Changelog" }] : []),
 ];
 const crumbs = [
   { label: "Docs", href: "/" }, { label: "Reference" },
@@ -90,6 +98,13 @@ const recent = [...mod.versions_detail].reverse();
 
   {ReadmeContent ? <ReadmeContent /> : (
     <p style="color:var(--muted)">No README was published for this module. Its API, dependencies, and versions are below.</p>
+  )}
+
+  {ExamplesContent && (
+    <>
+      <h2 id="usage">Usage<a class="anchor" href="#usage">#</a></h2>
+      <div class="stardoc"><ExamplesContent /></div>
+    </>
   )}
 
   {docRenders.length > 0 && (
@@ -148,6 +163,13 @@ const recent = [...mod.versions_detail].reverse();
       ))}
     </tbody>
   </table></div></div>
+
+  {ChangelogContent && (
+    <>
+      <h2 id="changelog">Changelog<a class="anchor" href="#changelog">#</a></h2>
+      <div class="changelog"><ChangelogContent /></div>
+    </>
+  )}
 
   <p style="margin-top:28px"><a class="link" href="/reference/modules/">← All modules</a></p>
 </Doc>

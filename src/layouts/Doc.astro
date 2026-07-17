@@ -26,6 +26,7 @@ const crumbs: Crumb[] = breadcrumbs ?? [
   ...(activeGroup ? [{ label: activeGroup.group } as Crumb] : []),
   { label: title },
 ];
+const section = activeGroup?.group || "Reference";
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const editHref = editPath
   ? `https://github.com/tomato-bazel/docs/edit/main/src/content/docs/${editPath}`
@@ -105,7 +106,7 @@ const navIndex = flatNav();
     </aside>
 
     <div class={`main${wide ? " wide" : ""}`}>
-      <article data-pagefind-body data-pagefind-meta={`title:${title}`}>
+      <article data-pagefind-body data-pagefind-meta={`title:${title}`} data-pagefind-filter={`section:${section}`}>
         <div class="crumb">
           {crumbs.map((c, i) => (
             <>
@@ -135,6 +136,7 @@ const navIndex = flatNav();
         <input id="palInput" type="text" placeholder="Search concepts, guides, modules…" autocomplete="off" spellcheck="false" aria-label="Search the docs" />
         <span class="esc">esc</span>
       </div>
+      <div class="pal-filters" id="palFilters" hidden></div>
       <div class="res" id="palRes"></div>
       <div class="foot">
         <span><span class="k">↑</span><span class="k">↓</span> navigate</span>
