@@ -31,7 +31,7 @@ Pin a specific Podman version:
 
 <a id="podman"></a>
 
-## podman
+### podman
 
 <pre>
 podman = use_extension("@rules_podman//podman:extensions.bzl", "podman")
@@ -45,7 +45,7 @@ Sets up @podman: a daemonless static engine on Linux, the official client on mac
 
 <a id="podman.toolchain"></a>
 
-### toolchain
+#### toolchain
 
 **Attributes**
 

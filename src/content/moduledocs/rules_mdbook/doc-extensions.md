@@ -29,7 +29,7 @@ so all our rules_* repos share one URL-shape + sha-pinning impl.
 
 <a id="mdbook"></a>
 
-## mdbook
+### mdbook
 
 <pre>
 mdbook = use_extension("@rules_mdbook//mdbook:extensions.bzl", "mdbook")
@@ -43,7 +43,7 @@ Sets up @mdbook and @mdbook_mermaid as Bazel-fetched prebuilt binaries.
 
 <a id="mdbook.toolchain"></a>
 
-### toolchain
+#### toolchain
 
 **Attributes**
 

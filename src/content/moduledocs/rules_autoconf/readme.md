@@ -11,7 +11,7 @@ pipeline with Bazel rules that compose probe results into a graph.
 - **`cc_check_symbol`** — autoconf's `AC_CHECK_DECL` / `AC_CHECK_TYPE`.
 - **`config_header`** — autoconf's `AC_CONFIG_HEADERS`. Renders a `config.h` template from a `defines` dict + probe results.
 
-See [docs/defs.md](https://github.com/tomato-bazel/rules_autoconf/blob/main/docs/defs.md) for the full reference.
+See [docs/defs.md](#doc-defs) for the full reference.
 
 ## What this is and isn't (v0.1)
 

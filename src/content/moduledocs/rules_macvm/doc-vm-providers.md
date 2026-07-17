@@ -20,7 +20,7 @@ Two providers carry the data the rules pass around:
 
 <a id="VmInfo"></a>
 
-## VmInfo
+### VmInfo
 
 <pre>
 load("@rules_macvm//vm:providers.bzl", "VmInfo")
@@ -43,7 +43,7 @@ A declared virtual machine.
 
 <a id="VmProviderInfo"></a>
 
-## VmProviderInfo
+### VmProviderInfo
 
 <pre>
 load("@rules_macvm//vm:providers.bzl", "VmProviderInfo")
@@ -64,7 +64,7 @@ A VMM backend that can launch a `vm`.
 
 <a id="provider_supports"></a>
 
-## provider_supports
+### provider_supports
 
 <pre>
 load("@rules_macvm//vm:providers.bzl", "provider_supports")

@@ -3,7 +3,7 @@ title: "rfc-001-unified-spec-graph"
 module: "spec"
 ---
 
-# RFC-001 — The Unified Spec Graph
+## RFC-001 — The Unified Spec Graph
 
 **Status:** Draft · **Spine:** `spec` · **Depends on:** `decomposer`, `mycelium`, `agora`
 **Author:** (scaffold) · **Date:** 2026-06-26
@@ -14,7 +14,7 @@ module: "spec"
 
 ---
 
-## 1. Motivation
+### 1. Motivation
 
 fastverk has, independently, built almost every piece of a system that can turn
 prose into a verified semantic graph — but the pieces live in three repos with
@@ -39,7 +39,7 @@ result turns "improve the spec library" into a single, formal, scalable loop.
 
 ---
 
-## 2. The crystallization model (diffusion)
+### 2. The crystallization model (diffusion)
 
 Refinement is modeled as a **diffusion / denoising process** over a graph `G`.
 
@@ -89,7 +89,7 @@ because they dedupe through the content-addressed `ClaimCache`.
 
 ---
 
-## 3. Unified architecture: one spine, three jobs, no cycles
+### 3. Unified architecture: one spine, three jobs, no cycles
 
 Make **`spec` the spine** — it already hosts Jena + the Lean spec framework +
 the gates. Each repo gets exactly one job and a single dependency direction:
@@ -128,7 +128,7 @@ store; `graph.proto` is the wire format** between the Rust projection passes and
 Beam (exactly what `agora`'s sidecar already does); **mycelium is the grounding
 tier**.
 
-### 3.1 Seams (contracts that make it one system)
+#### 3.1 Seams (contracts that make it one system)
 
 1. **One Claim/Graph schema.** `Spec.Corpus.Schema` is canonical (Lean → TTL +
    proto). `decomposer.v1.Claim` is its forward-op subset; `agora.v1.Fragment` /
@@ -142,7 +142,7 @@ tier**.
    conflict, dangling, **and the new canonical-form gate** — runs through
    `kg.GateHarness`, callable from `agora`'s `DeriveGate` and from CLI.
 
-### 3.2 Migration deltas (what moves)
+#### 3.2 Migration deltas (what moves)
 
 - Consolidate the claim/graph schemas into `Spec.Corpus.Schema` (+ a thin
   `graph.proto` profile). `agora` and `decomposer` import rather than redefine.
@@ -153,7 +153,7 @@ tier**.
 
 ---
 
-## 4. Reuse vs. build
+### 4. Reuse vs. build
 
 | Diffusion role | Component | Status |
 |---|---|---|
@@ -176,7 +176,7 @@ kernel*, the *typed ontology*, and the *ingest/discovery front-end*.
 
 ---
 
-## 5. The deterministic projection kernel
+### 5. The deterministic projection kernel
 
 The novel contribution: a set of **deterministic, meaning-preserving graph
 transformations** that lower `E(G)` and are **machine-checked**. Per the chosen
@@ -207,7 +207,7 @@ families already compute most terms: `dangling-references.rq` → `D`,
 
 ---
 
-## 6. Normative-document formalization track
+### 6. Normative-document formalization track
 
 > *Point mycelium at RFC / ANSI / IEEE / ISO / SEC documents and fully formalize
 > them.*
@@ -249,7 +249,7 @@ ontology (`:Document`, `:Section`, `:NormativeStatement`, `:Term`, `:Grammar`,
 
 ---
 
-## 7. Discovery / frontier expansion
+### 7. Discovery / frontier expansion
 
 > *Wikipedia could have an article on "NAV calculation" that links to a standard,
 > and we'd want to internalize that standard if it made sense.*
@@ -277,7 +277,7 @@ This is exactly "advance the innovation frontier reliably without losing the
 thread": the frontier is `U` (under-specification) in `E(G)`; each accepted
 standard provably reduces it; everything is content-addressed and replayable.
 
-### 7.1 Licensing constraint (important)
+#### 7.1 Licensing constraint (important)
 
 `research_closure`/the internalize gate **must** respect document licensing.
 IETF RFCs are freely usable. ANSI / IEEE / ISO standards are **copyrighted and
@@ -290,7 +290,7 @@ afterthought.
 
 ---
 
-## 8. Cloud-parallel execution
+### 8. Cloud-parallel execution
 
 - **Fan-out**: Beam `ParDo` over claims/documents. DirectRunner today; the
   `beam_pipeline_binary` `_deploy.jar` is built to swap to Dataflow/Flink for
@@ -304,7 +304,7 @@ afterthought.
 
 ---
 
-## 9. Phased roadmap
+### 9. Phased roadmap
 
 - **Phase 0 — Ontology + seed.** Extend `Spec.Corpus.Schema` with the typed spec
   edges; load the 17 `ratio` competitive component specs (LaTeX → TTL via
@@ -325,7 +325,7 @@ local, inspectable.
 
 ---
 
-## 10. Decisions & open questions
+### 10. Decisions & open questions
 
 **Decided** (this RFC): spine = `spec`; store = RDF/Jena truth + `graph.proto`
 wire + mycelium grounding; projection = hybrid Lean-proven core + Rust passes;
@@ -346,7 +346,7 @@ first milestone = seed graph + compaction on the 17 specs, local.
 
 ---
 
-## Appendix A — Worked example: "NAV calculation"
+### Appendix A — Worked example: "NAV calculation"
 
 1. **Anchor.** mycelium grounds "net asset value" at its Wikidata Q-ID.
 2. **Expand.** The Wikipedia/Wikidata node links to a valuation standard (e.g. an

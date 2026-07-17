@@ -25,7 +25,7 @@ depend directly on `@chrome//:chrome` and `@chromedriver//:chromedriver`.
 
 <a id="chrome_run"></a>
 
-## chrome_run
+### chrome_run
 
 <pre>
 load("@rules_chrome//chrome:defs.bzl", "chrome_run")
@@ -49,7 +49,7 @@ Run Chrome for Testing via `bazel run`, with a managed user-data-dir and the sta
 
 <a id="chromedriver_run"></a>
 
-## chromedriver_run
+### chromedriver_run
 
 <pre>
 load("@rules_chrome//chrome:defs.bzl", "chromedriver_run")

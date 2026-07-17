@@ -22,7 +22,7 @@ should name files to sort accordingly.
 
 <a id="rdf_dataset"></a>
 
-## rdf_dataset
+### rdf_dataset
 
 <pre>
 load("@rules_rdf//rdf:dataset.bzl", "rdf_dataset")

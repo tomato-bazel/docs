@@ -49,7 +49,7 @@ MODULE.bazel).
 
 <a id="bun_bundle"></a>
 
-## bun_bundle
+### bun_bundle
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "bun_bundle")
@@ -77,7 +77,7 @@ Bundle a JS/TS entry into one file via the hermetic Bun toolchain. Either Bun-na
 
 <a id="bun_compile"></a>
 
-## bun_compile
+### bun_compile
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "bun_compile")
@@ -104,7 +104,7 @@ Compile a JS/TS entry into a standalone native executable (Bun runtime + bundled
 
 <a id="bun_test"></a>
 
-## bun_test
+### bun_test
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "bun_test")
@@ -127,7 +127,7 @@ Run `bun test` over the listed source files as a Bazel test target.
 
 <a id="BunBinaryInfo"></a>
 
-## BunBinaryInfo
+### BunBinaryInfo
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "BunBinaryInfo")
@@ -147,7 +147,7 @@ A standalone native executable produced by `bun build --compile`.
 
 <a id="BunBundleInfo"></a>
 
-## BunBundleInfo
+### BunBundleInfo
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "BunBundleInfo")
@@ -167,7 +167,7 @@ A single-file bundle produced by `bun build`.
 
 <a id="BunTestInfo"></a>
 
-## BunTestInfo
+### BunTestInfo
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "BunTestInfo")
@@ -186,7 +186,7 @@ Result metadata for a `bun test` run.
 
 <a id="bun_run"></a>
 
-## bun_run
+### bun_run
 
 <pre>
 load("@rules_bun//bun:defs.bzl", "bun_run")

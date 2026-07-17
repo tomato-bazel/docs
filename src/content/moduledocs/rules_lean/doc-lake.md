@@ -65,7 +65,7 @@ Constraints on the lakefile passed in:
 
 <a id="lake_workspace"></a>
 
-## lake_workspace
+### lake_workspace
 
 <pre>
 load("@rules_lean//lean:lake.bzl", "lake_workspace")
@@ -95,7 +95,7 @@ Materializes a Lake workspace as a Bazel external repo. Produces `:lean_toolchai
 
 <a id="lean_dist"></a>
 
-## lean_dist
+### lean_dist
 
 <pre>
 load("@rules_lean//lean:lake.bzl", "lean_dist")
@@ -116,7 +116,7 @@ Extracts the Lean toolchain once; shared by all lake.workspace repos of the same
 
 <a id="lake"></a>
 
-## lake
+### lake
 
 <pre>
 lake = use_extension("@rules_lean//lean:lake.bzl", "lake")
@@ -129,7 +129,7 @@ lake.workspace(<a href="#lake.workspace-name">name</a>, <a href="#lake.workspace
 
 <a id="lake.workspace"></a>
 
-### workspace
+#### workspace
 
 **Attributes**
 

@@ -45,7 +45,7 @@ all our rules_* repos.
 
 <a id="bun"></a>
 
-## bun
+### bun
 
 <pre>
 bun = use_extension("@rules_bun//bun:extensions.bzl", "bun")
@@ -59,7 +59,7 @@ Sets up @bun as a Bazel-fetched prebuilt Bun binary.
 
 <a id="bun.toolchain"></a>
 
-### toolchain
+#### toolchain
 
 **Attributes**
 
@@ -70,7 +70,7 @@ Sets up @bun as a Bazel-fetched prebuilt Bun binary.
 
 <a id="bun_deps"></a>
 
-## bun_deps
+### bun_deps
 
 <pre>
 bun_deps = use_extension("@rules_bun//bun:extensions.bzl", "bun_deps")
@@ -85,7 +85,7 @@ Bun-native node_modules staging — `@<name>//:node_modules` from a `bun install
 
 <a id="bun_deps.install"></a>
 
-### install
+#### install
 
 Stage a node_modules tree from a package.json + bun.lock.
 

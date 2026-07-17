@@ -30,7 +30,7 @@ file extension is `.rule` by convention; .txt is tolerated.
 
 <a id="jena_rule_set"></a>
 
-## jena_rule_set
+### jena_rule_set
 
 <pre>
 load("@rules_jena//jena:rules.bzl", "jena_rule_set")

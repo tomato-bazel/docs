@@ -3,13 +3,13 @@ title: "ROADMAP"
 module: "rules_rdf"
 ---
 
-# rules_rdf roadmap
+## rules_rdf roadmap
 
 Two waypoints between today's scaffold and a usable abstract RDF
 toolchain layer. Each waypoint is one published bazel-registry
 release.
 
-## v0.1 — toolchain types + plugin contract + placeholder rules
+### v0.1 — toolchain types + plugin contract + placeholder rules
 
 The goal is for a consumer to be able to declare every planned target
 type (`rdf_dataset`, `sparql_query_test`, `rdf_validate_test`,
@@ -63,7 +63,7 @@ Deliverables:
 Out of scope for v0.1: chained pipelines, real-engine examples,
 result-set diff helpers.
 
-## v0.2 — cross-toolchain wiring + real-engine examples
+### v0.2 — cross-toolchain wiring + real-engine examples
 
 Once `rules_jena` is published and registered, rules_rdf grows the
 glue that ties multiple toolchains together in one pipeline.

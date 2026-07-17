@@ -27,7 +27,7 @@ Available rules:
 
 <a id="cc_check_function"></a>
 
-## cc_check_function
+### cc_check_function
 
 <pre>
 load("@rules_autoconf//autoconf:defs.bzl", "cc_check_function")
@@ -51,7 +51,7 @@ Probe whether a C function is linkable. Bazel-native equivalent of autoconf's AC
 
 <a id="cc_check_header"></a>
 
-## cc_check_header
+### cc_check_header
 
 <pre>
 load("@rules_autoconf//autoconf:defs.bzl", "cc_check_header")
@@ -73,7 +73,7 @@ Probe whether a C header is includable. Bazel-native equivalent of autoconf's AC
 
 <a id="cc_check_symbol"></a>
 
-## cc_check_symbol
+### cc_check_symbol
 
 <pre>
 load("@rules_autoconf//autoconf:defs.bzl", "cc_check_symbol")
@@ -96,7 +96,7 @@ Probe whether a symbol is declared. Bazel-native equivalent of autoconf's AC_CHE
 
 <a id="config_header"></a>
 
-## config_header
+### config_header
 
 <pre>
 load("@rules_autoconf//autoconf:defs.bzl", "config_header")
@@ -120,7 +120,7 @@ Render an autoconf-style config header from a template + defines + probe results
 
 <a id="ProbeResultInfo"></a>
 
-## ProbeResultInfo
+### ProbeResultInfo
 
 <pre>
 load("@rules_autoconf//autoconf:defs.bzl", "ProbeResultInfo")

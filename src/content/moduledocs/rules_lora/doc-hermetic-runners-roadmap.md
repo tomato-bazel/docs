@@ -3,7 +3,7 @@ title: "hermetic-runners-roadmap"
 module: "rules_lora"
 ---
 
-# Hermetic LoRA runners — roadmap
+## Hermetic LoRA runners — roadmap
 
 Status: **step 1 (lock the deps) DONE + real-hardware verified; steps 2–5
 (Bazel wheel-vendoring) deliberately banked.** Both runners now pin their dep
@@ -19,7 +19,7 @@ that day. A hollow scaffold (stubbed pod lifecycle, fake torch lock, half-wired
 `select()`) is *worse* than the working pinned venv + `@rules_runpod` paths that
 ship today — don't merge one.
 
-## Where we are now (shipped)
+### Where we are now (shipped)
 
 The backend dispatch + de-shell work already landed (PR #1 on `main`):
 
@@ -41,14 +41,14 @@ The backend dispatch + de-shell work already landed (PR #1 on `main`):
     removed (it duplicated `@rules_runpod`). The working RunPod path is the
     `@rules_runpod` macro composition.
 
-## Goal
+### Goal
 
 Two independent tracks, each ending in a runner **binary** the backend toolchain
 points at, with no runtime venv and no `@rules_runpod` dependency.
 
 ---
 
-## Track 1 — hermetic local runner (vendored torch)
+### Track 1 — hermetic local runner (vendored torch)
 
 Replace the runtime venv with Bazel-vendored deps + in-process torchtune.
 
@@ -98,7 +98,7 @@ hardcoded the 1.5B builder for the whole qwen2 family — is fixed in **0.1.1**
 
 ---
 
-## Track 2 — RunPod backend: already implemented by `rules_runpod` (not a rewrite)
+### Track 2 — RunPod backend: already implemented by `rules_runpod` (not a rewrite)
 
 **Correction (2026-06): the original "reimplement the pod lifecycle" framing was
 wrong** — checked against the actual code with a live key. `rules_runpod`'s CLI
@@ -132,7 +132,7 @@ training check therefore runs through the **existing `rules_runpod` path**
 
 ---
 
-## Sequencing & guardrails
+### Sequencing & guardrails
 
 - **Track 1 is the real remaining work** (Track 2 turned out to be mostly "delete
   the stub / optional wiring" — see the correction above). Do Track 1 on an
@@ -144,7 +144,7 @@ training check therefore runs through the **existing `rules_runpod` path**
 - Per the repo's DTO convention, the runner↔orchestrator contract is already a
   proto (`lora.v1.TrainingJobSpec`); keep new config on it.
 
-## Related deferred items (not this doc's scope, noted for completeness)
+### Related deferred items (not this doc's scope, noted for completeness)
 
 - **rules_postgres Gate 3** runs only where the private `//crates/pipeline`
   clang/LLVM tools exist (the public `@rules_lang//rules/c` ships rule *defs*

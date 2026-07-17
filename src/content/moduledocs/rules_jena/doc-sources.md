@@ -3,7 +3,7 @@ title: "SOURCES"
 module: "rules_jena"
 ---
 
-# Source-of-truth patterns to port
+## Source-of-truth patterns to port
 
 The Jena patterns `rules_jena` packages as toolchains all exist in
 production today, in the Aion RFC knowledge-graph tree at
@@ -18,7 +18,7 @@ Reference BUILD files (read-only sources of the wiring):
 - `~/Documents/rfcs/kg/java/reasoner/BUILD.bazel` — the
   `kg_reasoner` `java_binary` (OWL-MICRO inference).
 
-## Files
+### Files
 
 | File (under `~/Documents/rfcs/kg/java/`) | What it teaches |
 |---|---|
@@ -32,7 +32,7 @@ Reference BUILD files (read-only sources of the wiring):
 | `GateShacl.java` | The "load shapes.ttl + data, run `ShaclValidator`, fail on non-conforming" gate shape. Becomes the rules_jena SHACL validator toolchain core. |
 | `reasoner/KgReasoner.java` | OWL-MICRO inference via `ReasonerRegistry.getOWLMicroReasoner()`, plus a Jena rule-file driver. Deterministic, idempotent output. Becomes the rules_jena OWL reasoner toolchain. |
 
-## What we do not port (yet)
+### What we do not port (yet)
 
 These exist in the kg/java/ tree but are corpus-specific, not generic
 Jena tooling — they belong in a downstream consumer, not in

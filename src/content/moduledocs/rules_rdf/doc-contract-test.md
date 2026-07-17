@@ -29,7 +29,7 @@ inside the driver; pass the bare name (without the
 
 <a id="rdf_plugin_contract_test"></a>
 
-## rdf_plugin_contract_test
+### rdf_plugin_contract_test
 
 <pre>
 load("@rules_rdf//rdf:contract_test.bzl", "rdf_plugin_contract_test")

@@ -305,7 +305,7 @@ bazel test //...
 
 The architecture pivot from "Rust-binary-per-output-language" to the
 current contract-based plugin model is captured in
-[`docs/RFC-001-codegen-plugin-protocol.md`](https://github.com/tomato-bazel/rules_jsonschema/blob/main/docs/RFC-001-codegen-plugin-protocol.md)
+[`docs/RFC-001-codegen-plugin-protocol.md`](#doc-rfc-001-codegen-plugin-protocol)
 (with the commit history showing the design iterations the RFC
 went through).
 

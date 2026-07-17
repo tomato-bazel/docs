@@ -43,7 +43,7 @@ generated BUILD — keeping the host-only view simple. Cross-platform
 
 <a id="pip"></a>
 
-## pip
+### pip
 
 <pre>
 pip = use_extension("@rules_uv//pip:extensions.bzl", "pip")
@@ -57,7 +57,7 @@ Materialize @<hub> + per-pkg repos from a uv.lock.
 
 <a id="pip.parse"></a>
 
-### parse
+#### parse
 
 **Attributes**
 

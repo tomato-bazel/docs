@@ -33,7 +33,7 @@ shapes file is assumed Turtle-encoded SHACL).
 
 <a id="rdf_validate_test"></a>
 
-## rdf_validate_test
+### rdf_validate_test
 
 <pre>
 load("@rules_rdf//validate:defs.bzl", "rdf_validate_test")

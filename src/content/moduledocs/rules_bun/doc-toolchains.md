@@ -22,7 +22,7 @@ binary. Users register it from `MODULE.bazel`:
 
 <a id="bun_toolchain"></a>
 
-## bun_toolchain
+### bun_toolchain
 
 <pre>
 load("@rules_bun//bun:toolchains.bzl", "bun_toolchain")
@@ -43,7 +43,7 @@ Declare a Bun binary as a Bazel toolchain.
 
 <a id="BunToolchainInfo"></a>
 
-## BunToolchainInfo
+### BunToolchainInfo
 
 <pre>
 load("@rules_bun//bun:toolchains.bzl", "BunToolchainInfo")

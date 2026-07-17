@@ -45,7 +45,7 @@ don't take on `aspect_bazel_lib` as a dep for a single rule.
 
 <a id="write_source_files"></a>
 
-## write_source_files
+### write_source_files
 
 <pre>
 load("@rules_jsonschema//util:write_source_files.bzl", "write_source_files")

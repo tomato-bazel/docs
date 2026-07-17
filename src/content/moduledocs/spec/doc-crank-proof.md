@@ -3,7 +3,7 @@ title: "crank-proof"
 module: "spec"
 ---
 
-# Proving the crank works (and isn't fooling itself)
+## Proving the crank works (and isn't fooling itself)
 
 The crank's claim: an agent fleet proposes graph edits; the deterministic
 corrector + gates keep the result sound; and the result raises the **Spec Score**
@@ -16,7 +16,7 @@ It separates two questions: (1) is the **loop** sound and un-gameable? (2) is th
 a real but *hand-written* Lean proof stands in for the fleet's proposal. (2) is
 the statistical question that follows once the real proposer is wired.
 
-## The principle: "proven" is machine-checked
+### The principle: "proven" is machine-checked
 
 Grounding is the score's biggest lever (weight 0.45), and the cheapest fake is to
 slap `:provenBy "Ratio.Lemma.Foo"` on a claim with no proof. So the rule is:
@@ -26,7 +26,7 @@ slap `:provenBy "Ratio.Lemma.Foo"` on a claim with no proof. So the rule is:
 No LLM output can fake a compiling Lean proof of a false statement, so the only
 way the score rises is a real proof.
 
-## The existence proof
+### The existence proof
 
 - **A real proof** — `lean/Spec/Grounding/WriteDoor.lean` proves
   `trades_compose_conserving` (a rebalance of conserving trades conserves, so it
@@ -36,7 +36,7 @@ way the score rises is a real proof.
 - **The score moved, for a verified reason** — proven claims 2 → 3, grounding
   0.105 → 0.158, **Spec Score 32.4 → 34.8** (`crank/spec-score.tsv`, crank 003).
 
-## The controls (what makes it a proof, not a demo)
+### The controls (what makes it a proof, not a demo)
 
 | Control | Target | What it shows |
 |---|---|---|
@@ -47,7 +47,7 @@ way the score rises is a real proof.
 Soundness is a **gate, not points**: a red gate *voids* the score rather than
 lowering it, so the fleet can't bank maturity on an unsound graph.
 
-## What this proves — and what it doesn't
+### What this proves — and what it doesn't
 
 **Proven:** the loop is sound and the score is un-gameable. A claim's grounding
 counts only when Lean says so; unsound deltas are rejected; the corrector reduces
@@ -60,7 +60,7 @@ report the success rate (proposals that pass the gates *and* yield a compiling
 proof). The harness above is exactly what that proposer plugs into — the
 existence proof shows the rails are real before the first token is spent.
 
-## Run it
+### Run it
 
 ```sh
 bazel test //lean:grounding_test //grounding:grounding_verified //grounding:adversarial_gate

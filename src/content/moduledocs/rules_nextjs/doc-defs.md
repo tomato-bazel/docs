@@ -25,7 +25,7 @@ re-running `next build`.
 
 <a id="next_build"></a>
 
-## next_build
+### next_build
 
 <pre>
 load("@rules_nextjs//next:defs.bzl", "next_build")
@@ -50,7 +50,7 @@ Run `next build` hermetically and emit the `.next` tree as a Bazel-output direct
 
 <a id="NextBuildInfo"></a>
 
-## NextBuildInfo
+### NextBuildInfo
 
 <pre>
 load("@rules_nextjs//next:defs.bzl", "NextBuildInfo")

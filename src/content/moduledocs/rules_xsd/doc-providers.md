@@ -15,7 +15,7 @@ closure is first-class, exactly as RDF graphs carry their `owl:imports` closure.
 
 <a id="XsdInfo"></a>
 
-## XsdInfo
+### XsdInfo
 
 <pre>
 load("@rules_xsd//xsd:providers.bzl", "XsdInfo")

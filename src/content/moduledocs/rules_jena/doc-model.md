@@ -38,7 +38,7 @@ For named-graph use cases see `jena_dataset`.
 
 <a id="jena_model"></a>
 
-## jena_model
+### jena_model
 
 <pre>
 load("@rules_jena//jena:model.bzl", "jena_model")

@@ -3,7 +3,7 @@ title: "upgrading"
 module: "rules_agentic_ide"
 ---
 
-# Upgrading & evolving a consumer (the graceful path)
+## Upgrading & evolving a consumer (the graceful path)
 
 Every generated file is a pure, deterministic, idempotent function:
 
@@ -15,7 +15,7 @@ So drift has exactly two axes — **you edit the graph/bodies**, or **you bump
 the framework version** — and graceful evolution means making each axis's
 effect *reviewable* and *non-breaking*. The toolkit below does that.
 
-## Source vs generated (the discipline)
+### Source vs generated (the discipline)
 
 | Committed **source** (hand-edited) | Gitignored **generated** (never hand-edited) |
 |---|---|
@@ -26,7 +26,7 @@ All changes flow through the source; you never edit a generated file (it's
 overwritten on the next `generate`, which surfaces the mistake). `generate`
 adds the generated paths to `.gitignore` automatically (`git check-ignore`).
 
-## 1. `generated.lock` + `--check` — reviewable drift
+### 1. `generated.lock` + `--check` — reviewable drift
 
 The generated files are gitignored, so a version bump would otherwise change
 them with no PR diff. The fix is a committed content-hash snapshot
@@ -44,7 +44,7 @@ bazel run //.agents:generate -- --check       # CI gate: exit 1 if the tree is s
   gate that catches "edited the graph but didn't regenerate" and "bumped the
   version but didn't regenerate." (Like `gofmt -l` / `terraform plan`.)
 
-## 2. `validate` — no silent breakage
+### 2. `validate` — no silent breakage
 
 SHACL shapes (`@rules_agentic_ide//rdf/shapes:aide_shapes.ttl`) check the
 consumer's graph against the floor every projection relies on, with fix-it
@@ -60,7 +60,7 @@ So a bump incompatible with the current graph (a renamed/removed property, a
 missing required field) fails loudly, not silently. (`generate` also errors
 on a dangling `bodyPath`; lockfile-coverage for MCP hosts is a planned check.)
 
-## 3. Version policy — pin, semver, deprecate, migrate
+### 3. Version policy — pin, semver, deprecate, migrate
 
 - The consumer **pins** `rules_agentic_ide` (registry/MODULE) and bumps
   deliberately, reading the CHANGELOG.
@@ -70,7 +70,7 @@ on a dangling `bodyPath`; lockfile-coverage for MCP hosts is a planned check.)
 - **`migrate`** (major bumps): ship a codemod (a SPARQL `UPDATE` or transform)
   that rewrites the old graph shape to the new — a reviewable mechanical PR.
 
-## The upgrade flow, end to end
+### The upgrade flow, end to end
 
 1. Consumer pins `0.0.1`; `.agents/graph/*` + `.agents/generated.lock` committed.
 2. Framework releases `0.0.2` (CHANGELOG entry).
@@ -83,7 +83,7 @@ on a dangling `bodyPath`; lockfile-coverage for MCP hosts is a planned check.)
 Keep version bumps and graph edits in **separate PRs** so each diff is
 attributable to one axis.
 
-## Evolving the graph alongside the framework's library
+### Evolving the graph alongside the framework's library
 
 The framework can ship a library graph (`rdf/defs/` — well-known skills /
 standard MCP servers/hosts). The consumer's graph **composes** with it via

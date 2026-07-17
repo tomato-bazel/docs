@@ -12,7 +12,7 @@ paths so config and srcs survive `chdir` into the consumer's package.
 - **rules**:
   - `vitest_test` — `bazel test //path:target` → runs vitest in a
     hermetic sandbox with declared inputs only. See
-    [docs/defs.md](https://github.com/tomato-bazel/rules_vite/blob/main/docs/defs.md).
+    [docs/defs.md](#doc-defs).
 
 The consumer brings its own `vitest` npm dep (so the version isn't
 pinned by rules_vite). The macro doesn't impose any project key or

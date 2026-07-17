@@ -69,7 +69,7 @@ label from another package).
 
 <a id="aion_emit_toolchain"></a>
 
-## aion_emit_toolchain
+### aion_emit_toolchain
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "aion_emit_toolchain")
@@ -96,7 +96,7 @@ new `aion_emit_toolchain` declaration — no rules_lang edits needed.
 
 <a id="aion_spec"></a>
 
-## aion_spec
+### aion_spec
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "aion_spec")
@@ -121,7 +121,7 @@ doc-gen, fixture-validation, etc. read the provider.
 
 <a id="AionEmitToolchainInfo"></a>
 
-## AionEmitToolchainInfo
+### AionEmitToolchainInfo
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "AionEmitToolchainInfo")
@@ -142,7 +142,7 @@ Toolchain config for projecting a Lir.Module to one specific target language.
 
 <a id="AionSpecInfo"></a>
 
-## AionSpecInfo
+### AionSpecInfo
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "AionSpecInfo")
@@ -163,7 +163,7 @@ Information about an aion_spec target — a Lean module producing a Polyglot.Cor
 
 <a id="aion_emit"></a>
 
-## aion_emit
+### aion_emit
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "aion_emit")
@@ -188,7 +188,7 @@ Project a Lir-spec target to source via the toolchain's lowering.
 
 <a id="aion_spec_aspect"></a>
 
-## aion_spec_aspect
+### aion_spec_aspect
 
 <pre>
 load("@rules_lang//polyglot:aion.bzl", "aion_spec_aspect")

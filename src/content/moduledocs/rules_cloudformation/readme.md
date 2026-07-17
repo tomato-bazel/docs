@@ -226,10 +226,10 @@ What ships:
 > per-resource AWS-endpoint approach for the upstream Java
 > assembler. This keeps the source-of-truth aligned with cfn-lint
 > and the CFN documentation, at the cost of a build-time Java
-> compile. See [`docs/SCHEMA_SOURCE.md`](https://github.com/tomato-bazel/rules_cloudformation/blob/main/docs/SCHEMA_SOURCE.md) for
+> compile. See [`docs/SCHEMA_SOURCE.md`](#doc-schema-source) for
 > the trade-offs and the Lombok wrinkle.
 
-Deferred to v0.2 / v0.3 (see [docs/ROADMAP.md](https://github.com/tomato-bazel/rules_cloudformation/blob/main/docs/ROADMAP.md)):
+Deferred to v0.2 / v0.3 (see [docs/ROADMAP.md](#doc-roadmap)):
 
 - Bundle tag class — opt into N resource types in one
   MODULE.bazel call.
@@ -267,7 +267,7 @@ Mirrors [`rules_docker_compose`](https://github.com/fastverk/rules_docker_compos
   `jsonschema_starlark_codegen`. Examples:
   `cloudformation_aws_s3_bucket`, `cloudformation_aws_lambda_function`,
   `cloudformation_aws_ec2_instance`. The full set is ~1000+ rules.
-  See [docs/SCHEMA_SOURCE.md](https://github.com/tomato-bazel/rules_cloudformation/blob/main/docs/SCHEMA_SOURCE.md) for how the
+  See [docs/SCHEMA_SOURCE.md](#doc-schema-source) for how the
   schema's `AWS::*` type definitions map to Starlark rules.
 
 - **Java linter** — port of cfn-lint–style validation rules,
@@ -292,7 +292,7 @@ run at build time against a sha-pinned snapshot of the AWS
 CloudFormation Resource Specification (us-east-1). The assembler
 sources are vendored under
 `cloudformation/private/assembler_src/` in delomboked form (see
-[docs/SCHEMA_SOURCE.md](https://github.com/tomato-bazel/rules_cloudformation/blob/main/docs/SCHEMA_SOURCE.md) for the Lombok-vs-JDK
+[docs/SCHEMA_SOURCE.md](#doc-schema-source) for the Lombok-vs-JDK
 context).
 
 ## Install

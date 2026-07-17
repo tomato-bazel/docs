@@ -3,7 +3,7 @@ title: "private-plane-access"
 module: "vpn"
 ---
 
-# Private-plane access — WireGuard + the hermetic `wg-client`
+## Private-plane access — WireGuard + the hermetic `wg-client`
 
 Operator/CI access to a private VPC plane (the Kubernetes API, internal ALBs, in-VPC
 services) over an OIDC-authed WireGuard tunnel — so the cluster's public Kubernetes
@@ -37,7 +37,7 @@ The break-glass alternative (no Rust client) is `tools/wireguard/setup-client.sh
 
 ---
 
-## 0. One-time: an OIDC client for the CLI
+### 0. One-time: an OIDC client for the CLI
 
 If you use the reference `deploy/vpn-auth.yaml`, it provisions a dedicated **public** app
 client (`CliClient`, `GenerateSecret: false`, authorization_code + PKCE, loopback
@@ -53,7 +53,7 @@ PKCE/S256 needs no extra config — it's a request-time parameter the CLI suppli
 your own OIDC provider, register a public client with the same loopback callback URLs
 (`http://localhost:{8080,8081,8082,8765}/callback`) and skip this stack.
 
-## 1. Build the client
+### 1. Build the client
 
 ```sh
 bazel build @vpn//wg-client:wg-client
@@ -64,7 +64,7 @@ Pure-Rust + hermetic: boringtun (WireGuard) + smoltcp (userspace TCP/IP) for the
 path; rustls/ring + bundled webpki roots for the provisioner TLS. No `wg`/`wg-quick`, no
 TUN device, no root for the userspace backend.
 
-## 2. Configure from the identity-provider values
+### 2. Configure from the identity-provider values
 
 Using the reference `vpn-auth` stack's CloudFormation exports:
 
@@ -81,7 +81,7 @@ export WG_CLIENT_TOKEN_ENDPOINT=$(xport VpnTokenEndpoint)   # optional (derived 
 (With your own OIDC provider, set `WG_CLIENT_HOSTED_UI` + `WG_CLIENT_APP_ID` directly. For
 CI / a pre-minted token, set `WG_CLIENT_TOKEN` to skip the browser flow entirely.)
 
-## 3. Provision the device
+### 3. Provision the device
 
 ```sh
 "$BIN" provision --addr https://vpn.example.com:443
@@ -92,20 +92,20 @@ exchanges it (PKCE), generates a WireGuard keypair locally, calls `ProvisionPeer
 only the public key), and writes `~/.wg-client/config.json` (0600). The provisioner
 records the peer; the gateway reconciler activates it within ~1 min.
 
-## 4. Bring the tunnel up (userspace, no privileges)
+### 4. Bring the tunnel up (userspace, no privileges)
 
 The userspace backend forwards specific local ports through the tunnel — ideal for plain
 TCP services on the private plane:
 
 ```sh
-# e.g. an internal gRPC/HTTP service reachable at a VPC IP
+## e.g. an internal gRPC/HTTP service reachable at a VPC IP
 "$BIN" up --backend userspace --forward 8080:10.0.12.34:80
 ```
 
 `--forward localport:targetip:targetport` (v1 takes a literal **IP** target — in-tunnel
 DNS is a later increment; resolve the host first). Multiple `--forward`s are allowed.
 
-### kubectl over the tunnel
+#### kubectl over the tunnel
 
 The Kubernetes API is HTTPS on private ENIs. Two paths:
 
@@ -132,7 +132,7 @@ The Kubernetes API is HTTPS on private ENIs. Two paths:
 
 ---
 
-## 5. (USER-GATED) Lock down the public cluster endpoint
+### 5. (USER-GATED) Lock down the public cluster endpoint
 
 **Only after** `kubectl get nodes` succeeds over the tunnel. This removes direct laptop-IP
 access; re-enabling needs another deploy. In your cluster stack (e.g. the EKS
@@ -153,7 +153,7 @@ tunnel (in-VPC CI runners are unaffected).
 
 ---
 
-## Verification checkpoints
+### Verification checkpoints
 
 1. **Peer active:** after `provision`, the registry row is `ACTIVE` and the gateway has
    the peer — `aws dynamodb get-item` on `WireguardPeerTableName`, and the box's

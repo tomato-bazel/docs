@@ -3,14 +3,14 @@ title: "dynamic-layout"
 module: "botnoc"
 ---
 
-# Dynamic meridian layouts + the plugin-pattern collapse
+## Dynamic meridian layouts + the plugin-pattern collapse
 
 **Status:** design + landed proto contracts (meridian-schemas 0.6.0). Server
 implementation is a follow-up (Parts A/C/D below).
 
-## Why this exists
+### Why this exists
 
-`botnoc` is an aggregator, not a monolith (see [TOPOLOGY.md](https://github.com/fastverk/botnoc/blob/main/TOPOLOGY.md)): it fans
+`botnoc` is an aggregator, not a monolith (see [TOPOLOGY.md](#doc-topology)): it fans
 out to N feature plugins (forge, builds, depot, tbzl, agents, compliance,
 workspaces, org, planning, chat…), each a per-plugin BFF exposing an identical
 HTTP surface (`/healthz`, `/describe`, `/panels.binpb`, `/mcp`, REST routes),
@@ -37,7 +37,7 @@ patterns that could be collapsed,"* with the constraint that **as much generic
 functionality as possible lands in the `meridian-ux` GitHub org** (published via
 the tomato-bazel bazel-registry), keeping only fastverk-specific code here.
 
-## The generic ↔ fastverk boundary (governs every placement)
+### The generic ↔ fastverk boundary (governs every placement)
 
 botnoc has fully cut over to the fractured meridian-ux modules
 ([MODULE.bazel](https://github.com/fastverk/botnoc/blob/main/MODULE.bazel) lines ~113–146); the monolith `@meridian`
@@ -55,7 +55,7 @@ design language lives in independent `meridian-ux` repos, published to
 implementations + policy (who the plugins are, identity, entitlement evaluation,
 the plugin-host facade) → **here (fvkit / botnoc)**.
 
-## What meridian already had (before this slice)
+### What meridian already had (before this slice)
 
 The `meridian-schemas` 0.5.0 repo is richer than a first read suggests — the
 composition tier already exists:
@@ -79,7 +79,7 @@ The one true gap was **delivery**: every dynamic decision still had to be host
 glue because meridian named *what* to render but never *served* it. That is the
 tier this slice adds.
 
-## Landed in this slice — meridian-schemas 0.6.0 (generic)
+### Landed in this slice — meridian-schemas 0.6.0 (generic)
 
 Two additive contracts, both in package `meridian.ui.v1`, wired into
 `uiview_proto` (`proto/BUILD.bazel`); protobuf-es 2.x emits them into the TS
@@ -87,7 +87,7 @@ surface (the service becomes a `GenService` consumed via
 `@connectrpc/connect`'s `createClient`). No language stub is forced on anyone —
 each renderer/host repo generates the grpc stubs it wants.
 
-### 1. `proto/nav_tree.proto` — the navigation primitive (adopts PRIMITIVES-NEXT §1)
+#### 1. `proto/nav_tree.proto` — the navigation primitive (adopts PRIMITIVES-NEXT §1)
 
 `NavTree { repeated NavNode roots }`; `NavNode { id, label, icon, oneof target {
 panel_id | view_id }, repeated children, default_open, badge }`. A declarative
@@ -97,7 +97,7 @@ the documented degradation ladder (a renderer that can't do a tree renders leave
 flat — never worse than today). This replaces the host-side rail composition in
 `main.js`.
 
-### 2. `proto/layout_service.proto` — the OPTIONAL server-driven delivery tier
+#### 2. `proto/layout_service.proto` — the OPTIONAL server-driven delivery tier
 
 The **first gRPC service in meridian** — the answer to "what services to define":
 
@@ -132,7 +132,7 @@ Design decisions:
 - **Streaming closes the push gap.** `Watch*` replaces the `AdhocPanel` SSE
   side-channels used today to shoehorn live data.
 
-### How the new services map to the old gaps
+#### How the new services map to the old gaps
 
 | Static/hardcoded today | Replaced by |
 |---|---|
@@ -142,7 +142,7 @@ Design decisions:
 | live data via `AdhocPanel` SSE | `WatchNavTree` / `WatchView` |
 | the vaporware admin "ReloadDescriptors RPC" (a comment in the monolith) | this whole service |
 
-## Part A — collapse the repeated plugin patterns (fastverk)
+### Part A — collapse the repeated plugin patterns (fastverk)
 
 All fastverk-specific (the plugin-*host* contract, not generic UI):
 
@@ -183,7 +183,7 @@ All fastverk-specific (the plugin-*host* contract, not generic UI):
 Not part of the abstraction: catalog, spec, forge/crank, wave, brand/brando, and
 the standalone `agent` Node webhook backend.
 
-## Part C — unify chat presentation onto meridian descriptors (fastverk; future)
+### Part C — unify chat presentation onto meridian descriptors (fastverk; future)
 
 Add `ui__render_panel` to
 [services/chat/src/present.rs](https://github.com/fastverk/botnoc/blob/main/services/chat/src/present.rs) — arg is a
@@ -194,7 +194,7 @@ and the chat block renderer delegates to the generic meridian web renderer
 meridian gallery/lro/table into chat — one vocabulary. Any new generic block
 primitive this needs goes to `meridian-web`, not botnoc.
 
-## Part D — fastverk implementation roadmap (implements the generic contract)
+### Part D — fastverk implementation roadmap (implements the generic contract)
 
 1. **botnoc implements `LayoutService`.** `GetNavTree` computes the rail from the
    live `FASTVERK_BACKEND_*` plugin set + Cognito identity + catalog-entitlement
@@ -270,7 +270,7 @@ primitive this needs goes to `meridian-web`, not botnoc.
    with a real change source; the push channel end-to-end is complete and correct.
    **Remaining (deferred):** a companion `ThemeService.GetTheme` for per-tenant theming.
 
-## Publish runbook (post-tag; not doable without pushing)
+### Publish runbook (post-tag; not doable without pushing)
 
 The registry entry and botnoc's dep-bump both need the **v0.6.0 GitHub tarball**
 (its sha256 is the `source.json` integrity), which can't exist until the tag is
@@ -288,7 +288,7 @@ pushed — so these are deliberately left as post-publish steps:
    makes the new contracts available. (Left unbumped until 0.6.0 is published, so
    botnoc's build doesn't break against an unresolvable version.)
 
-## Verification performed
+### Verification performed
 
 In the `meridian-schemas` checkout:
 

@@ -3,9 +3,9 @@ title: "rfc-001b-crystallization-math"
 module: "rules_spec"
 ---
 
-# RFC-001b — Crystallization as Graph Diffusion (formal note)
+## RFC-001b — Crystallization as Graph Diffusion (formal note)
 
-**Status:** Draft companion to [RFC-001](https://github.com/fastverk/rules_spec/blob/main/rfc-001-unified-spec-graph.md) §2.
+**Status:** Draft companion to [RFC-001](#doc-rfc-001-unified-spec-graph) §2.
 
 This note makes the "diffusion" framing of spec-graph refinement precise, and
 marks exactly where the correspondence is literal versus analogical. The summary
@@ -15,7 +15,7 @@ below.
 
 ---
 
-## 1. State space
+### 1. State space
 
 Let $\mathcal{G}$ be the set of typed attributed graphs $G=(V,E)$ where:
 
@@ -28,7 +28,7 @@ Let $\mathcal{G}$ be the set of typed attributed graphs $G=(V,E)$ where:
 This is the categorical node/edge state space of **discrete graph diffusion**
 (DiGress; D3PM). *(Literal: the data type is identical.)*
 
-## 2. Forward (noising) process
+### 2. Forward (noising) process
 
 A Markov chain with factorized categorical kernels
 $$q(G_t\mid G_{t-1}) = \prod_{v} \mathrm{Cat}\big(a_t(v)\mid a_{t-1}(v)Q^V_t\big)\;\prod_{u,v}\mathrm{Cat}\big(e_t(u,v)\mid e_{t-1}(u,v)Q^E_t\big),$$
@@ -47,7 +47,7 @@ state is standard in diffusion. So the forward chain is (i) a conceptual device,
 (ii) an optional robustness/augmentation tool (train/evaluate correctors by
 corrupting known-good graphs), not a daily component.
 
-## 3. Target as a Gibbs measure (the bridge)
+### 3. Target as a Gibbs measure (the bridge)
 
 Define the spec energy
 $$E(G)=w_1 R(G)+w_2 C(G)+w_3 D(G)+w_4 U(G)-w_5 L(G)-w_6 S(G),$$
@@ -63,7 +63,7 @@ space the role of the Stein/score $\nabla\log p$ is played by the **local
 conditional ratios** $\pi_\tau(G')/\pi_\tau(G)$ for $G'$ a neighbor of $G$; an
 edit lowering $E$ is a discrete score-ascent step (D3PM's discrete score).
 
-## 4. Reverse process = predictor–corrector
+### 4. Reverse process = predictor–corrector
 
 We instantiate the reverse (denoising) dynamics as Song et al.'s
 **predictor–corrector** sampler:
@@ -84,7 +84,7 @@ We instantiate the reverse (denoising) dynamics as Song et al.'s
 One refinement round is $G_{t-1}=P\big(\mathsf{Pred}_{\tau_t}(G_t)\big)$, i.e.
 **predict then project** — a proximal/splitting sampler.
 
-## 5. Schedule and guidance
+### 5. Schedule and guidance
 
 - **Schedule.** $\tau_t:\;T\to 0$ is the noise schedule: hot/broad exploration
   early (Haiku$\times$2 breadth, many parallel trajectories), cold/precise late
@@ -94,7 +94,7 @@ One refinement round is $G_{t-1}=P\big(\mathsf{Pred}_{\tau_t}(G_t)\big)$, i.e.
   with the predictor prompted on $y$ (a conditional denoiser) and $\lambda$ the
   guidance weight — structurally classifier-free guidance.
 
-## 6. Convergence (crystallization)
+### 6. Convergence (crystallization)
 
 **Acceptance rule.** A predictor proposal $G\to G'$ is accepted iff
 $\Delta E=E(G')-E(G)\le 0$, or with Metropolis probability
@@ -110,7 +110,7 @@ A **crystal** is a fixed point $G^\*$ with $P(G^\*)=G^\*$ and no accepted move
 lowering $E$. We obtain descent + local optimality — the same guarantee practical
 diffusion provides; neither reaches the global mode. *(Honest: local, not global.)*
 
-## 7. Correspondence table
+### 7. Correspondence table
 
 | Diffusion (generative AI) | Spec-graph crystallization | Fidelity |
 |---|---|---|
@@ -126,7 +126,7 @@ diffusion provides; neither reaches the global mode. *(Honest: local, not global
 | Classifier-free guidance | vision + grounding $E_{\text{cond}}$, weight $\lambda$ | literal |
 | Sample (a generated datum) | a crystallized spec graph | literal |
 
-## 8. What we may and may not claim
+### 8. What we may and may not claim
 
 - **May claim:** a *training-free, energy-guided, predictor–corrector annealed
   graph-diffusion sampler*; the deterministic projection is a proven corrector;
@@ -136,7 +136,7 @@ diffusion provides; neither reaches the global mode. *(Honest: local, not global
   $\epsilon_\theta$); a *learned* data manifold ($E$ is engineered/proven);
   global-optimality.
 
-## 9. What this buys (beyond a nice metaphor)
+### 9. What this buys (beyond a nice metaphor)
 
 1. **An objective.** $E(G)$ makes "better spec" measurable and gives the
    refinement a stopping criterion (a crystal).
@@ -151,7 +151,7 @@ diffusion provides; neither reaches the global mode. *(Honest: local, not global
    sampler into an actual learned graph-diffusion model. The architecture is
    forward-compatible with that.
 
-## References (concepts, for grounding the analogy)
+### References (concepts, for grounding the analogy)
 
 - Ho, Jain, Abbeel. *Denoising Diffusion Probabilistic Models* (DDPM), 2020.
 - Song, Sohl-Dickstein, Kingma, Kumar, Ermon, Poole. *Score-Based Generative

@@ -11,8 +11,9 @@ interface Props {
   badge?: string;
   editPath?: string;
   breadcrumbs?: Crumb[];
+  wide?: boolean;
 }
-const { title, description = "tomato-bazel documentation — the Bazel registry and rules_* for a hermetic, bzlmod-first workflow.", headings = [], badge, editPath, breadcrumbs } = Astro.props;
+const { title, description = "tomato-bazel documentation — the Bazel registry and rules_* for a hermetic, bzlmod-first workflow.", headings = [], badge, editPath, breadcrumbs, wide = false } = Astro.props;
 
 const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const norm = (h: string) => h.replace(/\/+$/, "") || "/";
@@ -103,7 +104,7 @@ const navIndex = flatNav();
       </nav>
     </aside>
 
-    <div class="main">
+    <div class={`main${wide ? " wide" : ""}`}>
       <article data-pagefind-body data-pagefind-meta={`title:${title}`}>
         <div class="crumb">
           {crumbs.map((c, i) => (

@@ -22,7 +22,7 @@ your `MODULE.bazel`.
 
 <a id="jsonschema_codegen_toolchain"></a>
 
-## jsonschema_codegen_toolchain
+### jsonschema_codegen_toolchain
 
 <pre>
 load("@rules_jsonschema//jsonschema:toolchains.bzl", "jsonschema_codegen_toolchain")

@@ -33,7 +33,7 @@ the test-shaped `rdf_reason`.
 
 <a id="jena_dataset"></a>
 
-## jena_dataset
+### jena_dataset
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "jena_dataset")
@@ -55,7 +55,7 @@ A Jena Dataset composed of named-graph `jena_model`s + an optional default graph
 
 <a id="jena_model"></a>
 
-## jena_model
+### jena_model
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "jena_model")
@@ -78,7 +78,7 @@ A Jena Model (single RDF graph) declared as Bazel data.
 
 <a id="jena_reasoner"></a>
 
-## jena_reasoner
+### jena_reasoner
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "jena_reasoner")
@@ -100,7 +100,7 @@ A Jena reasoner configuration (provider-only).
 
 <a id="jena_rule_set"></a>
 
-## jena_rule_set
+### jena_rule_set
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "jena_rule_set")
@@ -121,7 +121,7 @@ A set of Jena rule files for the rule-engine reasoner.
 
 <a id="JenaDatasetInfo"></a>
 
-## JenaDatasetInfo
+### JenaDatasetInfo
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "JenaDatasetInfo")
@@ -141,7 +141,7 @@ A Jena Dataset (collection of named graphs + an optional default graph). Used by
 
 <a id="JenaModelInfo"></a>
 
-## JenaModelInfo
+### JenaModelInfo
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "JenaModelInfo")
@@ -162,7 +162,7 @@ A single Jena Model (RDF graph). Provider-only — the files declared on the rul
 
 <a id="JenaReasonerInfo"></a>
 
-## JenaReasonerInfo
+### JenaReasonerInfo
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "JenaReasonerInfo")
@@ -182,7 +182,7 @@ A Jena reasoner configuration. Either a built-in profile (`rdfs`, `owl-rl`, `owl
 
 <a id="JenaRuleSetInfo"></a>
 
-## JenaRuleSetInfo
+### JenaRuleSetInfo
 
 <pre>
 load("@rules_jena//jena:defs.bzl", "JenaRuleSetInfo")

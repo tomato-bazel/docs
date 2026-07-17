@@ -20,10 +20,10 @@ What v0.2 adds on top of v0.1.1:
 
 - **Bazel-idiomatic Jena data primitives** (provider-only) —
   `jena_model`, `jena_dataset`, `jena_rule_set`, `jena_reasoner`.
-  See [`docs/model.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/model.md),
-  [`docs/dataset.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/dataset.md),
-  [`docs/rules.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/rules.md),
-  [`docs/reasoner.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/reasoner.md). Every model + dataset
+  See [`docs/model.md`](#doc-model),
+  [`docs/dataset.md`](#doc-dataset),
+  [`docs/rules.md`](#doc-rules),
+  [`docs/reasoner.md`](#doc-reasoner). Every model + dataset
   also emits `RdfDatasetInfo` so they're drop-in for rules_rdf
   rules.
 - **Three new java_binaries** satisfying every remaining rules_rdf
@@ -36,7 +36,7 @@ What v0.2 adds on top of v0.1.1:
   (`examples/validate/people_conform`) runs through the chain
   `jena_model` → `rdf_validate_test` → `jena_shacl` toolchain.
 
-Deferred to v0.3 (see [docs/ROADMAP.md](https://github.com/tomato-bazel/rules_jena/blob/main/docs/ROADMAP.md)):
+Deferred to v0.3 (see [docs/ROADMAP.md](#doc-roadmap)):
 
 - `jena_reason` build action (today's `rdf_reason` test rule
   lives in rules_rdf v0.2's roadmap; until then, datasets +
@@ -63,7 +63,7 @@ What ships:
   publicly re-exportable Starlark constant. Downstream consumers
   `load("@rules_jena//jena:defs.bzl", "JENA_DEPS")` and spread it
   into their `deps` attr instead of hand-rolling their own list.
-  Stardoc reference in [`docs/defs.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/defs.md).
+  Stardoc reference in [`docs/defs.md`](#doc-defs).
 - **`//jena/sparql:jena_sparql`** — `java_binary` implementing
   `rules_rdf`'s `sparql_engine_toolchain_type` plugin contract.
   Reads RDF from stdin, executes a SPARQL query from
@@ -81,7 +81,7 @@ What ships:
   SPARQL zero-row gate, resolved through the registered
   toolchain. `bazel test //examples/smoke:all` passes.
 
-Deferred to v0.2 (see [docs/ROADMAP.md](https://github.com/tomato-bazel/rules_jena/blob/main/docs/ROADMAP.md)):
+Deferred to v0.2 (see [docs/ROADMAP.md](#doc-roadmap)):
 
 - SHACL validator (`jena_shacl`) → `rdf_validator_toolchain_type`.
 - RIOT format converter (`jena_riot`) →
@@ -111,7 +111,7 @@ The shared corpus-loading library (`kg.Loader`) ports to a public
 
 The patterns this repo will package as toolchains all already exist in
 production today, in the Aion RFC knowledge-graph Java tree
-(`~/Documents/rfcs/kg/java/`). See [`docs/SOURCES.md`](https://github.com/tomato-bazel/rules_jena/blob/main/docs/SOURCES.md)
+(`~/Documents/rfcs/kg/java/`). See [`docs/SOURCES.md`](#doc-sources)
 for the per-file catalog of what gets ported and what each source
 teaches:
 

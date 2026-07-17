@@ -10,7 +10,7 @@ Bazel rules for PostgreSQL tooling.
 - **`pg_parse_valid_test`** — sh_test wrapper around `parse_check` (a CLI built on libpg_query) that asserts a `.sql` file parses cleanly.
 - **C tools** — `@rules_postgres//tools:parse_check` and `@rules_postgres//tools:plpgsql_to_json` — minimal CLIs wrapping libpg_query's APIs. Reusable in your own genrules and sh_tests.
 
-See [docs/extensions.md](https://github.com/tomato-bazel/rules_postgres/blob/main/docs/extensions.md) and [docs/defs.md](https://github.com/tomato-bazel/rules_postgres/blob/main/docs/defs.md) for full reference.
+See [docs/extensions.md](#doc-extensions) and [docs/defs.md](#doc-defs) for full reference.
 
 ## Install
 

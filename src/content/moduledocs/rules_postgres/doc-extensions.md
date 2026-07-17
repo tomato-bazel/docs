@@ -40,7 +40,7 @@ Bazel build action using rules_foreign_cc's meson + ninja toolchains.
 
 <a id="pg"></a>
 
-## pg
+### pg
 
 <pre>
 pg = use_extension("@rules_postgres//postgres:extensions.bzl", "pg")
@@ -55,7 +55,7 @@ Module extension fetching libpg_query and/or the full PostgreSQL source tree.
 
 <a id="pg.query"></a>
 
-### query
+#### query
 
 Pull libpg_query as @libpg_query.
 
@@ -67,7 +67,7 @@ Pull libpg_query as @libpg_query.
 
 <a id="pg.source"></a>
 
-### source
+#### source
 
 Pull the PostgreSQL source tarball as @postgres_src.
 

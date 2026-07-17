@@ -19,7 +19,7 @@ ahead of rules_openapi's default in your `MODULE.bazel`.
 
 <a id="openapi_codegen_toolchain"></a>
 
-## openapi_codegen_toolchain
+### openapi_codegen_toolchain
 
 <pre>
 load("@rules_openapi//openapi:toolchains.bzl", "openapi_codegen_toolchain")

@@ -59,7 +59,7 @@ Then in `browser_test.js`:
 
 <a id="playwright_chrome_js_test"></a>
 
-## playwright_chrome_js_test
+### playwright_chrome_js_test
 
 <pre>
 load("@rules_chrome//chrome/playwright:js.bzl", "playwright_chrome_js_test")

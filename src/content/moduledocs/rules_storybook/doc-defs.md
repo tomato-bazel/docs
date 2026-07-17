@@ -29,7 +29,7 @@ extractors) can consume builds without re-running storybook.
 
 <a id="storybook_build"></a>
 
-## storybook_build
+### storybook_build
 
 <pre>
 load("@rules_storybook//storybook:defs.bzl", "storybook_build")
@@ -53,7 +53,7 @@ Run `storybook build` and emit `storybook-static` as a tree artifact.
 
 <a id="storybook_manifest"></a>
 
-## storybook_manifest
+### storybook_manifest
 
 <pre>
 load("@rules_storybook//storybook:defs.bzl", "storybook_manifest")
@@ -76,7 +76,7 @@ Emit a deterministic JSON manifest of Storybook story files.
 
 <a id="StorybookBuildInfo"></a>
 
-## StorybookBuildInfo
+### StorybookBuildInfo
 
 <pre>
 load("@rules_storybook//storybook:defs.bzl", "StorybookBuildInfo")
@@ -95,7 +95,7 @@ A `storybook build` output tree.
 
 <a id="storybook_dev"></a>
 
-## storybook_dev
+### storybook_dev
 
 <pre>
 load("@rules_storybook//storybook:defs.bzl", "storybook_dev")

@@ -48,7 +48,7 @@ olean loudly at use.
 
 <a id="lean_binary"></a>
 
-## lean_binary
+### lean_binary
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_binary")
@@ -71,7 +71,7 @@ A runnable Lean executable: compiles srcs to an olean root and `lean --run`s the
 
 <a id="lean_emit"></a>
 
-## lean_emit
+### lean_emit
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_emit")
@@ -96,7 +96,7 @@ lean_emit(<a href="#lean_emit-name">name</a>, <a href="#lean_emit-deps">deps</a>
 
 <a id="lean_imported_library"></a>
 
-## lean_imported_library
+### lean_imported_library
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_imported_library")
@@ -118,7 +118,7 @@ Expose an unpacked .olean release tarball as LeanInfo (no recompile).
 
 <a id="lean_library"></a>
 
-## lean_library
+### lean_library
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_library")
@@ -140,7 +140,7 @@ Compile .lean sources to a persistent .olean import-root tree and expose it as L
 
 <a id="lean_main_test"></a>
 
-## lean_main_test
+### lean_main_test
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_main_test")
@@ -164,7 +164,7 @@ lean_main_test(<a href="#lean_main_test-name">name</a>, <a href="#lean_main_test
 
 <a id="lean_olean_archive"></a>
 
-## lean_olean_archive
+### lean_olean_archive
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_olean_archive")
@@ -186,7 +186,7 @@ Bundle a lean_library's .olean import-root tree into a deployable tarball.
 
 <a id="lean_prebuilt_library"></a>
 
-## lean_prebuilt_library
+### lean_prebuilt_library
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_prebuilt_library")
@@ -208,7 +208,7 @@ lean_prebuilt_library(<a href="#lean_prebuilt_library-name">name</a>, <a href="#
 
 <a id="lean_test"></a>
 
-## lean_test
+### lean_test
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_test")
@@ -231,7 +231,7 @@ lean_test(<a href="#lean_test-name">name</a>, <a href="#lean_test-deps">deps</a>
 
 <a id="lean_toolchain"></a>
 
-## lean_toolchain
+### lean_toolchain
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_toolchain")
@@ -253,7 +253,7 @@ lean_toolchain(<a href="#lean_toolchain-name">name</a>, <a href="#lean_toolchain
 
 <a id="LeanInfo"></a>
 
-## LeanInfo
+### LeanInfo
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "LeanInfo")
@@ -273,7 +273,7 @@ A Lean library: a directory of importable .olean files, exposed via a marker fil
 
 <a id="LeanToolchainInfo"></a>
 
-## LeanToolchainInfo
+### LeanToolchainInfo
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "LeanToolchainInfo")
@@ -293,7 +293,7 @@ Lean 4 compiler binary + runtime tree.
 
 <a id="lean_regen_test"></a>
 
-## lean_regen_test
+### lean_regen_test
 
 <pre>
 load("@rules_lean//lean:lean.bzl", "lean_regen_test")

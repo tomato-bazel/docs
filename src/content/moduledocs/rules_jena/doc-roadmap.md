@@ -3,15 +3,15 @@ title: "ROADMAP"
 module: "rules_jena"
 ---
 
-# rules_jena roadmap
+## rules_jena roadmap
 
 Three releases get from "scaffold" to a full Jena-backed implementation
 of every `rules_rdf` toolchain type, plus a small set of user-facing
 convenience rules. Each row points at the production pattern in
 `~/Documents/rfcs/kg/java/` that gets ported; see
-[`SOURCES.md`](https://github.com/tomato-bazel/rules_jena/blob/main/SOURCES.md) for the full catalog.
+[`SOURCES.md`](#doc-sources) for the full catalog.
 
-## v0.1 (next)
+### v0.1 (next)
 
 Stand up the shared library and the first toolchain. Goal: prove
 `rules_rdf`'s contract works for a Jena backend end-to-end.
@@ -36,7 +36,7 @@ Stand up the shared library and the first toolchain. Goal: prove
   `jena-iri` / `slf4j-simple` declared inline (no `rules_jvm_external`
   pin yet — defer to v0.2 once the full set of binaries is in scope).
 
-## v0.2
+### v0.2
 
 Round out the toolchain implementations. Goal: every `rules_rdf`
 toolchain type has a Jena-backed default.
@@ -60,7 +60,7 @@ toolchain type has a Jena-backed default.
   (a few classes, a few SHACL shapes, a handful of `.rq` files) so
   every toolchain gets an end-to-end test under `//examples/smoke`.
 
-## v0.3
+### v0.3
 
 Expose the higher-level patterns the corpus uses every day. Goal: a
 downstream consumer can replace `kg/java/` with a thin BUILD file

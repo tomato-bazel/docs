@@ -26,7 +26,7 @@ the rules_rdf `RdfDatasetInfo`.
 
 <a id="JenaDatasetInfo"></a>
 
-## JenaDatasetInfo
+### JenaDatasetInfo
 
 <pre>
 load("@rules_jena//jena:providers.bzl", "JenaDatasetInfo")
@@ -46,7 +46,7 @@ A Jena Dataset (collection of named graphs + an optional default graph). Used by
 
 <a id="JenaModelInfo"></a>
 
-## JenaModelInfo
+### JenaModelInfo
 
 <pre>
 load("@rules_jena//jena:providers.bzl", "JenaModelInfo")
@@ -67,7 +67,7 @@ A single Jena Model (RDF graph). Provider-only — the files declared on the rul
 
 <a id="JenaReasonerInfo"></a>
 
-## JenaReasonerInfo
+### JenaReasonerInfo
 
 <pre>
 load("@rules_jena//jena:providers.bzl", "JenaReasonerInfo")
@@ -87,7 +87,7 @@ A Jena reasoner configuration. Either a built-in profile (`rdfs`, `owl-rl`, `owl
 
 <a id="JenaRuleSetInfo"></a>
 
-## JenaRuleSetInfo
+### JenaRuleSetInfo
 
 <pre>
 load("@rules_jena//jena:providers.bzl", "JenaRuleSetInfo")

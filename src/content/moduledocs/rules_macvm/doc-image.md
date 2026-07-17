@@ -19,7 +19,7 @@ encoder tool), and butane → Ignition transpilation.
 
 <a id="ignition_config"></a>
 
-## ignition_config
+### ignition_config
 
 <pre>
 load("@rules_macvm//image:defs.bzl", "ignition_config")
@@ -42,7 +42,7 @@ Render an Ignition provisioning JSON from typed attrs. Output: `<name>.ign`.
 
 <a id="VmIgnitionInfo"></a>
 
-## VmIgnitionInfo
+### VmIgnitionInfo
 
 <pre>
 load("@rules_macvm//image:defs.bzl", "VmIgnitionInfo")

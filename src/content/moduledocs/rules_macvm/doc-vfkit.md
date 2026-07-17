@@ -20,7 +20,7 @@ Virtualization.framework is macOS-only).
 
 <a id="vfkit"></a>
 
-## vfkit
+### vfkit
 
 <pre>
 vfkit = use_extension("@rules_macvm//providers/vfkit:extensions.bzl", "vfkit")
@@ -34,7 +34,7 @@ Sets up @vfkit: the pinned signed vfkit binary + a vm_provider + a macOS toolcha
 
 <a id="vfkit.toolchain"></a>
 
-### toolchain
+#### toolchain
 
 **Attributes**
 

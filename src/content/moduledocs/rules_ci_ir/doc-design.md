@@ -3,7 +3,7 @@ title: "DESIGN"
 module: "rules_ci_ir"
 ---
 
-# rules_ci — design
+## rules_ci — design
 
 A neutral intermediate representation (IR) for CI pipeline
 configuration, with proved-correct translations between
@@ -18,7 +18,7 @@ skeleton, Bazel rule stubs, and this design doc are live; the
 Lean 4 IR + correctness theorems are placeholders pinned by the
 roadmap below.
 
-## Why an IR at all
+### Why an IR at all
 
 Direct translations between three pairs of CI/build systems would
 require six translators (and grows quadratically as more targets
@@ -33,7 +33,7 @@ pipeline*, structurally? The translation work depends entirely on
 that abstraction holding up across three very different surface
 representations.
 
-## What "provably correct" means here
+### What "provably correct" means here
 
 Three increasingly ambitious levels of correctness:
 
@@ -46,7 +46,7 @@ Three increasingly ambitious levels of correctness:
 The repo commits to level A as a hard guarantee, layers level B as
 work progresses, and treats level C as out of scope.
 
-## Lean-as-verifier, not Lean-as-runtime
+### Lean-as-verifier, not Lean-as-runtime
 
 Two natural ways to integrate Lean 4:
 
@@ -77,7 +77,7 @@ lives under [`translator/`](https://github.com/tomato-bazel/rules_ci_ir/blob/mai
 sync by convention + a TODO-tracked roadmap of "Lean theorem
 proved → matching Rust property test landed."
 
-## The IR
+### The IR
 
 The IR is a single algebraic type, designed to be the
 least-upper-bound of what GitLab CI and GitHub Actions express.
@@ -128,7 +128,7 @@ diagnostics is still a translation, but downstream consumers
 (the Bazel rule, the registry) can treat them as warnings or
 hard errors.
 
-### Pages — the first publish node
+#### Pages — the first publish node
 
 `publish` is where the IR earns its keep most visibly: "publish this
 directory as the repo's static site" is one intent the two backends
@@ -178,7 +178,7 @@ publish *once*, in the neutral IR, and gets both backends.
 Structural invariant (level A): at most one job may carry a
 `Publish.Pages`, and `gitlab-emit` names that job `pages`.
 
-## Schemas + pinning
+### Schemas + pinning
 
 We pin the canonical upstream schemas (sha256), refreshed via a
 documented workflow:
@@ -197,7 +197,7 @@ Bazel-emit side translates IR jobs into rule invocations against
 a fixed runtime: a small `ci_job(name, script, deps, ...)` Bazel
 rule built into this module (see [Bazel emit](#bazel-emit)).
 
-## Translator surface
+### Translator surface
 
 Implemented in `translator/` as a Cargo workspace with these
 crates:
@@ -213,7 +213,7 @@ crates:
 | `aggregator` | N members → fleet IR + Markdown similarity report. Subsumes the savvi-side Python aggregator. | scaffold (smoke) |
 | `ci-translate-cli` | `ci-translate --from gitlab --to github < input.yml > out.yml`. | roadmap |
 
-## Bazel rule surface
+### Bazel rule surface
 
 User-facing Bazel rules in [`rules/defs.bzl`](https://github.com/tomato-bazel/rules_ci_ir/blob/main/rules/defs.bzl):
 
@@ -227,7 +227,7 @@ These are stubs that exec the relevant Rust binary from
 `@rules_ci_crates`. Once the crates are populated, the stubs
 become real.
 
-## Bazel-emit
+### Bazel-emit
 
 `bazel-emit` is the trickiest part. The IR's notion of a "job" is
 a black-box shell script with explicit deps + artifacts; Bazel's
@@ -253,7 +253,7 @@ provides AST + pretty-printing so the emitted file is canonical
 Concrete shape:
 
 ```python
-# Emitted: //path:bazel_pipeline.bzl
+## Emitted: //path:bazel_pipeline.bzl
 load(
     "@rules_ci//rules/runtime:defs.bzl",
     "ci_job",
@@ -277,7 +277,7 @@ def my_pipeline():
 `ci_job` is a thin macro provided by rules_ci's runtime that
 expands to a `sh_test` or `genrule` depending on artifacts.
 
-## Roadmap by version
+### Roadmap by version
 
 | Version | Adds |
 |---|---|
@@ -289,18 +289,18 @@ expands to a `sh_test` or `genrule` depending on artifacts.
 | **0.5.0** | Lean 4 IR formalization + structural correctness theorems (level A above). Property tests are extracted/mirrored. |
 | **0.6.0+** | Bisimulation theorems under abstract semantics (level B). |
 
-## Refresh procedure
+### Refresh procedure
 
 Every quarter, re-fetch the pinned schemas:
 
 ```sh
 curl -fL https://gitlab.com/gitlab-org/gitlab-foss/-/raw/master/app/assets/javascripts/editor/schema/ci.json -o /tmp/gitlab-ci.json
 shasum -a 256 /tmp/gitlab-ci.json
-# paste into schemas/extensions.bzl
+## paste into schemas/extensions.bzl
 
 curl -fL https://json.schemastore.org/github-workflow.json -o /tmp/github.json
 shasum -a 256 /tmp/github.json
-# paste into schemas/extensions.bzl
+## paste into schemas/extensions.bzl
 ```
 
 Each pinning bump should be accompanied by a CHANGELOG entry

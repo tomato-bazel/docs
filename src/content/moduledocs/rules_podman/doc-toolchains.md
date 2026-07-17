@@ -28,7 +28,7 @@ Register it from `MODULE.bazel`:
 
 <a id="podman_toolchain"></a>
 
-## podman_toolchain
+### podman_toolchain
 
 <pre>
 load("@rules_podman//podman:toolchains.bzl", "podman_toolchain")
@@ -51,7 +51,7 @@ Declare a Podman binary as a Bazel toolchain.
 
 <a id="PodmanToolchainInfo"></a>
 
-## PodmanToolchainInfo
+### PodmanToolchainInfo
 
 <pre>
 load("@rules_podman//podman:toolchains.bzl", "PodmanToolchainInfo")

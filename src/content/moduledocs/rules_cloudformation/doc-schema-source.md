@@ -3,11 +3,11 @@ title: "SCHEMA_SOURCE"
 module: "rules_cloudformation"
 ---
 
-# Schema source
+## Schema source
 
 Where `rules_cloudformation`'s typed rules ultimately come from.
 
-## Choice (v0.1)
+### Choice (v0.1)
 
 We run the upstream Java assembler
 (`aws.cfn.codegen.json.Main` from
@@ -32,7 +32,7 @@ Two artifacts are pinned in
   sha256 `3bf0f8b5034b51c622da82f7cec9499112a40719f28fff5c6d2050a0c3a24459`.
   Endpoint: `https://d1uauaxba7bl26.cloudfront.net/latest/CloudFormationResourceSpecification.json`.
 
-## How the build composes
+### How the build composes
 
 ```
 @cfn_resource_spec//file:CloudFormationResourceSpecification.json
@@ -56,7 +56,7 @@ build-time reproducibility), narrows the region set to us-east-1
 (the source-of-truth region), and declares a single custom group
 with the requested `includes`/`excludes`.
 
-## Lombok wrinkle
+### Lombok wrinkle
 
 The upstream sources use Lombok 1.16.22 (released 2018). That
 release predates JDK 21+. The current Lombok release line (1.18.x)
@@ -86,7 +86,7 @@ fix: newer CFN spec entries can have `Type: Json` with no
 but then NPEs on. The patch in `Codegen.addPrimitiveType` falls back
 to "Json" when the primitive name is null.
 
-### Known gap: registry-only resources
+#### Known gap: registry-only resources
 
 The legacy Resource Specification we pin covers ~1582 of the
 ~1600+ types AWS publishes. A handful of newer types
@@ -101,7 +101,7 @@ legacy spec is missing. v0.7+ work item; not on the current
 roadmap because demand is low (savvi-ops, the design's stress
 test, hits ~1 of 87 in-use AWS types as a registry-only).
 
-### Alternatives considered
+#### Alternatives considered
 
 | Source | Why not chosen |
 |---|---|
@@ -109,7 +109,7 @@ test, hits ~1 of 87 in-use AWS types as a registry-only).
 | `aws-cloudformation/cloudformation-cli` registry schemas | Same per-resource shape, different repository. No advantage. |
 | Hand-curated subset | rules_jsonschema's whole point is avoiding drift between hand-written rules and upstream. Hard-no. |
 
-## Refreshing
+### Refreshing
 
 Three independent bumps:
 
@@ -142,7 +142,7 @@ Three independent bumps:
    REPIN=1 bazel run @cfn_assembler_maven//:pin
    ```
 
-## Path to ~1200 resource types
+### Path to ~1200 resource types
 
 v0.1 covers `AWS::S3::Bucket` as a codegen smoke. v0.2 lifts the
 hard-coded resource set into a tag class:
@@ -165,4 +165,4 @@ cfn_resources.bundle(
 so consumers opt into the resource set they care about — declaring
 1200 typed Bazel rules per consumer when they use 10 is wasted
 analysis time. Bundling lands in v0.2 (see
-[`ROADMAP.md`](https://github.com/tomato-bazel/rules_cloudformation/blob/main/ROADMAP.md)).
+[`ROADMAP.md`](#doc-roadmap)).

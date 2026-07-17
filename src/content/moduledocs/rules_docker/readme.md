@@ -37,7 +37,7 @@ if you want to swap a plugin for one of your own.
 - **rules** (re-exported by [compose/defs.bzl](https://github.com/fastverk/rules_docker_compose/blob/main/compose/defs.bzl)):
   - `docker_compose_service` / `_volume` / `_network` — typed rules
     generated from the compose-spec; see
-    [docs/compose_rules.md](https://github.com/fastverk/rules_docker_compose/blob/main/docs/compose_rules.md) for the full attr list.
+    [docs/compose_rules.md](#doc-compose-rules) for the full attr list.
   - `docker_compose` — collects shards from `deps` and renders one
     canonical `compose.yaml`.
   - `docker_compose_oci_image_ref` — resolves an OCI image layout to
@@ -48,7 +48,7 @@ if you want to swap a plugin for one of your own.
 - **providers**: `ComposeServiceInfo`, `ComposeVolumeInfo`,
   `ComposeNetworkInfo`, `ComposeProjectInfo`, `ComposeServiceImageRefInfo`.
 
-Reference docs ([docs/defs.md](https://github.com/fastverk/rules_docker_compose/blob/main/docs/defs.md), [docs/compose_rules.md](https://github.com/fastverk/rules_docker_compose/blob/main/docs/compose_rules.md))
+Reference docs ([docs/defs.md](#doc-defs), [docs/compose_rules.md](#doc-compose-rules))
 are stardoc-generated, committed to source, and diff_tested.
 
 ## Install
@@ -140,7 +140,7 @@ Most compose-spec properties type cleanly:
 | Compose-spec's `list_or_dict` shape | `attr.string_dict` | `environment = {"FOO": "bar"}` |
 | Nested object (`build`, `healthcheck`, `deploy`, …) | `attr.string` taking JSON | `build = json.encode({...})` |
 
-[docs/compose_rules.md](https://github.com/fastverk/rules_docker_compose/blob/main/docs/compose_rules.md) lists every attr.
+[docs/compose_rules.md](#doc-compose-rules) lists every attr.
 
 ## OCI integration
 

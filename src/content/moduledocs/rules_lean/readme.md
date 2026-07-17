@@ -7,8 +7,8 @@ Bazel rules for [Lean 4](https://lean-lang.org/), with native [Lake](https://git
 integration that reuses Mathlib's upstream Reservoir cache instead of forcing
 each consumer to self-host a multi-gigabyte olean tarball.
 
-- **rules**: `lean_test`, `lean_emit`, `lean_prebuilt_library`, `lean_toolchain` — see [docs/lean.md](https://github.com/tomato-bazel/rules_lean/blob/main/docs/lean.md).
-- **lake integration**: `lake_workspace` repository rule + `lake` module extension — see [docs/lake.md](https://github.com/tomato-bazel/rules_lean/blob/main/docs/lake.md).
+- **rules**: `lean_test`, `lean_emit`, `lean_prebuilt_library`, `lean_toolchain` — see [docs/lean.md](#doc-lean).
+- **lake integration**: `lake_workspace` repository rule + `lake` module extension — see [docs/lake.md](#doc-lake).
 - **RulesLean Lean library** (`lean/lib/`): structured introspection of `.olean` files (`RulesLean.Olean`) and Lake workspaces (`RulesLean.Workspace`). Internal helpers under `RulesLean.Internal.*` are unstable; treat them as opt-in and expect API churn between releases. See [lean/lib/RulesLean.lean](https://github.com/tomato-bazel/rules_lean/blob/main/lean/lib/RulesLean.lean) for the entry-point doc.
 - **lake_imports_manifest** target: when `lake_workspace` materializes, it builds the RulesLean library + `oleanImports` CLI and runs it over every olean in the workspace. Result lands at `@<your-lake-deps>//:lake_imports_manifest` — a TSV of `<path>\t<imported-module>` edges (~5MB / 42k edges for full mathlib). Downstream consumers can use it for import-graph analysis, tree-shaking, dead-code detection.
 

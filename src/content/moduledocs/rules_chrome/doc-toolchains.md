@@ -23,7 +23,7 @@ wrapping the prebuilt binaries. Users register it from their
 
 <a id="chrome_toolchain"></a>
 
-## chrome_toolchain
+### chrome_toolchain
 
 <pre>
 load("@rules_chrome//chrome:toolchains.bzl", "chrome_toolchain")
@@ -45,7 +45,7 @@ Declare a Chrome for Testing binary + chromedriver as a Bazel toolchain.
 
 <a id="ChromeToolchainInfo"></a>
 
-## ChromeToolchainInfo
+### ChromeToolchainInfo
 
 <pre>
 load("@rules_chrome//chrome:toolchains.bzl", "ChromeToolchainInfo")

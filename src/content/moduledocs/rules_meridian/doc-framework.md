@@ -3,7 +3,7 @@ title: "framework"
 module: "rules_meridian"
 ---
 
-# Meridian as a framework
+## Meridian as a framework
 
 Meridian is a UI *framework*, not a widget toolkit. You don't draw screens;
 you **declare** them as data and let a per-platform renderer host them. Two
@@ -14,7 +14,7 @@ convention:
 2. **Widgets as plugins** — a feature contributes panels to a host through a
    manifest; it doesn't reach into the host's UI.
 
-## The three-layer model
+### The three-layer model
 
 | Layer | Package / path | Carries | Never carries |
 |---|---|---|---|
@@ -29,7 +29,7 @@ renderer — or a skin module like `@brand` — can depend on the Theme contract
 without pulling the panel descriptors, and vice versa. A `PanelDescriptor`
 literally *cannot* name a color; a `Theme` literally *cannot* name an RPC.
 
-### Why this matters
+#### Why this matters
 
 - **One descriptor, every platform.** The Java / Rust / TS / Swift renderers
   consume the same `PanelDescriptor` protos. Adding a platform is "write one
@@ -43,7 +43,7 @@ literally *cannot* name a color; a `Theme` literally *cannot* name an RPC.
   renderer ships a neutral built-in palette so it's presentable un-skinned,
   and the brand is supplied from outside.
 
-### How each renderer binds a Theme
+#### How each renderer binds a Theme
 
 Every renderer maps the *same* `Theme` tokens to its platform's style
 primitive. The roles are semantic (`accent`, not "amber"), so the mapping is
@@ -63,7 +63,7 @@ from the bound theme: there are no `Color::`, `-fx-text-fill: #…`, or
 `.orange` literals left in the panel widgets. See
 [`theme/README.md`](https://github.com/mattmarshall/meridian/blob/main/theme/README.md) for the full token list.
 
-## Widgets as plugins
+### Widgets as plugins
 
 A "widget" in meridian is not a subclass you instantiate — it's a **module
 that contributes panels** to a host. The contribution contract lives in fvkit
@@ -100,7 +100,7 @@ So a new feature is "one plugin + one panel bundle (+ optionally one adhoc
 factory)" — it never edits the host's UI, and it inherits the active skin for
 free, because the host applies the `Theme` once at the renderer.
 
-### Putting it together
+#### Putting it together
 
 ```
 feature plugin                 host (fvd / app)              renderer + skin

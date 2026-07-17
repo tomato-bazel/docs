@@ -40,7 +40,7 @@ from rules_rdf (which resolves the reasoner toolchain).
 
 <a id="jena_reasoner"></a>
 
-## jena_reasoner
+### jena_reasoner
 
 <pre>
 load("@rules_jena//jena:reasoner.bzl", "jena_reasoner")

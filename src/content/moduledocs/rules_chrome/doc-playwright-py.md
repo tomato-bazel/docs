@@ -53,7 +53,7 @@ Then in `browser_test.py`:
 
 <a id="playwright_chrome_py_test"></a>
 
-## playwright_chrome_py_test
+### playwright_chrome_py_test
 
 <pre>
 load("@rules_chrome//chrome/playwright:py.bzl", "playwright_chrome_py_test")

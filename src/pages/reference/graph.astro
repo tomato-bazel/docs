@@ -1,0 +1,256 @@
+---
+import Doc from "../../layouts/Doc.astro";
+import data from "../../data/modules.json";
+
+interface Dep { name: string; in_registry: boolean }
+interface Mod { name: string; category: string; used_by: string[]; deps: Dep[]; latest: string }
+const modules = data.modules as Mod[];
+
+const nodes = modules.map((m) => ({
+  id: m.name,
+  cat: m.category === "Bazel rules" ? "rules" : "tool",
+  dependents: (m.used_by || []).length,
+  deps: (m.deps || []).filter((d) => d.in_registry).length,
+  latest: m.latest,
+}));
+const seen = new Set<string>();
+const edges: [string, string][] = [];
+for (const m of modules)
+  for (const d of m.deps || [])
+    if (d.in_registry && d.name !== m.name) {
+      const k = m.name + "|" + d.name;
+      if (!seen.has(k)) { seen.add(k); edges.push([m.name, d.name]); }
+    }
+const crumbs = [{ label: "Docs", href: "/" }, { label: "Reference" }, { label: "Dependency graph" }];
+const topHub = [...nodes].sort((a, b) => b.dependents - a.dependents)[0];
+---
+<Doc title="Dependency graph" description="The tomato-bazel registry as a tomato vine — every module a tomato, every bazel_dep a vine." headings={[]} breadcrumbs={crumbs} wide>
+  <p>The registry, grown as a vine. Every <strong>tomato is a module</strong> — the riper and bigger, the more other modules depend on it — and every <strong>green vine is a <code class="ic">bazel_dep</code></strong>. {nodes.length} modules, {edges.length} in-registry dependencies. Hover a tomato to trace its vines; click to open its page.</p>
+
+  <div class="vinewrap">
+    <div class="vinebar">
+      <div class="vsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <input id="vineq" type="text" placeholder="Find a module…" autocomplete="off" spellcheck="false" />
+      </div>
+      <div class="vlegend">
+        <span class="vl"><i class="dot rules"></i> ruleset</span>
+        <span class="vl"><i class="dot tool"></i> module / tool</span>
+        <span class="vl"><i class="vine"></i> depends on</span>
+        <span class="vl sizehint">◦ → ● size = dependents</span>
+      </div>
+      <button id="vinereset" class="vbtn" type="button">Reset</button>
+    </div>
+    <div class="vinestage">
+      <canvas id="vine"></canvas>
+      <div id="vinetip" class="vinetip" hidden></div>
+      <div class="vinehint">scroll to zoom · drag to pan · drag a tomato to move it</div>
+    </div>
+  </div>
+
+  <p style="color:var(--muted);font-size:13.5px;margin-top:18px">Biggest hub: <a class="link" href={`/reference/modules/${topHub.id}/`}>{topHub.id}</a> ({topHub.dependents} dependents). This graph is generated from every module's <code class="ic">MODULE.bazel</code>, so it tracks the registry automatically. Deps on the BCR (e.g. <code class="ic">platforms</code>, <code class="ic">bazel_skylib</code>) aren't shown — only vines within the registry.</p>
+
+  <script define:vars={{ nodes, edges }}>
+    (function () {
+      var cv = document.getElementById("vine");
+      if (!cv) return;
+      var ctx = cv.getContext("2d");
+      var tip = document.getElementById("vinetip");
+      var root = document.documentElement;
+      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var css = function (v) { return getComputedStyle(root).getPropertyValue(v).trim(); };
+
+      // ---- model ----
+      var N = nodes.map(function (n, i) { return { id: n.id, cat: n.cat, dependents: n.dependents, deps: n.deps, i: i, x: 0, y: 0, vx: 0, vy: 0, r: 0, fx: null, fy: null }; });
+      var idx = {}; N.forEach(function (n) { idx[n.id] = n; });
+      var E = edges.map(function (e) { return { a: idx[e[0]], b: idx[e[1]] }; }).filter(function (e) { return e.a && e.b; });
+      var adj = {}; N.forEach(function (n) { adj[n.id] = new Set(); });
+      E.forEach(function (e) { adj[e.a.id].add(e.b.id); adj[e.b.id].add(e.a.id); });
+      var maxDep = Math.max(1, Math.max.apply(null, N.map(function (n) { return n.dependents; })));
+      N.forEach(function (n) { n.r = 5 + 12 * Math.sqrt(n.dependents / maxDep); });
+
+      // ---- layout state ----
+      var W = 0, H = 0, DPR = 1, scale = 1, panX = 0, panY = 0, alpha = 1;
+      var hover = null, focusSet = null, dragNode = null, panning = false, moved = false, last = { x: 0, y: 0 }, downAt = 0;
+
+      function size() {
+        var rect = cv.getBoundingClientRect();
+        DPR = Math.min(window.devicePixelRatio || 1, 2);
+        W = rect.width; H = rect.height;
+        cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
+      }
+      function seed() {
+        // deterministic-ish ring seed so the layout is stable across loads
+        N.forEach(function (n, i) {
+          var a = (i / N.length) * Math.PI * 2, rad = Math.min(W, H) * 0.32 * (0.5 + ((i * 97) % 100) / 200);
+          n.x = W / 2 + Math.cos(a) * rad; n.y = H / 2 + Math.sin(a) * rad;
+        });
+      }
+
+      // ---- force sim ----
+      function tick() {
+        var REST = 82, cx = W / 2, cy = H / 2;
+        for (var i = 0; i < N.length; i++) {
+          var a = N[i];
+          for (var j = i + 1; j < N.length; j++) {
+            var b = N[j], dx = a.x - b.x, dy = a.y - b.y, d2 = dx * dx + dy * dy || 0.01, d = Math.sqrt(d2);
+            var rep = Math.min(2600 / d2, 4);
+            var ux = dx / d, uy = dy / d;
+            a.vx += ux * rep; a.vy += uy * rep; b.vx -= ux * rep; b.vy -= uy * rep;
+          }
+        }
+        E.forEach(function (e) {
+          var dx = e.b.x - e.a.x, dy = e.b.y - e.a.y, d = Math.sqrt(dx * dx + dy * dy) || 0.01, k = (d - REST) * 0.015;
+          var ux = dx / d, uy = dy / d;
+          e.a.vx += ux * k; e.a.vy += uy * k; e.b.vx -= ux * k; e.b.vy -= uy * k;
+        });
+        N.forEach(function (n) {
+          n.vx += (cx - n.x) * 0.004; n.vy += (cy - n.y) * 0.004;   // gravity to center
+          if (n.fx != null) { n.x = n.fx; n.y = n.fy; n.vx = n.vy = 0; return; }
+          n.vx *= 0.86; n.vy *= 0.86;
+          n.x += n.vx * alpha * 2.2; n.y += n.vy * alpha * 2.2;
+        });
+        alpha *= 0.985;
+      }
+
+      // ---- draw ----
+      function toScreen(n) { return { x: n.x * scale + panX, y: n.y * scale + panY }; }
+      function curve(pa, pb) {
+        var mx = (pa.x + pb.x) / 2, my = (pa.y + pb.y) / 2, dx = pb.x - pa.x, dy = pb.y - pa.y, len = Math.sqrt(dx * dx + dy * dy) || 1;
+        var sag = Math.min(len * 0.16, 34);
+        return { cx: mx - (dy / len) * sag, cy: my + (dx / len) * sag };
+      }
+      function draw() {
+        ctx.setTransform(DPR, 0, 0, DPR, 0, 0); ctx.clearRect(0, 0, W, H);
+        var tomato = css("--accent-bright") || "#E64A33", deep = "#B4231A",
+            leaf = css("--leaf") || "#3FA34D", leafDk = "#2E7D3A", muted = css("--muted"), head = css("--head"), faint = css("--faint"), line = css("--line-2");
+        // edges (vines)
+        E.forEach(function (e) {
+          var pa = toScreen(e.a), pb = toScreen(e.b), c = curve(pa, pb);
+          var on = !focusSet || (focusSet.has(e.a.id) && focusSet.has(e.b.id));
+          ctx.strokeStyle = on ? leaf : line;
+          ctx.globalAlpha = focusSet ? (on ? 0.95 : 0.12) : 0.4;
+          ctx.lineWidth = on ? 1.8 : 1;
+          ctx.beginPath(); ctx.moveTo(pa.x, pa.y); ctx.quadraticCurveTo(c.cx, c.cy, pb.x, pb.y); ctx.stroke();
+        });
+        ctx.globalAlpha = 1;
+        // nodes (tomatoes) — hubs last so they sit on top
+        var order = N.slice().sort(function (a, b) { return a.r - b.r; });
+        order.forEach(function (n) {
+          var p = toScreen(n), r = n.r * scale, dim = focusSet && !focusSet.has(n.id);
+          drawTomato(p.x, p.y, r, n, dim, n === hover, tomato, deep, leaf, leafDk, line);
+        });
+        // labels: hubs always, hovered always
+        order.forEach(function (n) {
+          var showBig = n.dependents >= 3 && !focusSet, showHover = focusSet && focusSet.has(n.id);
+          if (!showBig && !showHover) return;
+          var p = toScreen(n);
+          ctx.font = "600 " + (n === hover ? 12 : 11) + "px ui-monospace,Menlo,monospace";
+          ctx.textAlign = "center"; ctx.textBaseline = "top";
+          ctx.fillStyle = (n === hover) ? head : (focusSet ? head : muted);
+          ctx.fillText(n.id, p.x, p.y + n.r * scale + 4);
+        });
+      }
+      function drawTomato(x, y, r, n, dim, isHover, tomato, deep, leaf, leafDk, line) {
+        ctx.save();
+        if (dim) ctx.globalAlpha = 0.22;
+        // glow on hover / hubs
+        if (isHover || n.dependents >= 4) {
+          ctx.beginPath(); ctx.arc(x, y, r + 6, 0, 7);
+          ctx.fillStyle = "rgba(230,74,51," + (isHover ? 0.20 : 0.10) + ")"; ctx.fill();
+        }
+        // body — glossy red radial
+        var g = ctx.createRadialGradient(x - r * 0.35, y - r * 0.4, r * 0.2, x, y, r * 1.15);
+        g.addColorStop(0, isHover ? "#FF6a4e" : tomato); g.addColorStop(1, deep);
+        ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fillStyle = g; ctx.fill();
+        // rules vs tool: tool gets a thin ring
+        if (n.cat === "tool") { ctx.lineWidth = 1.4; ctx.strokeStyle = leaf; ctx.globalAlpha *= 0.9; ctx.stroke(); ctx.globalAlpha /= 0.9; }
+        // gloss highlight
+        ctx.beginPath(); ctx.arc(x - r * 0.32, y - r * 0.34, r * 0.28, 0, 7); ctx.fillStyle = "rgba(255,255,255,0.28)"; ctx.fill();
+        // calyx (green star) for bigger tomatoes
+        if (r >= 7) {
+          ctx.strokeStyle = leaf; ctx.lineWidth = Math.max(1.2, r * 0.14); ctx.lineCap = "round";
+          for (var k = 0; k < 5; k++) {
+            var a = -Math.PI / 2 + (k - 2) * 0.5;
+            ctx.beginPath(); ctx.moveTo(x, y - r * 0.55); ctx.lineTo(x + Math.cos(a) * r * 0.7, y - r * 0.55 + Math.sin(a) * r * 0.5); ctx.stroke();
+          }
+          ctx.strokeStyle = leafDk; ctx.lineWidth = Math.max(1.4, r * 0.2);
+          ctx.beginPath(); ctx.moveTo(x, y - r * 0.55); ctx.lineTo(x, y - r * 1.05); ctx.stroke();
+        }
+        if (isHover) { ctx.lineWidth = 2; ctx.strokeStyle = head; ctx.beginPath(); ctx.arc(x, y, r + 2.5, 0, 7); ctx.stroke(); }
+        ctx.restore();
+      }
+
+      // ---- interaction ----
+      function nodeAt(mx, my) {
+        var wx = (mx - panX) / scale, wy = (my - panY) / scale, best = null, bd = 1e9;
+        N.forEach(function (n) { var dx = n.x - wx, dy = n.y - wy, d = dx * dx + dy * dy; if (d < (n.r + 6) * (n.r + 6) && d < bd) { bd = d; best = n; } });
+        return best;
+      }
+      function setFocus(n) {
+        if (!n) { focusSet = null; return; }
+        focusSet = new Set([n.id]); adj[n.id].forEach(function (id) { focusSet.add(id); });
+      }
+      function showTip(n, mx, my) {
+        if (!n) { tip.hidden = true; return; }
+        tip.hidden = false;
+        tip.innerHTML = '<b>' + n.id + '</b><span>' + n.dependents + ' dependent' + (n.dependents === 1 ? '' : 's') + ' · ' + n.deps + ' registry dep' + (n.deps === 1 ? '' : 's') + '</span><span class="k">' + (n.cat === 'rules' ? 'ruleset' : 'module') + ' · click to open</span>';
+        var pad = 14; tip.style.left = Math.min(mx + pad, W - tip.offsetWidth - 8) + "px"; tip.style.top = Math.min(my + pad, H - tip.offsetHeight - 8) + "px";
+      }
+      cv.addEventListener("mousemove", function (e) {
+        var rect = cv.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        if (dragNode) { dragNode.fx = (mx - panX) / scale; dragNode.fy = (my - panY) / scale; moved = true; alpha = Math.max(alpha, 0.3); kick(); showTip(dragNode, mx, my); return; }
+        if (panning) { panX += mx - last.x; panY += my - last.y; last = { x: mx, y: my }; moved = true; draw(); return; }
+        var n = nodeAt(mx, my);
+        if (n !== hover) { hover = n; setFocus(n); cv.style.cursor = n ? "pointer" : "grab"; draw(); }
+        showTip(n, mx, my);
+      });
+      cv.addEventListener("mousedown", function (e) {
+        var rect = cv.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        downAt = Date.now(); moved = false; last = { x: mx, y: my };
+        var n = nodeAt(mx, my); if (n) { dragNode = n; n.fx = n.x; n.fy = n.y; } else { panning = true; cv.style.cursor = "grabbing"; }
+      });
+      window.addEventListener("mouseup", function () {
+        if (dragNode && !moved && Date.now() - downAt < 350) { location.href = "/reference/modules/" + dragNode.id + "/"; }
+        if (dragNode && moved) dragNode.fx = dragNode.fy = null;
+        dragNode = null; panning = false; cv.style.cursor = hover ? "pointer" : "grab";
+      });
+      cv.addEventListener("mouseleave", function () { hover = null; focusSet = null; tip.hidden = true; draw(); });
+      cv.addEventListener("wheel", function (e) {
+        e.preventDefault();
+        var rect = cv.getBoundingClientRect(), mx = e.clientX - rect.left, my = e.clientY - rect.top;
+        var f = Math.exp(-e.deltaY * 0.0015), ns = Math.min(3, Math.max(0.4, scale * f));
+        panX = mx - (mx - panX) * (ns / scale); panY = my - (my - panY) * (ns / scale); scale = ns; draw();
+      }, { passive: false });
+
+      // search
+      var q = document.getElementById("vineq");
+      q && q.addEventListener("input", function () {
+        var v = q.value.trim().toLowerCase();
+        if (!v) { hover = null; focusSet = null; draw(); return; }
+        var n = N.find(function (x) { return x.id.toLowerCase() === v; }) || N.find(function (x) { return x.id.toLowerCase().indexOf(v) > -1; });
+        hover = n || null; setFocus(n);
+        if (n) { panX = W / 2 - n.x * scale; panY = H / 2 - n.y * scale; }
+        draw();
+      });
+      q && q.addEventListener("keydown", function (e) { if (e.key === "Enter" && hover) location.href = "/reference/modules/" + hover.id + "/"; });
+      document.getElementById("vinereset").addEventListener("click", function () { scale = 1; panX = panY = 0; alpha = 0.9; N.forEach(function (n) { n.fx = n.fy = null; }); q && (q.value = ""); hover = null; focusSet = null; seed(); alpha = 1; run(); });
+
+      // ---- run loop ----
+      var raf = null;
+      function frame() { if (alpha > 0.02) { tick(); draw(); raf = requestAnimationFrame(frame); } else { draw(); raf = null; } }
+      function run() { if (!raf) raf = requestAnimationFrame(frame); }
+      function kick() { alpha = Math.max(alpha, 0.15); run(); }
+
+      function boot() {
+        size(); seed();
+        if (reduce) { for (var i = 0; i < 260; i++) tick(); alpha = 0; draw(); }
+        else { alpha = 1; run(); }
+      }
+      boot();
+      var rt;
+      window.addEventListener("resize", function () { clearTimeout(rt); rt = setTimeout(function () { size(); draw(); }, 120); });
+      new MutationObserver(function () { draw(); }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    })();
+  </script>
+</Doc>

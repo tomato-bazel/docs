@@ -43,7 +43,7 @@ supported; the abstract layer only validates that `profile =
 
 <a id="rdf_reason"></a>
 
-## rdf_reason
+### rdf_reason
 
 <pre>
 load("@rules_rdf//reason:defs.bzl", "rdf_reason")

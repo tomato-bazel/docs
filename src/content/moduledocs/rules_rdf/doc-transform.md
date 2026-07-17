@@ -30,7 +30,7 @@ extension for `out_format` (`.ttl`, `.nt`, `.nq`, `.trig`,
 
 <a id="rdf_transform"></a>
 
-## rdf_transform
+### rdf_transform
 
 <pre>
 load("@rules_rdf//transform:defs.bzl", "rdf_transform")

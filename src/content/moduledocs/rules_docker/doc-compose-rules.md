@@ -9,7 +9,7 @@ module: "rules_docker"
 
 <a id="docker_compose_network"></a>
 
-## docker_compose_network
+### docker_compose_network
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "docker_compose_network")
@@ -41,7 +41,7 @@ Network configuration for the Compose application.
 
 <a id="docker_compose_service"></a>
 
-## docker_compose_service
+### docker_compose_service
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "docker_compose_service")
@@ -167,7 +167,7 @@ Configuration for a service.
 
 <a id="docker_compose_volume"></a>
 
-## docker_compose_volume
+### docker_compose_volume
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "docker_compose_volume")
@@ -193,7 +193,7 @@ Volume configuration for the Compose application.
 
 <a id="ComposeNetworkInfo"></a>
 
-## ComposeNetworkInfo
+### ComposeNetworkInfo
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "ComposeNetworkInfo")
@@ -213,7 +213,7 @@ A network contributed by a target. Shard JSON matches the network schema.
 
 <a id="ComposeServiceInfo"></a>
 
-## ComposeServiceInfo
+### ComposeServiceInfo
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "ComposeServiceInfo")
@@ -233,7 +233,7 @@ A service contributed by a target. Shard JSON matches the service schema.
 
 <a id="ComposeVolumeInfo"></a>
 
-## ComposeVolumeInfo
+### ComposeVolumeInfo
 
 <pre>
 load("@rules_docker_compose//compose:compose_rules.bzl", "ComposeVolumeInfo")

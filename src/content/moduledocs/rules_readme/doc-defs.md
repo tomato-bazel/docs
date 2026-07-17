@@ -13,7 +13,7 @@ load("@rules_readme//readme:defs.bzl", "readme", "markdown_fragment")
 
 <a id="markdown_fragment"></a>
 
-## markdown_fragment
+### markdown_fragment
 
 <pre>
 load("@rules_readme//readme:defs.bzl", "markdown_fragment")
@@ -42,7 +42,7 @@ Declare one composable markdown fragment (a section of a document).
 
 <a id="markdown_document"></a>
 
-## markdown_document
+### markdown_document
 
 <pre>
 load("@rules_readme//readme:defs.bzl", "markdown_document")
@@ -70,7 +70,7 @@ Aggregate fragments into one rendered markdown document.
 
 <a id="readme"></a>
 
-## readme
+### readme
 
 <pre>
 load("@rules_readme//readme:defs.bzl", "readme")

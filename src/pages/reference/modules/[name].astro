@@ -28,15 +28,20 @@ let readmeHeadings: { depth: number; slug: string; text: string }[] = [];
 if (readmeEntry) { const r = await render(readmeEntry); ReadmeContent = r.Content; readmeHeadings = r.headings.filter((h) => h.depth === 2); }
 
 const docRenders: { title: string; slug: string; Content: any }[] = [];
+const ruleHeadings: { depth: number; slug: string; text: string }[] = [];
 for (const d of mod.docs) {
   const e = byId.get(`${mod.name}/${d.slug}`);
-  if (e) { const r = await render(e); docRenders.push({ title: d.title, slug: d.slug, Content: r.Content }); }
+  if (e) {
+    const r = await render(e);
+    docRenders.push({ title: d.title, slug: d.slug, Content: r.Content });
+    r.headings.filter((h) => h.depth === 3).forEach((h) => ruleHeadings.push({ depth: 3, slug: h.slug, text: h.text }));
+  }
 }
 
 const hasDeps = mod.deps.length > 0 || mod.used_by.length > 0;
 const headings = [
   ...readmeHeadings,
-  ...(docRenders.length ? [{ depth: 2, slug: "rules", text: "Rules & providers" }] : []),
+  ...(docRenders.length ? [{ depth: 2, slug: "rules", text: "Rules & providers" }, ...ruleHeadings] : []),
   ...(hasDeps ? [{ depth: 2, slug: "dependencies", text: "Dependencies" }] : []),
   { depth: 2, slug: "versions", text: "Versions" },
 ];
@@ -92,7 +97,10 @@ const recent = [...mod.versions_detail].reverse();
       <h2 id="rules">Rules &amp; providers<a class="anchor" href="#rules">#</a></h2>
       <p style="color:var(--muted)">Generated with <a class="link" href="https://github.com/bazelbuild/stardoc">Stardoc</a> from the module's <code class="ic">.bzl</code> sources.</p>
       {docRenders.map((d) => (
-        <div class="stardoc"><h3 id={d.slug}>{d.title}</h3><d.Content /></div>
+        <div class="stardoc" id={d.slug}>
+          <p class="doccap">from <code>docs/{d.title}.md</code></p>
+          <d.Content />
+        </div>
       ))}
     </>
   )}

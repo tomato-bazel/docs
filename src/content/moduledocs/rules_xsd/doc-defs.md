@@ -36,7 +36,7 @@ namespace is absent from the closure.
 
 <a id="xsd_schema"></a>
 
-## xsd_schema
+### xsd_schema
 
 <pre>
 load("@rules_xsd//xsd:defs.bzl", "xsd_schema")
@@ -59,7 +59,7 @@ Declare an XSD schema + its transitive import closure.
 
 <a id="xsd_to_vocab"></a>
 
-## xsd_to_vocab
+### xsd_to_vocab
 
 <pre>
 load("@rules_xsd//xsd:defs.bzl", "xsd_to_vocab")
@@ -81,7 +81,7 @@ Generate a Turtle RDF/OWL vocabulary from an XSD — the 'XSD -> RDF, first inst
 
 <a id="xsd_validate_test"></a>
 
-## xsd_validate_test
+### xsd_validate_test
 
 <pre>
 load("@rules_xsd//xsd:defs.bzl", "xsd_validate_test")

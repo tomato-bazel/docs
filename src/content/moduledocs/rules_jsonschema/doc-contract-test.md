@@ -33,7 +33,7 @@ jsonschema_plugin_contract_test(
 
 <a id="jsonschema_plugin_contract_test"></a>
 
-## jsonschema_plugin_contract_test
+### jsonschema_plugin_contract_test
 
 <pre>
 load("@rules_jsonschema//jsonschema:contract_test.bzl", "jsonschema_plugin_contract_test")

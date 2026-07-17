@@ -28,7 +28,7 @@ everything from a single file.
 
 <a id="docker_compose"></a>
 
-## docker_compose
+### docker_compose
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose")
@@ -51,7 +51,7 @@ Assemble service / volume / network shards into one canonical compose.yaml.
 
 <a id="docker_compose_network"></a>
 
-## docker_compose_network
+### docker_compose_network
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_network")
@@ -83,7 +83,7 @@ Network configuration for the Compose application.
 
 <a id="docker_compose_oci_image_ref"></a>
 
-## docker_compose_oci_image_ref
+### docker_compose_oci_image_ref
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_oci_image_ref")
@@ -106,7 +106,7 @@ Resolve an OCI image layout to `<repo>@sha256:<digest>` at build time and overri
 
 <a id="docker_compose_service"></a>
 
-## docker_compose_service
+### docker_compose_service
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_service")
@@ -232,7 +232,7 @@ Configuration for a service.
 
 <a id="docker_compose_volume"></a>
 
-## docker_compose_volume
+### docker_compose_volume
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_volume")
@@ -258,7 +258,7 @@ Volume configuration for the Compose application.
 
 <a id="ComposeNetworkInfo"></a>
 
-## ComposeNetworkInfo
+### ComposeNetworkInfo
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "ComposeNetworkInfo")
@@ -278,7 +278,7 @@ A network contributed by a target. Shard JSON matches the network schema.
 
 <a id="ComposeProjectInfo"></a>
 
-## ComposeProjectInfo
+### ComposeProjectInfo
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "ComposeProjectInfo")
@@ -297,7 +297,7 @@ A rendered compose project.
 
 <a id="ComposeServiceImageRefInfo"></a>
 
-## ComposeServiceImageRefInfo
+### ComposeServiceImageRefInfo
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "ComposeServiceImageRefInfo")
@@ -317,7 +317,7 @@ A build-time-resolved `<repo>@<digest>` image reference targeted at a named serv
 
 <a id="ComposeServiceInfo"></a>
 
-## ComposeServiceInfo
+### ComposeServiceInfo
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "ComposeServiceInfo")
@@ -337,7 +337,7 @@ A service contributed by a target. Shard JSON matches the service schema.
 
 <a id="ComposeVolumeInfo"></a>
 
-## ComposeVolumeInfo
+### ComposeVolumeInfo
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "ComposeVolumeInfo")
@@ -357,7 +357,7 @@ A volume contributed by a target. Shard JSON matches the volume schema.
 
 <a id="docker_compose_down"></a>
 
-## docker_compose_down
+### docker_compose_down
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_down")
@@ -379,7 +379,7 @@ docker_compose_down(<a href="#docker_compose_down-name">name</a>, <a href="#dock
 
 <a id="docker_compose_up"></a>
 
-## docker_compose_up
+### docker_compose_up
 
 <pre>
 load("@rules_docker_compose//compose:defs.bzl", "docker_compose_up")

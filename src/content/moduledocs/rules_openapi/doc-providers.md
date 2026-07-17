@@ -14,7 +14,7 @@ rather than a JSON Schema).
 
 <a id="OpenapiCodegenToolchainInfo"></a>
 
-## OpenapiCodegenToolchainInfo
+### OpenapiCodegenToolchainInfo
 
 <pre>
 load("@rules_openapi//openapi:providers.bzl", "OpenapiCodegenToolchainInfo")

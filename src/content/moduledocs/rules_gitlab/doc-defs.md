@@ -38,7 +38,7 @@ Limitations of `gitlab_ci_validate`:
 
 <a id="gitlab_ci_lint"></a>
 
-## gitlab_ci_lint
+### gitlab_ci_lint
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_ci_lint")
@@ -61,7 +61,7 @@ gitlab_ci_lint(<a href="#gitlab_ci_lint-name">name</a>, <a href="#gitlab_ci_lint
 
 <a id="gitlab_ci_validate"></a>
 
-## gitlab_ci_validate
+### gitlab_ci_validate
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_ci_validate")
@@ -82,7 +82,7 @@ Validate a `.gitlab-ci.yml` against the official GitLab JSON Schema (pinned by s
 
 <a id="gitlab_ci"></a>
 
-## gitlab_ci
+### gitlab_ci
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_ci")
@@ -123,7 +123,7 @@ source tree; `bazel test …:<name>.update` checks it is up to date.
 
 <a id="gitlab_job"></a>
 
-## gitlab_job
+### gitlab_job
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_job")
@@ -171,7 +171,7 @@ modeled here can be supplied via `extra` (a raw dict, merged last).
 
 <a id="gitlab_pages_job"></a>
 
-## gitlab_pages_job
+### gitlab_pages_job
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_pages_job")
@@ -219,7 +219,7 @@ MUST be `"pages"` for GitLab to publish it.
 
 <a id="gitlab_reference"></a>
 
-## gitlab_reference
+### gitlab_reference
 
 <pre>
 load("@rules_gitlab//gitlab:defs.bzl", "gitlab_reference")

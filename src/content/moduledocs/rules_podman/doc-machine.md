@@ -31,7 +31,7 @@ unvalidated until run on hardware.
 
 <a id="podman_machine"></a>
 
-## podman_machine
+### podman_machine
 
 <pre>
 load("@rules_podman//podman/machine:machine.bzl", "podman_machine")

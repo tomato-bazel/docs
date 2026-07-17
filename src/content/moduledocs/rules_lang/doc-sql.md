@@ -49,7 +49,7 @@ roadmap — `Pg.Ast` generated from `@libpg_query//:pg_query.proto`).
 
 <a id="sql_ast_library"></a>
 
-## sql_ast_library
+### sql_ast_library
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "sql_ast_library")
@@ -74,7 +74,7 @@ Downstream `sql_*_library` projection rules consume the resulting
 
 <a id="sql_catalog_library"></a>
 
-## sql_catalog_library
+### sql_catalog_library
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "sql_catalog_library")
@@ -108,7 +108,7 @@ dialect-specific wrappers (`pg_sql_catalog_library`) pre-fill
 
 <a id="sql_library"></a>
 
-## sql_library
+### sql_library
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "sql_library")
@@ -131,7 +131,7 @@ Declares a set of `.sql` source files of a single dialect.
 
 <a id="SqlAstInfo"></a>
 
-## SqlAstInfo
+### SqlAstInfo
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "SqlAstInfo")
@@ -155,7 +155,7 @@ Each entry of `asts` is a struct(sql=File, ast=File, format=string).
 
 <a id="SqlCatalogInfo"></a>
 
-## SqlCatalogInfo
+### SqlCatalogInfo
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "SqlCatalogInfo")
@@ -180,7 +180,7 @@ attribute). `dialect` matches the upstream `SqlAstInfo.dialect`.
 
 <a id="SqlInfo"></a>
 
-## SqlInfo
+### SqlInfo
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "SqlInfo")
@@ -204,7 +204,7 @@ resolve.
 
 <a id="SqlToolchainInfo"></a>
 
-## SqlToolchainInfo
+### SqlToolchainInfo
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "SqlToolchainInfo")
@@ -231,7 +231,7 @@ downstream projection rules use to pick the right decoder.
 
 <a id="sql_ast_aspect"></a>
 
-## sql_ast_aspect
+### sql_ast_aspect
 
 <pre>
 load("@rules_lang//polyglot:sql.bzl", "sql_ast_aspect")

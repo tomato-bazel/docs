@@ -3,10 +3,10 @@ title: "phase-0-materialization"
 module: "rules_spec"
 ---
 
-# Phase 0 — the ratio spec corpus, materialized as a gated graph
+## Phase 0 — the ratio spec corpus, materialized as a gated graph
 
-**Status:** Done (slice 1) · **Companion to:** [RFC-001](https://github.com/fastverk/rules_spec/blob/main/rfc-001-unified-spec-graph.md),
-[RFC-001b](https://github.com/fastverk/rules_spec/blob/main/rfc-001b-crystallization-math.md), [crank-001](https://github.com/fastverk/rules_spec/blob/main/crank-001-first-step.md)
+**Status:** Done (slice 1) · **Companion to:** [RFC-001](#doc-rfc-001-unified-spec-graph),
+[RFC-001b](#doc-rfc-001b-crystallization-math), [crank-001](#doc-crank-001-first-step)
 
 The crank-001 measurements were computed by agents reading prose. Phase 0 turns
 the corpus into an actual graph: every claim, edge, and hub now has a triple
@@ -14,7 +14,7 @@ behind it, loaded into Jena, validated by SHACL, gated by the consistency
 invariants, and **measured by SPARQL** — so subsequent cranks descend `E(G)` over
 real data, not estimates.
 
-## What landed
+### What landed
 
 - **Seed graph** — [`corpus/ratio-corpus.ttl`](https://github.com/fastverk/rules_spec/blob/main/corpus/ratio-corpus.ttl): the
   conservation kernel + the 16 advertised components as `:Document`s /
@@ -57,7 +57,7 @@ real data, not estimates.
   straight from the store: the data a SPARQL→dot renderer turns into the hero
   graph (the "deck is an output of the pipeline" step).
 
-## What's next
+### What's next
 
 1. **tsv → dot render**: format `//corpus:corpus_edges` output as `.dot` and
    `dot_pdf` it, so the hero graph regenerates from the graph (mechanical).

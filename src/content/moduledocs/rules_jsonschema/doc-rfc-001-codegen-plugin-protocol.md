@@ -3,7 +3,7 @@ title: "RFC-001-codegen-plugin-protocol"
 module: "rules_jsonschema"
 ---
 
-# RFC-001 — Codegen Plugin Protocol
+## RFC-001 — Codegen Plugin Protocol
 
 > Status: **draft, revised**. Captures the architecture pivot from
 > "Rust-binary-per-output-language" to "per-language plugins reading
@@ -19,7 +19,7 @@ module: "rules_jsonschema"
 > inventing for marginal benefit. See "Why we abandoned the AST"
 > below for the full reasoning.
 
-## Goal
+### Goal
 
 Decouple rules_jsonschema's user-facing rules from a hardcoded codegen
 language. After this RFC lands, adding a new output language is:
@@ -36,7 +36,7 @@ writes the generated file content to stdout, and signals errors via
 stderr + exit code. No protobuf dep, no AST proto, no frontend
 binary. Stdlib-only plugins are achievable in any language.
 
-## The contract
+### The contract
 
 A plugin is any executable that conforms to:
 
@@ -82,7 +82,7 @@ A plugin in Rust is the same thing with `serde_json`. A plugin in
 Python wraps `json.load(sys.stdin.buffer)`. There is no contract-
 specific dep in any language.
 
-### Standard argv conventions
+#### Standard argv conventions
 
 The rule passes a fixed set of flags every plugin receives, plus
 whatever the consumer set in `options`:
@@ -96,7 +96,7 @@ whatever the consumer set in `options`:
 Plugins should treat unknown flags as a hard error so misconfigured
 options don't silently degrade output.
 
-## Bazel output declaration
+### Bazel output declaration
 
 Bazel rules **must declare their outputs at analysis time**, before
 any action runs. Three real options were considered:
@@ -120,7 +120,7 @@ Each target is independently cacheable; the build graph is clearer.
 Tree artifacts (B) remain available as an escape hatch for the rare
 genuinely-multi-file plugin.
 
-## Bazel rule shape
+### Bazel rule shape
 
 Each per-language user-facing rule has the same structure:
 
@@ -169,7 +169,7 @@ def jsonschema_rust_library(name, schema, **kwargs):
 
 Same shape per language.
 
-## Why we abandoned the AST
+### Why we abandoned the AST
 
 The first draft of this RFC proposed a protoc-style architecture: a
 frontend parses the schema into a canonical AST proto, plugins
@@ -210,7 +210,7 @@ think this was the wrong call. Reasons:
 The toolchain pattern (toolchain types per output language, register
 your own plugin to override) survives the simplification unchanged.
 
-## Why we also abandoned the proto envelope
+### Why we also abandoned the proto envelope
 
 Even without an AST, we considered keeping a thin proto wrapper:
 `CodeGenRequest{raw_schema, options, version}` in, `CodeGenResponse{file, error, features}` out. Forward-compat without the AST baggage.
@@ -229,7 +229,7 @@ The argument against:
   Migrating plugins is straightforward — only the stdin-parsing
   changes, the codegen logic doesn't.
 
-## Open questions
+### Open questions
 
 1. **Stable JSON Schema spec-version handling.** Plugins should
    probably refuse to operate on schemas whose `$schema` doesn't
@@ -254,7 +254,7 @@ The argument against:
    (list of `$schema` values), `default_options` (dict), `version`
    (for diagnostic banners). All additive.
 
-## Decisions to lock in before Phase 1
+### Decisions to lock in before Phase 1
 
 1. **Plugin contract**: stdin = schema bytes, argv = options,
    stdout = generated file content, stderr + exit code for errors.
@@ -266,9 +266,9 @@ The argument against:
    (already in place).
 4. **Repo naming**: stay `rules_jsonschema`.
 
-## Phases
+### Phases
 
-### Phase 1: nail down the contract in code
+#### Phase 1: nail down the contract in code
 
 - `//jsonschema:plugin_contract.md` (or similar) — a concise
   written spec of stdin/argv/stdout/stderr the contract docs
@@ -281,7 +281,7 @@ The argument against:
   plugins via the contract.
 - Existing rules_docker_compose tests should pass byte-identical.
 
-### Phase 2: Go plugin (in Go)
+#### Phase 2: Go plugin (in Go)
 
 - `tools/plugin_go/main.go` reads schema bytes from stdin, parses
   via `encoding/json`, emits Go types using `go/format`. Uses
@@ -293,7 +293,7 @@ This validates the cross-language contract works as cleanly as the
 RFC claims. If implementing the Go plugin is harder than the
 "15 lines" pitch, the contract needs tightening.
 
-### Phase 3: contract testing
+#### Phase 3: contract testing
 
 A small integration-test rule that runs an arbitrary plugin against
 a curated set of "interesting" schemas (compose-spec subset, edge
@@ -301,7 +301,7 @@ cases, malformed input) and asserts on stdout/stderr/exit behavior.
 Lets plugin authors verify conformance before registering as a
 toolchain.
 
-### Phase 4: rules_docker_compose migration
+#### Phase 4: rules_docker_compose migration
 
 Should be a no-op end-user-visibly — the codegen binaries still
 exist, just invoked through the new contract. Tests pass

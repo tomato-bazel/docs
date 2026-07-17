@@ -12,7 +12,7 @@ loop.
 - **`storybook_manifest`** — emits a deterministic JSON manifest of story file paths. Replaces the non-deterministic `glob` in `.storybook/main.ts`'s `stories: [...]` config; adding a story file now triggers an explicit Bazel-tracked input change.
 - **`storybook_dev`** — `bazel run //path:dev` macro: runs `pnpm exec storybook dev` against the live workspace source. Intentionally non-hermetic (HMR + watch + Vite on-demand optim need filesystem access outside the runfiles tree).
 
-See [docs/defs.md](https://github.com/tomato-bazel/rules_storybook/blob/main/docs/defs.md) for the full rule reference.
+See [docs/defs.md](#doc-defs) for the full rule reference.
 
 ## Install
 

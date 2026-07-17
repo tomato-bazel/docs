@@ -21,7 +21,7 @@ Usage:
     --out src/data/modules.json --content src/content/moduledocs [--fetch]
 Stdlib only.
 """
-import argparse, base64, json, os, re, sys, urllib.request
+import argparse, base64, json, os, posixpath, re, sys, urllib.request
 from pathlib import Path
 
 TOKEN = os.environ.get("GH_TOKEN") or os.environ.get("GITHUB_TOKEN") or ""
@@ -65,24 +65,39 @@ def parse_module_bazel(text):
 
 
 LINK = re.compile(r'(!?)\[([^\]]*)\]\(([^)]+)\)')
+HEAD = re.compile(r'^(#{1,5})(\s)', re.M)
 
 
-def rewrite_links(md, repo, branch):
-    """Rewrite relative markdown links/images to absolute repo URLs so they work
-    when the README is served from docs.tbzl.dev."""
+def demote_headings(md, by=1):
+    """Push ATX headings down `by` levels (## -> ###), so a doc's rule headings
+    nest under the page's 'Rules & providers' h2."""
+    return HEAD.sub(lambda m: "#" * min(6, len(m.group(1)) + by) + m.group(2), md)
+
+
+def rewrite_links(md, repo, branch, base_dir="", doc_anchors=None):
+    """Rewrite relative markdown links/images. Links that point at an ingested
+    docs/*.md file are mapped to the on-page anchor (so a README's `docs/lean.md`
+    scrolls to the rendered Stardoc, and `docs/lean.md#lean_test` to that rule);
+    everything else becomes an absolute repo URL so it still resolves."""
     or_ = owner_repo(repo)
     if not or_:
         return md
     blob = f"https://github.com/{or_}/blob/{branch}/"
     raw = f"https://raw.githubusercontent.com/{or_}/{branch}/"
+    doc_anchors = doc_anchors or {}
 
     def repl(m):
         bang, text, target = m.group(1), m.group(2), m.group(3).strip()
-        low = target.lower()
-        if low.startswith(("http://", "https://", "#", "mailto:", "//")):
+        if target.lower().startswith(("http://", "https://", "#", "mailto:", "//")):
             return m.group(0)
-        clean = target.lstrip("./")
-        return f"{bang}[{text}]({(raw if bang else blob) + clean})"
+        path, _, frag = target.partition("#")
+        resolved = posixpath.normpath(posixpath.join(base_dir, path.lstrip("./"))) if path else ""
+        if not bang and resolved in doc_anchors:
+            anchor = ("#" + frag.lower()) if frag else doc_anchors[resolved]
+            return f"[{text}]({anchor})"
+        clean = (path or target).lstrip("./")
+        url = (raw if bang else blob) + clean + (("#" + frag) if (frag and not bang) else "")
+        return f"{bang}[{text}]({url})"
 
     return LINK.sub(repl, md)
 
@@ -123,30 +138,36 @@ def fetch_repo_docs(repo, name, content_dir):
     branch = info.get("default_branch") or "main"
     desc = (info.get("description") or "").strip() or None
 
+    # Discover docs/*.md first, so the README's links to them can map to on-page anchors.
+    tree = gh(f"/repos/{or_}/git/trees/{branch}?recursive=1")
+    md_paths = []
+    if tree and isinstance(tree.get("tree"), list):
+        md_paths = sorted(
+            t["path"] for t in tree["tree"]
+            if t.get("type") == "blob" and re.match(r"docs/[^/]+\.md$", t.get("path", ""))
+            and os.path.basename(t["path"]).lower() not in ("readme.md", "index.md")
+        )
+    doc_anchors = {p: "#doc-" + slugify(os.path.splitext(os.path.basename(p))[0]) for p in md_paths}
+
     has_readme = False
     rd = gh(f"/repos/{or_}/readme")
     if rd and rd.get("content"):
         body = base64.b64decode(rd["content"]).decode("utf-8", "replace")
-        body = rewrite_links(strip_lead_h1(body), repo, branch)
+        body = rewrite_links(strip_lead_h1(body), repo, branch, base_dir="", doc_anchors=doc_anchors)
         write_doc(content_dir, name, "readme", "Overview", body)
         has_readme = True
 
     docs = []
-    tree = gh(f"/repos/{or_}/git/trees/{branch}?recursive=1")
-    if tree and isinstance(tree.get("tree"), list):
-        md_paths = [t["path"] for t in tree["tree"]
-                    if t.get("type") == "blob"
-                    and re.match(r"docs/[^/]+\.md$", t.get("path", ""))
-                    and os.path.basename(t["path"]).lower() not in ("readme.md", "index.md")]
-        for path in sorted(md_paths):
-            f = gh(f"/repos/{or_}/contents/{path}?ref={branch}")
-            if not (f and f.get("content")):
-                continue
-            body = base64.b64decode(f["content"]).decode("utf-8", "replace")
-            body = rewrite_links(body, repo, branch)
-            base = os.path.splitext(os.path.basename(path))[0]
-            docs.append({"slug": "doc-" + slugify(base), "title": base})
-            write_doc(content_dir, name, "doc-" + slugify(base), base, body)
+    for path in md_paths:
+        f = gh(f"/repos/{or_}/contents/{path}?ref={branch}")
+        if not (f and f.get("content")):
+            continue
+        body = base64.b64decode(f["content"]).decode("utf-8", "replace")
+        body = demote_headings(body, 1)  # rule names ## -> ### (nest under our h2)
+        body = rewrite_links(body, repo, branch, base_dir="docs", doc_anchors=doc_anchors)
+        base = os.path.splitext(os.path.basename(path))[0]
+        docs.append({"slug": "doc-" + slugify(base), "title": base})
+        write_doc(content_dir, name, "doc-" + slugify(base), base, body)
     return desc, has_readme, docs
 
 

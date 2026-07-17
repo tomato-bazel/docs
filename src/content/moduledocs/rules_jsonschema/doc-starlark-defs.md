@@ -24,7 +24,7 @@ asserts the committed `.bzl` matches what the toolchain emits).
 
 <a id="jsonschema_starlark_codegen"></a>
 
-## jsonschema_starlark_codegen
+### jsonschema_starlark_codegen
 
 <pre>
 load("@rules_jsonschema//starlark:defs.bzl", "jsonschema_starlark_codegen")

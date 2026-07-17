@@ -35,7 +35,7 @@ Each fetched/built backend declares one:
 
 <a id="vm_provider"></a>
 
-## vm_provider
+### vm_provider
 
 <pre>
 load("@rules_macvm//vm:toolchains.bzl", "vm_provider")

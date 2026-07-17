@@ -26,7 +26,7 @@ default.
 
 <a id="openapi_go_client"></a>
 
-## openapi_go_client
+### openapi_go_client
 
 <pre>
 load("@rules_openapi//go:defs.bzl", "openapi_go_client")

@@ -20,7 +20,7 @@ language-specific BUILD machinery.
 
 <a id="JsonschemaCodegenToolchainInfo"></a>
 
-## JsonschemaCodegenToolchainInfo
+### JsonschemaCodegenToolchainInfo
 
 <pre>
 load("@rules_jsonschema//jsonschema:providers.bzl", "JsonschemaCodegenToolchainInfo")

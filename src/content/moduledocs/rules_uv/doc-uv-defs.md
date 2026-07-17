@@ -19,7 +19,7 @@ than `requirements.txt`.
 
 <a id="uv_run"></a>
 
-## uv_run
+### uv_run
 
 <pre>
 load("@rules_uv//uv:defs.bzl", "uv_run")

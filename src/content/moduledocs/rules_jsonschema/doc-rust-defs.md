@@ -22,7 +22,7 @@ ahead of the default.
 
 <a id="jsonschema_rust_library"></a>
 
-## jsonschema_rust_library
+### jsonschema_rust_library
 
 <pre>
 load("@rules_jsonschema//rust:defs.bzl", "jsonschema_rust_library")

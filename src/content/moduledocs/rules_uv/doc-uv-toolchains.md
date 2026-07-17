@@ -19,7 +19,7 @@ itself.
 
 <a id="uv_toolchain"></a>
 
-## uv_toolchain
+### uv_toolchain
 
 <pre>
 load("@rules_uv//uv:toolchains.bzl", "uv_toolchain")
@@ -40,7 +40,7 @@ Declares a uv toolchain.
 
 <a id="UvToolchainInfo"></a>
 
-## UvToolchainInfo
+### UvToolchainInfo
 
 <pre>
 load("@rules_uv//uv:toolchains.bzl", "UvToolchainInfo")

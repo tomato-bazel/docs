@@ -26,7 +26,7 @@ Concrete plugins (rules_jena, rules_rdflib, …) register via:
 
 <a id="rdf_reasoner_toolchain"></a>
 
-## rdf_reasoner_toolchain
+### rdf_reasoner_toolchain
 
 <pre>
 load("@rules_rdf//rdf:toolchains.bzl", "rdf_reasoner_toolchain")
@@ -47,7 +47,7 @@ Declare an RDF reasoner (inference) toolchain.
 
 <a id="rdf_serializer_toolchain"></a>
 
-## rdf_serializer_toolchain
+### rdf_serializer_toolchain
 
 <pre>
 load("@rules_rdf//rdf:toolchains.bzl", "rdf_serializer_toolchain")
@@ -68,7 +68,7 @@ Declare an RDF serializer (format-converter) toolchain.
 
 <a id="rdf_validator_toolchain"></a>
 
-## rdf_validator_toolchain
+### rdf_validator_toolchain
 
 <pre>
 load("@rules_rdf//rdf:toolchains.bzl", "rdf_validator_toolchain")
@@ -89,7 +89,7 @@ Declare an RDF validator toolchain.
 
 <a id="sparql_engine_toolchain"></a>
 
-## sparql_engine_toolchain
+### sparql_engine_toolchain
 
 <pre>
 load("@rules_rdf//rdf:toolchains.bzl", "sparql_engine_toolchain")

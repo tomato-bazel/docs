@@ -26,7 +26,7 @@ ahead of the default.
 
 <a id="openapi_rust_client"></a>
 
-## openapi_rust_client
+### openapi_rust_client
 
 <pre>
 load("@rules_openapi//rust:defs.bzl", "openapi_rust_client")

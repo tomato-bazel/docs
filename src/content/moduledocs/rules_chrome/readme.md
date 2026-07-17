@@ -9,22 +9,22 @@ them through a Bazel toolchain plus thin `bazel run` launchers tuned for test
 automation.
 
 - **module extension**: `chrome` — auto-creates `@chrome` + `@chromedriver`
-  external repos at a pinned version. See [docs/extensions.md](https://github.com/tomato-bazel/rules_chrome/blob/main/docs/extensions.md).
+  external repos at a pinned version. See [docs/extensions.md](#doc-extensions).
 - **toolchain**: `chrome_toolchain` — wraps the chrome binary + chromedriver;
   resolved via `@rules_chrome//chrome:toolchain_type`. See
-  [docs/toolchains.md](https://github.com/tomato-bazel/rules_chrome/blob/main/docs/toolchains.md).
+  [docs/toolchains.md](#doc-toolchains).
 - **rules**:
   - `chrome_run` — `bazel run //path:target` → launches Chrome for Testing
     with a managed `--user-data-dir` and the standard automation flags.
   - `chromedriver_run` — `bazel run //path:target` → launches chromedriver
     on a configurable port; consume from selenium / playwright / pytest.
 
-  See [docs/defs.md](https://github.com/tomato-bazel/rules_chrome/blob/main/docs/defs.md).
+  See [docs/defs.md](#doc-defs).
 - **playwright sub-module** (opt-in): `playwright_chrome_py_test` and
   `playwright_chrome_js_test` macros that wire `@chrome` into a Playwright
   `launchPersistentContext` against a Bazel-managed user-data-dir. See
-  [docs/playwright_py.md](https://github.com/tomato-bazel/rules_chrome/blob/main/docs/playwright_py.md) and
-  [docs/playwright_js.md](https://github.com/tomato-bazel/rules_chrome/blob/main/docs/playwright_js.md). Consumers only pay the
+  [docs/playwright_py.md](#doc-playwright-py) and
+  [docs/playwright_js.md](#doc-playwright-js). Consumers only pay the
   `rules_python` / `aspect_rules_js` cost if they load the sub-module — the
   default `bazel_dep` on `rules_chrome` is a zero-cost chrome+chromedriver
   toolchain.

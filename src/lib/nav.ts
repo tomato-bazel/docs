@@ -14,6 +14,7 @@ export const NAV: NavGroup[] = [
   ]},
   { group: "Reference", items: [
     { title: "Modules", href: "/reference/modules/", snip: "Every module in the registry, generated." },
+    { title: "Dependency graph", href: "/reference/graph/", snip: "The registry as a tomato vine — modules and their bazel_deps." },
   ]},
 ];
 

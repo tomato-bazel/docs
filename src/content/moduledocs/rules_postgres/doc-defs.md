@@ -21,7 +21,7 @@ User-facing rules for rules_postgres.
 
 <a id="pg_parse_tree"></a>
 
-## pg_parse_tree
+### pg_parse_tree
 
 <pre>
 load("@rules_postgres//postgres:defs.bzl", "pg_parse_tree")
@@ -56,7 +56,7 @@ A `.pgpb` file whose bytes are exactly the marshalled
 
 <a id="pg_parse_valid_test"></a>
 
-## pg_parse_valid_test
+### pg_parse_valid_test
 
 <pre>
 load("@rules_postgres//postgres:defs.bzl", "pg_parse_valid_test")

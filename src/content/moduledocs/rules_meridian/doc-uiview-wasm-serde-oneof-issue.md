@@ -3,20 +3,20 @@ title: "uiview-wasm-serde-oneof-issue"
 module: "rules_meridian"
 ---
 
-# Known issue: PanelDescriptor JSON ↔ wasm serde oneof mismatch
+## Known issue: PanelDescriptor JSON ↔ wasm serde oneof mismatch
 
 **Status:** open — to fix in a future session. The web renderer's wasm core cannot
 deserialize the `PanelDescriptor` JSON shape that the TS renderer and the demo
 produce, so `examples/uiview-demo` does not actually render a table.
 
-## Symptom
+### Symptom
 
 Rendering any `TablePanel` through the web renderer fails with
 **`descriptor body is not TABLE`**, thrown from `rust/uiview/src/wasm_api.rs`
 (`render_table_wasm` and `build_populate_request`, where they match
 `d.body == Some(Body::Table(..))`).
 
-## Root cause
+### Root cause
 
 The `body` oneof of `PanelDescriptor` is represented two **incompatible** ways:
 
@@ -35,7 +35,7 @@ A shape probe (feeding each candidate into the prebuilt wasm and calling
 `{ table: … }` and `{ body: { table: … } }` both fail. So the renderer and its own
 core disagree on the descriptor shape, and the demo never rendered.
 
-## Why the obvious fix does NOT work
+### Why the obvious fix does NOT work
 
 Adding `#[serde(flatten)]` to the `body` field and
 `#[serde(rename_all = "snake_case")]` to the `Body` oneof (via prost-build
@@ -46,7 +46,7 @@ generated code — but it still fails.** Reason: **serde's `#[serde(flatten)]` i
 unsupported on externally-tagged enums**, so flatten cannot produce the
 proto3-JSON oneof representation. This was tried and reverted; don't repeat it.
 
-## The fix: pbjson
+### The fix: pbjson
 
 Generate **proto3-JSON-compatible serde** with **pbjson** (`pbjson` +
 `pbjson-build`), which represents oneofs as flattened field names correctly. It
@@ -67,14 +67,14 @@ as enum **name strings**, while `demo.js` currently uses integers (e.g.
 `format: 2`). pbjson accepts both, but verify the column `format` values still
 parse after the switch.
 
-## Verify
+### Verify
 
 Rebuild the wasm, then load a flat descriptor
 (`{ panel_id, title, table: { populate, rows_field, columns: [...] } }`) through
 `renderPanel`. It should render a table, and `examples/uiview-demo` should render
 end to end.
 
-## How this surfaced
+### How this surfaced
 
 Found while embedding meridian's web renderer in a Servo-based host window
 (`miniservo`), with the `RpcInvoker` served over a native `rpc:` URL scheme. The

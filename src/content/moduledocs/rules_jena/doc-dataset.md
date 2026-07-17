@@ -35,7 +35,7 @@ use `jena_model` directly.
 
 <a id="jena_dataset"></a>
 
-## jena_dataset
+### jena_dataset
 
 <pre>
 load("@rules_jena//jena:dataset.bzl", "jena_dataset")

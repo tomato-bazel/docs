@@ -17,7 +17,7 @@ runtime.
 
 The Java / Rust / TS / Swift renderers consume the same `PanelDescriptor`
 protos and the same `Theme`; adding a new platform is "write one renderer over
-the same contract." See **[`docs/framework.md`](https://github.com/mattmarshall/meridian/blob/main/docs/framework.md)** for the
+the same contract." See **[`docs/framework.md`](#doc-framework)** for the
 framework model: the three orthogonal layers (semantics / theme / renderers)
 and widgets-as-plugins.
 

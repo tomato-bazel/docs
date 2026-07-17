@@ -34,7 +34,7 @@ For the bare binary depend directly on `@podman//:podman`.
 
 <a id="podman_build"></a>
 
-## podman_build
+### podman_build
 
 <pre>
 load("@rules_podman//podman:defs.bzl", "podman_build")
@@ -64,7 +64,7 @@ Build an image from a tracked build context via `bazel run`. Stages `srcs` into 
 
 <a id="podman_image_load"></a>
 
-## podman_image_load
+### podman_image_load
 
 <pre>
 load("@rules_podman//podman:defs.bzl", "podman_image_load")
@@ -90,7 +90,7 @@ podman_image_load(<a href="#podman_image_load-name">name</a>, <a href="#podman_i
 
 <a id="podman_run"></a>
 
-## podman_run
+### podman_run
 
 <pre>
 load("@rules_podman//podman:defs.bzl", "podman_run")

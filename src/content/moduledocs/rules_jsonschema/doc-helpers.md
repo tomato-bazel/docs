@@ -15,7 +15,7 @@ consumer at once. Generated `.bzl` files load from this module:
 
 <a id="parse_json_or_none"></a>
 
-## parse_json_or_none
+### parse_json_or_none
 
 <pre>
 load("@rules_jsonschema//runtime:helpers.bzl", "parse_json_or_none")
@@ -41,7 +41,7 @@ merged into the shard.
 
 <a id="strip_empty"></a>
 
-## strip_empty
+### strip_empty
 
 <pre>
 load("@rules_jsonschema//runtime:helpers.bzl", "strip_empty")

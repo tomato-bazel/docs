@@ -31,7 +31,7 @@ per-tool (each downstream rules_* repo has its own
 
 <a id="github_binary_repository"></a>
 
-## github_binary_repository
+### github_binary_repository
 
 <pre>
 load("@rules_github//github:repositories.bzl", "github_binary_repository")
@@ -64,7 +64,7 @@ Fetch a per-platform binary release asset from a GitHub release.
 
 <a id="github_source_repository"></a>
 
-## github_source_repository
+### github_source_repository
 
 <pre>
 load("@rules_github//github:repositories.bzl", "github_source_repository")

@@ -3,18 +3,18 @@ title: "mcp-gateway"
 module: "rules_agentic_ide"
 ---
 
-# MCP gateway daemon (Phase 2) — warm, multiplexed, hermetic
+## MCP gateway daemon (Phase 2) — warm, multiplexed, hermetic
 
 A long-lived daemon that fronts all of a repo's MCP servers behind **one**
 warm endpoint. The IDE connects once; backends are launched lazily from
 their lock-pinned Bazel targets and kept warm. This is the responsive,
 cross-session counterpart to the per-server direct launchers in
-[`mcp-hosts.md`](https://github.com/tomato-bazel/rules_agentic_ide/blob/main/mcp-hosts.md) — and it's the existing **mcp-gateway**
+[`mcp-hosts.md`](#doc-mcp-hosts) — and it's the existing **mcp-gateway**
 (today KG-only) extended from "serve the knowledge graph" to "serve the KG
 *plus* multiplex external backends." It is the hermetic, bazel-native,
 KG-aware analogue of `docker mcp gateway run` (which savvi already uses).
 
-## Why a daemon
+### Why a daemon
 
 MCP stdio clients spawn each server once per session and hold the pipe — so
 per-call latency isn't the issue; **session-start** and **cross-session
@@ -28,7 +28,7 @@ warmth** are. A daemon:
 - unifies the **KG** resources/tools with the external servers behind one
   endpoint.
 
-## Architecture
+### Architecture
 
 ```
    IDE (Claude/Cursor/Copilot)
@@ -53,7 +53,7 @@ warmth** are. A daemon:
 - **Backends** are the same lock-pinned launcher targets from the host
   rules. The gateway holds their stdio pipes in a connection pool.
 
-## Lifecycle
+### Lifecycle
 
 | Concern | Design |
 |---|---|
@@ -63,7 +63,7 @@ warmth** are. A daemon:
 | **Idle reap** | Close backends idle > T (configurable) to bound resource use; re-spawn on next use. |
 | **Build freshness** | Launchers rebuilt on lockfile change (git hook / `mcp_sync`); the gateway can refuse-stale + trigger a rebuild with a "building…" response. |
 
-## Aggregation (the MCP-proxy part)
+### Aggregation (the MCP-proxy part)
 
 - **Namespacing**: backend `postgres` tool `query` → `postgres__query`;
   resource URIs prefixed (`mcp://postgres/…`) to avoid collisions. The KG's
@@ -75,7 +75,7 @@ warmth** are. A daemon:
 - **Secrets/env** injected per-backend from a central config (the graph),
   not the projected file.
 
-## Config = the same graph
+### Config = the same graph
 
 The gateway reads the **same `aide:McpServer` manifest** the projection
 emits — host, launcher label, args, env per server. So there is one source
@@ -84,7 +84,7 @@ direct entries (no daemon) or one gateway entry; the gateway, given the
 manifest, launches the same pinned targets. **Mixed mode** is fine (gateway
 for the chatty/cross-session ones, direct for the rare ones).
 
-## Trade-offs (honest)
+### Trade-offs (honest)
 
 - The gateway must implement MCP proxying correctly (namespacing, capability
   negotiation, notification passthrough) — real work, but well-trodden (it's
@@ -94,7 +94,7 @@ for the chatty/cross-session ones, direct for the rare ones).
 - Single process — mitigated by statelessness + restart-on-failure; a
   crashed backend is re-spawned, not fatal to the gateway.
 
-## Build order
+### Build order
 
 1. **Direct launchers** (Phase 1, `mcp-hosts.md`) — the foundation; both
    modes need the lock-pinned launcher targets.

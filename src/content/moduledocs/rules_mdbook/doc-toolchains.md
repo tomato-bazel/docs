@@ -21,7 +21,7 @@ prebuilt binary. Users register it from their `MODULE.bazel`:
 
 <a id="mdbook_toolchain"></a>
 
-## mdbook_toolchain
+### mdbook_toolchain
 
 <pre>
 load("@rules_mdbook//mdbook:toolchains.bzl", "mdbook_toolchain")
@@ -42,7 +42,7 @@ Declare an mdbook binary as a Bazel toolchain.
 
 <a id="MdbookToolchainInfo"></a>
 
-## MdbookToolchainInfo
+### MdbookToolchainInfo
 
 <pre>
 load("@rules_mdbook//mdbook:toolchains.bzl", "MdbookToolchainInfo")

@@ -33,7 +33,7 @@ sparql_query_test(
 
 <a id="sparql_query"></a>
 
-## sparql_query
+### sparql_query
 
 <pre>
 load("@rules_rdf//sparql:defs.bzl", "sparql_query")
@@ -56,7 +56,7 @@ Run a SPARQL query and emit the results as a build artifact (the producer counte
 
 <a id="sparql_query_smoke_test"></a>
 
-## sparql_query_smoke_test
+### sparql_query_smoke_test
 
 <pre>
 load("@rules_rdf//sparql:defs.bzl", "sparql_query_smoke_test")
@@ -78,7 +78,7 @@ Assert that a set of SPARQL queries all parse + execute against a dataset. The q
 
 <a id="sparql_query_test"></a>
 
-## sparql_query_test
+### sparql_query_test
 
 <pre>
 load("@rules_rdf//sparql:defs.bzl", "sparql_query_test")

@@ -3,13 +3,13 @@ title: "ROADMAP"
 module: "rules_cloudformation"
 ---
 
-# rules_cloudformation roadmap
+## rules_cloudformation roadmap
 
 Three milestones to first useful release. Numbering matches the
 `rules_docker_compose` cadence: v0.1 = schema-derived primitives,
 v0.2 = hand-written orchestration, v0.3 = deploy wrappers + linter.
 
-## v0.1 — schema fetch + codegen
+### v0.1 — schema fetch + codegen
 
 Get the schema into the repo as Bazel-fetched data, run codegen, ship
 the first typed rule end-to-end.
@@ -44,7 +44,7 @@ the first typed rule end-to-end.
   works for at least one resource type before the v0.2 aggregator
   arrives.
 
-## v0.2 — hand-written orchestration
+### v0.2 — hand-written orchestration
 
 Replace the placeholder aggregator with the real graph-walking
 implementation, plus cross-stack ref resolution.
@@ -69,7 +69,7 @@ implementation, plus cross-stack ref resolution.
 - **Providers.** `CloudformationResourceInfo`,
   `CloudformationStackInfo`, `CloudformationResourceRefInfo`.
 
-## v0.3 — deploy + lint
+### v0.3 — deploy + lint
 
 Ship the runtime wrappers and the Java-based linter.
 

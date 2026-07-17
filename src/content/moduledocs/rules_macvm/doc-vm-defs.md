@@ -19,7 +19,7 @@ tail (virtio-net, virtio-vsock, virtio-gpu, …).
 
 <a id="vm"></a>
 
-## vm
+### vm
 
 <pre>
 load("@rules_macvm//vm:defs.bzl", "vm")

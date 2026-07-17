@@ -13,7 +13,7 @@ Two repository rules:
 - **`github_binary_repository`** — fetch a per-platform binary release asset (`releases/download/<tag>/<asset>` URL shape; mdbook, bun, ripgrep, jq, …).
 - **`github_source_repository`** — fetch a source tarball from a tag (`archive/refs/tags/<tag>.tar.gz` URL shape; libpg_query and anything else that doesn't ship prebuilt assets but you want to build from source under Bazel).
 
-See [docs/repositories.md](https://github.com/tomato-bazel/rules_github/blob/main/docs/repositories.md) for the full attribute reference.
+See [docs/repositories.md](#doc-repositories) for the full attribute reference.
 
 ## Install
 

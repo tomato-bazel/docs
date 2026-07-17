@@ -7,7 +7,7 @@ Bazel rules for [Next.js](https://nextjs.org/). Runs `next build` as a
 hermetic Bazel action with the workspace's deps as explicit inputs and
 the `.next/` tree as the declared output.
 
-- **rule**: `next_build` — see [docs/defs.md](https://github.com/tomato-bazel/rules_nextjs/blob/main/docs/defs.md).
+- **rule**: `next_build` — see [docs/defs.md](#doc-defs).
 - **rule/macro**: `next_standalone` — turn an `output = "standalone"` build into a `bazel run`-able server **and** a deployable bundle for `pkg_tar`/`oci_image`.
 - **provider**: `NextBuildInfo` — wraps the `.next` output tree so future rules (deploy targets, `oci_image` wrappers, doc-site extractors) can consume builds programmatically.
 

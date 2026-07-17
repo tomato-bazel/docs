@@ -13,7 +13,7 @@ load("@rules_markdown//markdown:defs.bzl", "markdown_fragment", "markdown_docume
 
 <a id="markdown_fragment"></a>
 
-## markdown_fragment
+### markdown_fragment
 
 <pre>
 load("@rules_markdown//markdown:defs.bzl", "markdown_fragment")
@@ -42,7 +42,7 @@ Declare one composable markdown fragment (a section of a document).
 
 <a id="MarkdownDocInfo"></a>
 
-## MarkdownDocInfo
+### MarkdownDocInfo
 
 <pre>
 load("@rules_markdown//markdown:defs.bzl", "MarkdownDocInfo")
@@ -63,7 +63,7 @@ A rendered markdown document — exposed so a doc can be embedded, link-checked,
 
 <a id="MarkdownFragmentInfo"></a>
 
-## MarkdownFragmentInfo
+### MarkdownFragmentInfo
 
 <pre>
 load("@rules_markdown//markdown:defs.bzl", "MarkdownFragmentInfo")
@@ -82,7 +82,7 @@ A markdown fragment + its metadata, gathered transitively by markdown_link_aspec
 
 <a id="markdown_document"></a>
 
-## markdown_document
+### markdown_document
 
 <pre>
 load("@rules_markdown//markdown:defs.bzl", "markdown_document")
@@ -110,7 +110,7 @@ Aggregate fragments into one rendered markdown document.
 
 <a id="markdown_link_aspect"></a>
 
-## markdown_link_aspect
+### markdown_link_aspect
 
 <pre>
 load("@rules_markdown//markdown:defs.bzl", "markdown_link_aspect")

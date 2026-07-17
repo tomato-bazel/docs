@@ -338,3 +338,55 @@ a.depchip:hover{border-color:var(--accent);background:var(--accent-wash);}
 .modcard .mdesc{color:var(--muted);font-size:12px;line-height:1.45;margin-top:7px;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .modcard .mm{margin-top:9px;flex-wrap:wrap;}
+
+/* Stardoc rule sections — rule names render as h3 after the generator demotes ##->### */
+.stardoc :global(h1),.stardoc :global(h2){display:revert;}
+.stardoc > .doccap{font-family:var(--mono);font-size:11px;color:var(--faint);margin:24px 0 0;}
+.stardoc :global(h3){font-family:var(--mono);font-size:15.5px;color:var(--accent);font-weight:600;letter-spacing:0;
+  margin-top:20px;padding-top:14px;border-top:1px solid var(--line);scroll-margin-top:76px;}
+.stardoc :global(h4){font-family:var(--display);font-size:13.5px;color:var(--head);margin-top:16px;}
+.stardoc :global(table){font-size:13px;}
+.stardoc :global(table) :global(code){white-space:normal;}
+
+/* ── wide layout (dependency graph) ── */
+.main.wide{grid-template-columns:minmax(0,1fr);}
+.main.wide article{max-width:none;}
+.main.wide .toc{display:none;}
+
+/* ── tomato-vine dependency graph ── */
+.vinewrap{margin:22px 0;border:1px solid var(--line-2);border-radius:16px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow);}
+.vinebar{display:flex;align-items:center;gap:16px;padding:11px 14px;border-bottom:1px solid var(--line);flex-wrap:wrap;background:var(--raise);}
+.vsearch{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line-2);border-radius:9px;padding:6px 10px;min-width:190px;}
+.vsearch svg{width:15px;height:15px;color:var(--faint);flex:none;}
+.vsearch input{border:0;background:none;outline:none;color:var(--head);font-family:var(--body);font-size:13.5px;width:100%;}
+.vlegend{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:11.5px;color:var(--muted);}
+.vlegend .vl{display:inline-flex;align-items:center;gap:7px;}
+.vlegend .dot{width:12px;height:12px;border-radius:50%;display:inline-block;}
+.vlegend .dot.rules{background:var(--accent-bright);}
+.vlegend .dot.tool{background:var(--accent-bright);box-shadow:0 0 0 1.5px var(--leaf) inset;}
+.vlegend .vine{width:18px;border-top:2px solid var(--leaf);border-radius:2px;display:inline-block;}
+.vlegend .sizehint{color:var(--faint);}
+.vbtn{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--muted);border:1px solid var(--line-2);border-radius:8px;padding:6px 12px;background:var(--surface);cursor:pointer;}
+.vbtn:hover{color:var(--head);border-color:var(--faint);}
+.vinestage{position:relative;height:clamp(440px,68vh,720px);
+  background:radial-gradient(130% 120% at 50% -10%, color-mix(in srgb,var(--accent) 6%,transparent), transparent 62%);}
+.vinestage canvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:grab;touch-action:none;}
+.vinetip{position:absolute;z-index:5;pointer-events:none;background:var(--surface);border:1px solid var(--line-2);border-radius:10px;
+  box-shadow:var(--shadow-lg);padding:9px 12px;display:flex;flex-direction:column;gap:2px;max-width:260px;}
+.vinetip b{font-family:var(--mono);font-size:13px;color:var(--head);}
+.vinetip span{font-size:11.5px;color:var(--muted);}
+.vinetip .k{font-family:var(--mono);font-size:10.5px;color:var(--accent);}
+.vinehint{position:absolute;left:0;right:0;bottom:8px;text-align:center;font-family:var(--mono);font-size:10.5px;color:var(--faint);pointer-events:none;}
+@media (max-width:560px){.vinehint,.vlegend .sizehint{display:none;}}
+
+/* link to the graph from the modules index */
+.graphcta{display:flex;align-items:center;gap:12px;margin:18px 0 4px;border:1px solid var(--line-2);border-radius:14px;
+  padding:14px 18px;background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 6%,transparent),transparent 70%),var(--surface);transition:border-color .14s;}
+.graphcta:hover{border-color:var(--accent);}
+.graphcta .gi{font-size:22px;line-height:1;}
+.graphcta .gt{font-family:var(--display);font-weight:600;color:var(--head);}
+.graphcta .gd{font-size:13px;color:var(--muted);margin-top:1px;}
+.graphcta .ga{margin-left:auto;color:var(--accent);font-family:var(--mono);font-size:13px;}
+
+/* the tooltip's flex display was overriding the [hidden] attribute */
+.vinetip[hidden]{display:none;}

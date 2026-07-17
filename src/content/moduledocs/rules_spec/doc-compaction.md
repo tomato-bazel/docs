@@ -3,7 +3,7 @@ title: "compaction"
 module: "rules_spec"
 ---
 
-# Deterministic compaction — the corrector pass (RFC-001 §5 / RFC-001b §5)
+## Deterministic compaction — the corrector pass (RFC-001 §5 / RFC-001b §5)
 
 The reverse-diffusion step is *predict then project*. The **corrector** `P` is the
 deterministic, machine-checkable projection that never raises the energy — the
@@ -14,7 +14,7 @@ passes** over the live graph. (Rust passes were the original aspiration; since
 hybrid is Lean-proven core + SPARQL passes, with Lean→Rust emission available
 later via the kernel's existing path.)
 
-## Lean-proven core — the corrector invariants
+### Lean-proven core — the corrector invariants
 
 [`lean/Spec/Compaction/Projection.lean`](https://github.com/fastverk/rules_spec/blob/main/lean/Spec/Compaction/Projection.lean),
 built by `//lean:compaction_test` (pure Lean 4 core, no Mathlib, **no `sorry`**).
@@ -30,7 +30,7 @@ redundancy cost `R(l) := l.length`:
 These are exactly the three properties RFC-001b §5 requires of the corrector.
 `redCost_dedupE_le` restates the second in energy terms.
 
-## Executable passes — over the live graph (//corpus)
+### Executable passes — over the live graph (//corpus)
 
 **Transitive reduction (L↓).** [`compaction-reduce.rq`](https://github.com/fastverk/rules_spec/blob/main/corpus/compaction-reduce.rq)
 drops every `:dependsOn` edge implied by a longer path. Because `:dependsOn` is
@@ -57,14 +57,14 @@ components into orbits. Measured: **7 motif templates cover all 16 components**
 | M6 conserved-dimension generalization | 3 |
 | M2 sandboxed simulation | 2 |
 
-## Net E(G) movement (this corrector pass)
+### Net E(G) movement (this corrector pass)
 
 - **L (connectivity)**: redundant edges down 4 (20 → 16), closure preserved.
 - **S (symmetry)**: 7 templates extracted over 16 components — the recoverable
   symmetry is now explicit and measured, ready for the collapse-to-template step.
 - **R (redundancy)**: the dedup pass is proven energy-non-increasing in Lean.
 
-## What's next
+### What's next
 
 1. **Collapse to templates**: rewrite each orbit's per-instance claims to a single
    parametrized motif template + thin instance tuples (the full S↑ realization;

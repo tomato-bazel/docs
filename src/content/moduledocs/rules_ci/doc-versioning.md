@@ -3,7 +3,7 @@ title: "VERSIONING"
 module: "rules_ci"
 ---
 
-# Automated versioning + tag-push (rules_ci)
+## Automated versioning + tag-push (rules_ci)
 
 A WORKFLOW pushes `pkg@x.y.z` tags — never a dev, never the user. On merge to protected
 `main`, per discovered product, the pipeline computes the required SemVer bump from the
@@ -12,7 +12,7 @@ publish lane fires on the tag. This replaces hand-maintained version bumps and m
 changeset files with a deterministic, surface-driven decision (escalating only the
 genuinely-ambiguous cases to a judged verdict).
 
-## Pipeline
+### Pipeline
 
 ```
 merge to main
@@ -37,7 +37,7 @@ version/version.mjs ──►  VersionDecision { from, to, bump, tag, rationale 
 tag-push (bot identity, tag-protection-admitted) ──►  publish lane fires on `pkg@x.y.z`
 ```
 
-## The deterministic core (BUILT + PROVEN — `version/`)
+### The deterministic core (BUILT + PROVEN — `version/`)
 
 - **`surface.mjs`** — extracts the public surface from a package's `.d.ts` entry via the TS
   compiler API: a sorted, comment/whitespace-NORMALIZED list of exported declarations
@@ -59,7 +59,7 @@ Proven on `version/fixtures/{base,add,remove,change}.d.ts`:
 `add`→0.2.6, `remove`→0.3.0, `change`(no backend)→0.3.0 conservative,
 `change`(wired backend says minor)→0.2.6, no-change@1.4.0→1.4.0.
 
-## Schema — the DTOs ARE protos (`fastverk.release.v1`)
+### Schema — the DTOs ARE protos (`fastverk.release.v1`)
 
 The surface/diff/decision DTOs cross the build→tool→tag boundary, so per "DTOs are protos"
 they are the canonical **`proto/fastverk/release/v1/release.proto`** messages (Surface,
@@ -79,7 +79,7 @@ of record, not ad-hoc JSON.
 - Proven: `surface.mjs --binary` emits a `Surface` on the wire; Surface/SurfaceDiff/
   VersionDecision all round-trip encode→decode, and `verify()` rejects malformed messages.
 
-## The escalation backend (GREENFIELD — designed, not built)
+### The escalation backend (GREENFIELD — designed, not built)
 
 There is NO `fastverk/mcp` repo today (confirmed). The seam is ready; the backend is the next
 infra step:
@@ -90,7 +90,7 @@ infra step:
 - Baked into the CI image (infra/images → aion/build) and exposed as
   `FASTVERK_VERSION_ESCALATE_CMD`. Until then the conservative default keeps releases SAFE.
 
-## Tag-push + bot identity (GATED — outward config)
+### Tag-push + bot identity (GATED — outward config)
 
 - The release lane (`ci/aion-release.gitlab-ci.yml`) runs on main, computes the decision,
   writes `package.json` `version`, and pushes `pkg@x.y.z`. The proven tag-push pattern (from
@@ -104,7 +104,7 @@ infra step:
   `.d.ts` for `--previous` (no rebuild-at-tag needed). Alternative: store the surface JSON as a
   release artifact per tag.
 
-## Rollout (gated)
+### Rollout (gated)
 
 1. Bake `version/*.mjs` + `publish.mjs` into the CI image (stop per-repo vendoring).
 2. Add the release lane to the shared aion CI templates (`include:`-ed by every repo).

@@ -7,13 +7,13 @@ Bazel rules for [mdbook](https://rust-lang.github.io/mdBook/). Fetches the
 prebuilt mdbook binary (plus mdbook-mermaid) and orchestrates a hermetic
 `mdbook build` from a Bazel-managed sandbox.
 
-- **module extension**: `mdbook` — auto-creates `@mdbook` + `@mdbook_mermaid` external repos. See [docs/extensions.md](https://github.com/tomato-bazel/rules_mdbook/blob/main/docs/extensions.md).
-- **toolchain**: `mdbook_toolchain` — wraps the mdbook binary; resolved via `@rules_mdbook//mdbook:toolchain_type`. See [docs/toolchains.md](https://github.com/tomato-bazel/rules_mdbook/blob/main/docs/toolchains.md).
+- **module extension**: `mdbook` — auto-creates `@mdbook` + `@mdbook_mermaid` external repos. See [docs/extensions.md](#doc-extensions).
+- **toolchain**: `mdbook_toolchain` — wraps the mdbook binary; resolved via `@rules_mdbook//mdbook:toolchain_type`. See [docs/toolchains.md](#doc-toolchains).
 - **rules**:
   - `mdbook_book` — runs `mdbook build` over a staged source tree, packages HTML as `.tar.gz`.
   - `mdbook_serve` — `bazel run //path:serve` → `mdbook serve` with watch + live reload over the live source tree.
 
-  See [docs/defs.md](https://github.com/tomato-bazel/rules_mdbook/blob/main/docs/defs.md).
+  See [docs/defs.md](#doc-defs).
 
 ## Install
 

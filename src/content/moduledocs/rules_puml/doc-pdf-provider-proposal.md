@@ -3,12 +3,12 @@ title: "pdf-provider-proposal"
 module: "rules_puml"
 ---
 
-# `PdfDocumentInfo` — shared provider design proposal
+## `PdfDocumentInfo` — shared provider design proposal
 
 **Status:** Draft. **Coordinators:** rules_puml (producer), rules_texlive
 (producer + canonical consumer), rules_firefox (future producer).
 
-## Why
+### Why
 
 Three Bazel modules in the fastverk ecosystem produce PDFs from
 different inputs:
@@ -33,7 +33,7 @@ contract — no `rules_jena` ↔ `rules_jsonschema` dep at all. The
 canonical RDF-consumer rules (`sparql_query_test`, etc.) live in
 rules_rdf and accept any target with the provider.
 
-## Proposed shape
+### Proposed shape
 
 ```python
 PdfDocumentInfo = provider(
@@ -73,7 +73,7 @@ PdfTocInfo = provider(
 )
 ```
 
-## Toolchain types (V1)
+### Toolchain types (V1)
 
 When multiple SVG-to-PDF implementations matter (Batik in-JVM today;
 Inkscape if a consumer needs better gradient handling; rsvg-convert
@@ -94,11 +94,11 @@ V0 of this proposal does **not** require toolchain types — direct
 producer to consumer via the provider is enough. Toolchains land
 when a second SVG-to-PDF impl appears.
 
-## Where the provider lives
+### Where the provider lives
 
 Three options ranked by cost:
 
-### A. Tiny new `rules_pdf` module (RECOMMENDED)
+#### A. Tiny new `rules_pdf` module (RECOMMENDED)
 
 - Pure provider definitions, no rules, no Maven, no toolchains in
   V0. Ten lines of Starlark.
@@ -109,7 +109,7 @@ Three options ranked by cost:
 - Cost: one new repo + registry entry. Maintenance is near-zero
   because the provider shape is small and stable.
 
-### B. `rules_texlive` owns the provider
+#### B. `rules_texlive` owns the provider
 
 - LaTeX-paper-build is the canonical consumer; semantically it's
   the right home.
@@ -120,7 +120,7 @@ Three options ranked by cost:
   way exists to expose just the provider without pulling the full
   build graph.
 
-### C. `rules_lang`
+#### C. `rules_lang`
 
 - Considered, rejected. rules_lang scopes source-language ASTs
   and translators; PDF is an artifact format. Putting an artifact
@@ -130,7 +130,7 @@ Three options ranked by cost:
 **Recommendation: (A).** Three-line registry entry, clean
 ownership, future-proof.
 
-## Coordination ask
+### Coordination ask
 
 For the rules_texlive author:
 
@@ -143,7 +143,7 @@ For the rules_texlive author:
 3. Naming — is `PdfDocumentInfo` the right name vs.
    `PdfArtifactInfo`, `PdfInfo` etc.?
 
-## Concrete next steps if (A) is approved
+### Concrete next steps if (A) is approved
 
 1. Create `fastverk/rules_pdf` repo (~10 lines of Starlark).
 2. Register `rules_pdf 0.0.1` in the bazel-registry.

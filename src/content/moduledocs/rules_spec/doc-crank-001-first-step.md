@@ -3,9 +3,9 @@ title: "crank-001-first-step"
 module: "rules_spec"
 ---
 
-# Crank-001 — the first measured reverse-diffusion step
+## Crank-001 — the first measured reverse-diffusion step
 
-**Status:** Result log · **Companion to:** [RFC-001](https://github.com/fastverk/rules_spec/blob/main/rfc-001-unified-spec-graph.md), [RFC-001b](https://github.com/fastverk/rules_spec/blob/main/rfc-001b-crystallization-math.md)
+**Status:** Result log · **Companion to:** [RFC-001](#doc-rfc-001-unified-spec-graph), [RFC-001b](#doc-rfc-001b-crystallization-math)
 **Corpus (rough $G_0$):** the 17 ratio competitive component specs + the ratio
 whitepaper + the positioning brief + RFC-001/001b + `Ratio.Core` (Lean).
 **Method:** one *predict → project → gate → frontier* pass, run as four parallel
@@ -16,7 +16,7 @@ document corpus directly.
 
 ---
 
-## 1. Measured energy snapshot $E(G_0)$
+### 1. Measured energy snapshot $E(G_0)$
 
 First measurement of the RFC-001b §3 energy terms over the rough corpus:
 
@@ -36,7 +36,7 @@ groundable from **open** sources.
 
 ---
 
-## 2. Predictor — claims & edges (the score step)
+### 2. Predictor — claims & edges (the score step)
 
 - **73 claims** extracted (13 core/paper + 60 across the 17 components), each with
   RFC-2119 modality and a tier guess (Structural / Derivational / Implemented).
@@ -52,7 +52,7 @@ groundable from **open** sources.
 
 This is the connectivity backbone $L$: the graph is a near-star around conservation.
 
-## 3. Corrector — projection targets (the deterministic step)
+### 3. Corrector — projection targets (the deterministic step)
 
 The 16 specs are **one document orbit** that collapses to **7 parametrized motif
 templates** (this is the bankable symmetry $S$):
@@ -77,7 +77,7 @@ templates** (this is the bankable symmetry $S$):
   only `portfolio-accounting` and `data-governance` keep a small bespoke remainder.
   $R$ falls steeply, $S$ rises steeply, meaning-preserving.
 
-## 4. Gate — tensions (what blocks the manifold $\mathcal{M}$)
+### 4. Gate — tensions (what blocks the manifold $\mathcal{M}$)
 
 15 tensions: **3 contradictions, 2 modality conflicts, 4 term-drift, 5 dangling.**
 The cross-cutting pattern: the conservation *theorem* is being silently widened to
@@ -98,7 +98,7 @@ Other notable: T1 term-drift "trusted core" vs "proven kernel" vs "trusted compu
 base" (pick one canonical definer); T3 "claim" means both the prose assertion and the
 graph primitive — *will collide at Phase-0 ingest*, so name them apart now.
 
-## 5. Frontier — standards to internalize ($U$ → groundings)
+### 5. Frontier — standards to internalize ($U$ → groundings)
 
 ~8 under-specified leaves map to external standards; **most are OPEN-licensed**
 (per the RFC-001 §7.1 licensing gate). Highest-value, all OPEN:
@@ -121,7 +121,7 @@ graph primitive — *will collide at Phase-0 ingest*, so name them apart now.
 load-bearing for the valuation/P&L dimensions, and the exact "Wikipedia → standard"
 path from RFC-001 Appendix A.
 
-## 6. Next reverse step (the prioritized action queue)
+### 6. Next reverse step (the prioritized action queue)
 
 1. **Project** (deterministic, safe): collapse the 16 specs to the 7 M-templates;
    dedupe R1–R8; drop E2–E7. Banks $S$, cuts $R$ — no semantic risk.
@@ -132,7 +132,7 @@ path from RFC-001 Appendix A.
 4. **Materialize**: feed these claims/edges as the seed for Phase 0 (the Jena graph),
    so subsequent cranks measure $E(G)$ over the real graph, not the corpus.
 
-## 7. Provenance & reproducibility
+### 7. Provenance & reproducibility
 
 Four agents, run in parallel; each read the corpus read-only and returned structured,
 mergeable output (claims keyed by `<slug>:<n>` for dedup). Re-running is cheap and

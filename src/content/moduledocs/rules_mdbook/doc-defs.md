@@ -19,7 +19,7 @@ mdbook.
 
 <a id="mdbook_book"></a>
 
-## mdbook_book
+### mdbook_book
 
 <pre>
 load("@rules_mdbook//mdbook:defs.bzl", "mdbook_book")
@@ -44,7 +44,7 @@ Run `mdbook build` over a staged source tree and produce an HTML tarball.
 
 <a id="mdbook_serve"></a>
 
-## mdbook_serve
+### mdbook_serve
 
 <pre>
 load("@rules_mdbook//mdbook:defs.bzl", "mdbook_serve")
@@ -65,7 +65,7 @@ Run `mdbook serve` (with watch + live reload) against the live user source tree 
 
 <a id="MdbookSiteInfo"></a>
 
-## MdbookSiteInfo
+### MdbookSiteInfo
 
 <pre>
 load("@rules_mdbook//mdbook:defs.bzl", "MdbookSiteInfo")

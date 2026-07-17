@@ -15,7 +15,7 @@ of a JSON Schema).
 
 <a id="openapi_plugin_contract_test"></a>
 
-## openapi_plugin_contract_test
+### openapi_plugin_contract_test
 
 <pre>
 load("@rules_openapi//openapi:contract_test.bzl", "openapi_plugin_contract_test")

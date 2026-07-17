@@ -41,5 +41,5 @@ flow against any hosted UI. `deploy/vpn-auth.yaml` ships an AWS Cognito user poo
 provider — bring your own by passing `OidcIssuer`/`HostedUiBaseUrl`/`CliClientId`
 to the stacks instead.
 
-See [docs/private-plane-access.md](https://github.com/fastverk/vpn/blob/main/docs/private-plane-access.md) for the
+See [docs/private-plane-access.md](#doc-private-plane-access) for the
 provision → up → kubectl-over-tunnel runbook.

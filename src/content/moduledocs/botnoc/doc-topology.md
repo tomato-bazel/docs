@@ -3,12 +3,12 @@ title: "TOPOLOGY"
 module: "botnoc"
 ---
 
-# fastverk topology — repos + services feeding the console
+## fastverk topology — repos + services feeding the console
 
 Status: **canonical map** (living doc). The one place that answers "what feeds
 the botnoc/fastverk console, and where does a new thing go?"
 
-## 1. The model
+### 1. The model
 
 **The console (`botnoc`) is an aggregator, not a monolith.** Every external
 system surfaces in the console through *exactly one* plugin BFF under
@@ -25,7 +25,7 @@ Swap modgraph for something else and only `services/tbzl` changes.
 The new **chat** host is the one plugin that inverts this: it is a *meta-consumer*
 that reaches the **other** plugins' MCP surfaces (see §5).
 
-## 2. The naming seam (convention — hold this invariant)
+### 2. The naming seam (convention — hold this invariant)
 
 Adding a plugin means picking one id `<x>` and using it in all five places:
 
@@ -46,7 +46,7 @@ identity is forwarded, never a broad service credential: the gateway resolves th
 signed-in user and injects `X-Fastverk-User-Sub` / `-Email` and, when the user
 has connected GitHub, `X-Fastverk-Github-Token` — so the BFF acts *as that user*.
 
-## 3. In-repo map (`fastverk/botnoc`)
+### 3. In-repo map (`fastverk/botnoc`)
 
 ```
 web/                  botnoc-web — the gateway + shell (axum). Cognito auth,
@@ -64,7 +64,7 @@ lean/Botnoc/          the Lean model (formalized invariants, e.g. TechDebt).
                       (the fastverk.com marketing site moved to fastverk/site.)
 ```
 
-## 4. The console plugin catalog
+### 4. The console plugin catalog
 
 | Plugin `<x>` | `services/<x>` does | Chart | Upstream / data source |
 |---|---|---|---|
@@ -79,7 +79,7 @@ lean/Botnoc/          the Lean model (formalized invariants, e.g. TechDebt).
 | **chat** *(new)* | the MCP-host chat plane (§5) | botnoc-chat *(new)* | the other plugins' MCP surfaces + Bedrock |
 | webhook_bridge | Lambda: GitHub App webhooks → `repository_dispatch` | (Lambda, not a chart) | GitHub App |
 
-## 5. Where chat fits
+### 5. Where chat fits
 
 `services/chat` (`botnoc-chat`) is a plugin by packaging — same crate/chart
 convention — but its data plane is the **other plugins**. It discovers plugins,
@@ -93,7 +93,7 @@ Because each plugin's MCP server is *already* the authorization boundary, the
 host stays a faithful deputy — Claude can only do what the signed-in user can. See
 `deploy/FASTVERK-CHAT-PLAN.md` for the full design and phased build.
 
-## 6. External constellation (the repos behind the plugins)
+### 6. External constellation (the repos behind the plugins)
 
 Layered as **hub / source+build / runtime / apps / intelligence** (per the
 tbzl↔fv split). The console (hub) surfaces the others through the §4 plugins.
@@ -117,7 +117,7 @@ tbzl↔fv split). The console (hub) surfaces the others through the §4 plugins.
 ECR the plugins run on today. `fastverk-prod` (491117466965) — the older
 App-Runner console, being migrated to aion-dev.
 
-## 7. Reconcile list (the "get organized" backlog)
+### 7. Reconcile list (the "get organized" backlog)
 
 Concrete drift to clean up as we go — small, mechanical, keeps the map honest:
 

@@ -3,13 +3,13 @@ title: "gitlab-integration-design"
 module: "botnoc"
 ---
 
-# GitLab (self-hosted) integration — design
+## GitLab (self-hosted) integration — design
 
 Status: draft · Owner: platform · Mirrors the existing GitHub integration for
 self-hosted GitLab, so an **administrator installs it once per instance** and
 fastverk then enumerates and reacts to webhooks exactly as it does for GitHub.
 
-## Context & goal
+### Context & goal
 
 fastverk integrates with GitHub across five planes (read/discovery, write/cascade,
 per-user connect, a service-wide "app" identity, and webhooks). We want the same
@@ -23,7 +23,7 @@ App** — no single installable object that mints per-installation tokens. For
 self-hosted we compose the "app" from three admin-created primitives, **per
 instance** (each GitLab has its own base URL, registration, and secrets).
 
-## Decisions (locked)
+### Decisions (locked)
 
 1. **Install UX:** auto-provision from a one-time admin token, with a manual guided
    fallback.
@@ -35,7 +35,7 @@ instance** (each GitLab has its own base URL, registration, and secrets).
    and GitLab converge on an internal gRPC `AgentService.Dispatch` to botnoc-agent,
    retiring the GitHub-specific `repository_dispatch`.
 
-## What already exists (do not rebuild)
+### What already exists (do not rebuild)
 
 | Plane | Reference (GitHub) | GitLab status |
 |---|---|---|
@@ -45,7 +45,7 @@ instance** (each GitLab has its own base URL, registration, and secrets).
 | Per-user connect | `web/src/connections.rs` (GitHub live) | **Stub:** `gitlab` is a `CATALOG` entry (`KIND_OAUTH`) that falls through to "coming soon"; DynamoDB SK already accommodates `"gitlab"` |
 | Webhooks | `services/webhook_bridge/src/main.rs` | **Absent** for GitLab |
 
-## The GitLab "app" = three per-instance primitives
+### The GitLab "app" = three per-instance primitives
 
 Created once per GitLab instance (the admin-install artifact):
 
@@ -62,9 +62,9 @@ Created once per GitLab instance (the admin-install artifact):
    to `issues_events`, `merge_requests_events`, `note_events`, `push_events`. Group
    webhooks (not **system hooks**) are required — system hooks omit issue/label events.
 
-## Install flow
+### Install flow
 
-### Primary: auto-provision from a one-time admin token
+#### Primary: auto-provision from a one-time admin token
 
 1. New admin route `GET/POST /api/connect/gitlab/admin` (behind `require_auth`, gated to
    fastverk admins). Admin submits `{ base_url, admin_pat }` where `admin_pat` is an
@@ -81,14 +81,14 @@ Created once per GitLab instance (the admin-install artifact):
    the webhook (`POST /api/v4/groups/:id/hooks/:hook_id` test) → mark installation
    `active`.
 
-### Fallback: manual guided setup
+#### Fallback: manual guided setup
 
 If the admin will not grant a bootstrap PAT, the same page renders the exact steps
 (OAuth app redirect URI + scopes, the group webhook URL + generated secret, the
 service-account token) and accepts pasted `client_id`/`client_secret` + token. Both
 paths converge on the same installation record.
 
-## Data model
+### Data model
 
 **New — per-instance installations** (`fastverk-forge-installations`, DynamoDB;
 PK `provider` = `"gitlab"`, SK `host`):
@@ -114,7 +114,7 @@ functions; store `{ access_token, refresh_token, expires_at, host }`.
 Secrets naming (mirror `fastverk/github-*`): `fastverk/gitlab/{host}/oauth-client-secret`,
 `.../service-account-token`, `.../webhook-token`.
 
-## Auth planes & header plumbing
+### Auth planes & header plumbing
 
 - **Unattended (service account):** forge/wave read `FASTVERK_TOKEN_GITLAB_<HOST>` (the
   service-account token). Already supported by `ForgeBackend`; only the deploy wiring is
@@ -128,7 +128,7 @@ Secrets naming (mirror `fastverk/github-*`): `fastverk/gitlab/{host}/oauth-clien
   `services/forge/src/http.rs` + `mcp.rs` to build a per-request GitLab client (today the
   GitLab leg uses only the static env token — this is the main enumeration gap).
 
-## Enumeration parity — remaining work
+### Enumeration parity — remaining work
 
 1. **Per-user GitLab client** in forge (header plumbing above).
 2. **Write path:** add GitLab `open_issue` to the forge plugin (`POST
@@ -139,7 +139,7 @@ Secrets naming (mirror `fastverk/github-*`): `fastverk/gitlab/{host}/oauth-clien
    Runner CFN path, and the per-host token secret isn't provisioned anywhere.
 4. Flip the `gitlab` `CATALOG` entry from placeholder to live.
 
-## Webhooks — "same as GitHub"
+### Webhooks — "same as GitHub"
 
 Extend `services/webhook_bridge` (or add a sibling handler) to accept GitLab:
 
@@ -165,7 +165,7 @@ Idempotency: optionally record `X-Gitlab-Event-UUID` / GitHub `X-GitHub-Delivery
 dedup — today the bridge 202-acks everything and relies on the downstream workflow state
 machine; keep that contract.
 
-## Config / deploy surfaces
+### Config / deploy surfaces
 
 - **Helm** `deploy/charts/botnoc-forge`: add `gitlab.hosts` → `FASTVERK_GITLAB_HOSTS` and
   a per-host `gitlab.tokenSecret` → `FASTVERK_TOKEN_GITLAB_<HOST>`.
@@ -178,7 +178,7 @@ machine; keep that contract.
 - **webhook_bridge:** grant the Lambda read on `fastverk/gitlab/*` secrets + the
   installations table; add the GitLab route branch.
 
-## Security notes
+### Security notes
 
 - Admin bootstrap PAT is used in-request and **never stored**; only minted secrets persist.
 - OAuth app marked `confidential` + `trusted`; scopes minimized (`api` is required for
@@ -187,7 +187,7 @@ machine; keep that contract.
 - Service-account token is per-instance and rotatable; scope it to the in-scope groups.
 - Self-hosted TLS: honor the instance CA; do not disable verification.
 
-## Rollout / phasing
+### Rollout / phasing
 
 1. **M1 — enumeration:** Helm wiring + per-user token plumbing + flip catalog + GitLab
    `open_issue`. Target `gitlab.savvifi.com` first (live + bridged). *Delivers the
@@ -198,7 +198,7 @@ machine; keep that contract.
 4. **M4 — webhooks:** normalized `AgentStart` + gRPC dispatch + GitLab bridge branch;
    migrate GitHub off `repository_dispatch` onto the same path.
 
-## Open questions
+### Open questions
 
 - First webhook target: legacy `gitlab.savvifi.com` vs in-cluster `gitlab` namespace
   (post-migration canonical). Both can reach the public Lambda Function URL.

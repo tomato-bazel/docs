@@ -9,7 +9,7 @@ Public rules for rules_vite.
 
 <a id="vitest_test"></a>
 
-## vitest_test
+### vitest_test
 
 <pre>
 load("@rules_vite//vite:defs.bzl", "vitest_test")

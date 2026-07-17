@@ -24,7 +24,7 @@ fuller JSON-Schema-to-Go support, register your own
 
 <a id="jsonschema_go_library"></a>
 
-## jsonschema_go_library
+### jsonschema_go_library
 
 <pre>
 load("@rules_jsonschema//go:defs.bzl", "jsonschema_go_library")

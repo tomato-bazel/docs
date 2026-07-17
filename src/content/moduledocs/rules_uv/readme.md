@@ -94,7 +94,7 @@ What ships:
   - `examples/multiplatform/` — multi-platform lockfile + py_test
     that resolves a native wheel through the per-platform selector.
 
-Deferred to v0.7+ (see [`docs/ROADMAP.md`](https://github.com/tomato-bazel/rules_uv/blob/main/docs/ROADMAP.md)):
+Deferred to v0.7+ (see [`docs/ROADMAP.md`](#doc-roadmap)):
 
 * Migration to rules_python's `uv_toolchain` once it leaves
   experimental.

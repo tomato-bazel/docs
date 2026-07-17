@@ -8,21 +8,21 @@ wraps it as a Bazel toolchain, and provides hermetic `bun test` +
 sandbox-escaping `bun run` runners, plus `bun build` bundling and
 `bun build --compile` standalone-executable rules.
 
-- **module extensions** (see [docs/extensions.md](https://github.com/tomato-bazel/rules_bun/blob/main/docs/extensions.md)):
+- **module extensions** (see [docs/extensions.md](#doc-extensions)):
   - `bun` — auto-creates `@bun` with the host-platform binary.
   - `bun_deps` — Bun-native `node_modules` staging. `bun_deps.install(...)`
     runs `bun install --frozen-lockfile` from a `package.json` + `bun.lock`
     and exposes the result as `@<name>//:node_modules`. The pure-Bun
     replacement for aspect_rules_js's `npm_translate_lock` +
     `npm_link_all_packages` — **no pnpm-lock, no aspect_rules_js**.
-- **toolchain**: `bun_toolchain` — wraps the binary; resolved via `@rules_bun//bun:toolchain_type`. See [docs/toolchains.md](https://github.com/tomato-bazel/rules_bun/blob/main/docs/toolchains.md).
+- **toolchain**: `bun_toolchain` — wraps the binary; resolved via `@rules_bun//bun:toolchain_type`. See [docs/toolchains.md](#doc-toolchains).
 - **rules**:
   - `bun_test` — runs `bun test` over listed source files as a Bazel test target (optional `node_modules` for dep resolution).
   - `bun_run` — `bazel run //path:target` macro: invokes `bun run <script>` against the live workspace source.
   - `bun_bundle` — bundle a JS/TS entry point into one self-contained file via `bun build` (Bun-native `node_modules` path or legacy aspect `driver` path).
   - `bun_compile` — compile a JS/TS entry point into a standalone native executable via `bun build --compile`.
 
-  See [docs/defs.md](https://github.com/tomato-bazel/rules_bun/blob/main/docs/defs.md).
+  See [docs/defs.md](#doc-defs).
 
 ## Install
 

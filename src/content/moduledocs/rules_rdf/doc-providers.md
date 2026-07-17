@@ -17,7 +17,7 @@ sandbox.
 
 <a id="RdfDatasetInfo"></a>
 
-## RdfDatasetInfo
+### RdfDatasetInfo
 
 <pre>
 load("@rules_rdf//rdf:providers.bzl", "RdfDatasetInfo")
@@ -38,7 +38,7 @@ A declared RDF dataset.
 
 <a id="RdfReasonerToolchainInfo"></a>
 
-## RdfReasonerToolchainInfo
+### RdfReasonerToolchainInfo
 
 <pre>
 load("@rules_rdf//rdf:providers.bzl", "RdfReasonerToolchainInfo")
@@ -59,7 +59,7 @@ An RDF inference engine. Resolved by `rdf_reason`.
 
 <a id="RdfSerializerToolchainInfo"></a>
 
-## RdfSerializerToolchainInfo
+### RdfSerializerToolchainInfo
 
 <pre>
 load("@rules_rdf//rdf:providers.bzl", "RdfSerializerToolchainInfo")
@@ -80,7 +80,7 @@ An RDF format converter. Resolved by `rdf_transform`.
 
 <a id="RdfValidatorToolchainInfo"></a>
 
-## RdfValidatorToolchainInfo
+### RdfValidatorToolchainInfo
 
 <pre>
 load("@rules_rdf//rdf:providers.bzl", "RdfValidatorToolchainInfo")
@@ -101,7 +101,7 @@ An RDF validator (SHACL today; ShEx in scope for v0.2). Resolved by `rdf_validat
 
 <a id="SparqlEngineToolchainInfo"></a>
 
-## SparqlEngineToolchainInfo
+### SparqlEngineToolchainInfo
 
 <pre>
 load("@rules_rdf//rdf:providers.bzl", "SparqlEngineToolchainInfo")

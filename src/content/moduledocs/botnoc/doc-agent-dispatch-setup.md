@@ -3,7 +3,7 @@ title: "agent-dispatch-setup"
 module: "botnoc"
 ---
 
-# `agent-dispatch.yml` setup
+## `agent-dispatch.yml` setup
 
 The per-repo `.github/workflows/agent-dispatch.yml` that
 `botnoc-agent-server.Dispatch` triggers uses **workload-identity
@@ -18,7 +18,7 @@ state-machine safety properties **W1-W5** (proved in
 `lean/Botnoc/Workflow/AgentDispatchTheorems.lean`) hold for every
 agent run in the fastverk constellation.
 
-## 0. Install the Claude Code GitHub App (org-wide)
+### 0. Install the Claude Code GitHub App (org-wide)
 
 The action's runtime preflight checks for the [Claude Code GitHub
 App](https://github.com/apps/claude) on the target repo. Without
@@ -44,10 +44,10 @@ Verify with:
 ```bash
 gh api orgs/fastverk/installations | python3 -c \
     'import json,sys;print([i["app_slug"] for i in json.load(sys.stdin)["installations"]])'
-# expect: ['claude', ...]
+## expect: ['claude', ...]
 ```
 
-## 1. Create the federation rule in Anthropic's console
+### 1. Create the federation rule in Anthropic's console
 
 Anthropic console → **Workload identity federation** →
 **New rule**. Fill in:
@@ -68,7 +68,7 @@ can't impersonate another), create one rule per repo with
 `subject = repo:fastverk/<name>:*`. The cost is one rule per repo
 to manage.
 
-## 2. Set the org-level GitHub variables
+### 2. Set the org-level GitHub variables
 
 These are **not secrets** — they're public IDs that only matter in
 combination with a GitHub OIDC token signed by GitHub Actions:
@@ -91,7 +91,7 @@ your federation rule targets multiple workspaces or service
 accounts. The default rule typically pins them, so most setups
 don't need to set these.
 
-## 2.5. AWS credentials for the deploy commands
+### 2.5. AWS credentials for the deploy commands
 
 Before running any `bazel run //deploy/cloudformation:…` (or
 `…:_image_push`) target, populate `.env` at the repo root from
@@ -120,7 +120,7 @@ The IAM identity referenced by the profile needs:
   and `fastverk/github-app-private-key`
 - `iam:PassRole` on the App Runner instance + access roles
 
-## 3. Roll out the workflow per repo
+### 3. Roll out the workflow per repo
 
 Copy `.github/workflows/agent-dispatch.yml` into each consumer
 repo (today: the 10 sibling `rules_*` modules under
@@ -139,7 +139,7 @@ bazel run //deploy:install-agent-dispatch -- \
 Until that lands, manual `gh api ... contents/.github/workflows/agent-dispatch.yml`
 PUTs are the way.
 
-## Upstream action bug — and why we use the CLI instead
+### Upstream action bug — and why we use the CLI instead
 
 `anthropics/claude-code-action@v1` (all recent `v1.0.x` pins: .90,
 .91, .133) crash on every run on GitHub-hosted runners with:
@@ -185,18 +185,18 @@ The infrastructure on OUR side stays verified end-to-end:
 a green CLI smoke against issue #1 confirms the agent commits,
 pushes, and opens a PR cleanly.
 
-## 4. Smoke against a benign issue
+### 4. Smoke against a benign issue
 
 In one consumer repo, open an issue with a trivial ask (e.g.
 "Add a sentence about $X to the README"), then:
 
 ```bash
-# from the botnoc workspace:
+## from the botnoc workspace:
 bazel run //cli:botnoc -- ...
-# Navigate to the Backlog panel; press d (or whatever the dispatch
-# binding is) on the issue.
+## Navigate to the Backlog panel; press d (or whatever the dispatch
+## binding is) on the issue.
 
-# OR via the AgentService directly:
+## OR via the AgentService directly:
 grpcurl -plaintext -d '{
   "issue_ref": "fastverk/rules_<repo>#<n>",
   "backend": "CLAUDE_CODE"
@@ -210,7 +210,7 @@ Watch the workflow:
 - `agent/active` is removed (W2: `cleanup` job).
 - On failure: `agent/cancelled` + a comment with the run URL (W3).
 
-## Auth: no static `ANTHROPIC_API_KEY` required
+### Auth: no static `ANTHROPIC_API_KEY` required
 
 The workflow mints a short-lived API token per run via the
 manual federation exchange (see the previous section). If you
@@ -226,7 +226,7 @@ blast radius of any compromised repo (a leaked OIDC token is
 scoped to that repo's claims and expires; a leaked static key
 is full-org access until rotated).
 
-## Why federation instead of a static key
+### Why federation instead of a static key
 
 | Concern | Static API key | Federation |
 |---|---|---|

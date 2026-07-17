@@ -292,6 +292,6 @@ git_hooks(<a href="#git_hooks-name">name</a>, <a href="#git_hooks-gates">gates</
 ## Versioning + the Rust translator
 
 Automated, surface-driven versioning (proto DTOs in `proto/fastverk/release/v1/`, the `version/`
-tools, the escalation seam) is documented in [`docs/VERSIONING.md`](https://github.com/tomato-bazel/rules_ci_ir/blob/main/docs/VERSIONING.md). The Rust
+tools, the escalation seam) is documented in [`docs/VERSIONING.md`](#doc-versioning). The Rust
 CI-IR translator (`//translator`, dev-scoped) and its proof strategy are in
-[`docs/DESIGN.md`](https://github.com/tomato-bazel/rules_ci_ir/blob/main/docs/DESIGN.md).
+[`docs/DESIGN.md`](#doc-design).

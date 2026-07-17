@@ -26,7 +26,7 @@ Pin a specific Chrome for Testing version:
 
 <a id="chrome"></a>
 
-## chrome
+### chrome
 
 <pre>
 chrome = use_extension("@rules_chrome//chrome:extensions.bzl", "chrome")
@@ -40,7 +40,7 @@ Sets up @chrome and @chromedriver as Bazel-fetched prebuilt binaries.
 
 <a id="chrome.toolchain"></a>
 
-### toolchain
+#### toolchain
 
 **Attributes**
 

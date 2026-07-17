@@ -3,7 +3,7 @@ title: "rbe"
 module: "buildbarn"
 ---
 
-# Buildbarn RBE — deploy runbook
+## Buildbarn RBE — deploy runbook
 
 A self-hosted Bazel **remote-build-execution + cache** cluster. Architecture: a gRPC **frontend**
 (CAS/AC entrypoint + execution dispatch) in front of a **scheduler** and a sharded **storage**
@@ -17,7 +17,7 @@ bazel client ──grpcs──▶ frontend ──▶ scheduler ──▶ worker 
                            └────────▶ storage (sharded CAS/AC/FSAC) ◀┘
 ```
 
-## A. Bring-your-own EKS cluster
+### A. Bring-your-own EKS cluster
 
 Prerequisites in the cluster: the EBS CSI driver (storage PVCs), and — only for the hardened
 internet-facing profile — the AWS Load Balancer Controller, cert-manager, and external-dns
@@ -43,7 +43,7 @@ internet-facing profile — the AWS Load Balancer Controller, cert-manager, and 
    ```
    For the internet-facing NLB + gRPC-TLS profile, use `chart/values-example-eks-nlb.yaml`.
 
-## B. Turnkey (bare AWS account)
+### B. Turnkey (bare AWS account)
 
 ```sh
 bazel run //deploy:cluster.up -- --capabilities CAPABILITY_NAMED_IAM \
@@ -58,7 +58,7 @@ The turnkey `cluster` stack already creates the rbe-worker node group, so skip
 `buildbarn-nodegroup`; still run `buildbarn-resources` (pass the cluster stack's `OidcProviderArn`
 + `OidcIssuerUrl` outputs) for the ECR repo + IRSA, then install the chart as in A.4.
 
-## The one coupling you must respect
+### The one coupling you must respect
 
 The worker advertises a `container-image` platform property; the scheduler routes an action to a
 worker only if the action's exec `container-image` matches **exactly**. So three values must be the
@@ -72,14 +72,14 @@ same `docker://<repo>@<digest>`:
 
 Bump all three together when you republish the action image (a digest pin makes the coupling honest).
 
-## Storage backend
+### Storage backend
 
 The chart defaults to the **EBS-local** block-device blobstore (per-replica `gp3` PVCs) — the
 proven, live configuration. `buildbarn-resources` also provisions an **S3 CAS bucket + IRSA role**
 for an S3-backed blobstore; wiring the chart's `storage.jsonnet` to S3 is a follow-up increment
 (set `storage.serviceAccount.create=true` + the role ARN to stage the IRSA today).
 
-## Productionization roadmap
+### Productionization roadmap
 
 The defaults are a single-region sandbox. To harden:
 - **HA**: ≥2 scheduler/frontend replicas; spread storage across AZs; cluster-autoscaler on the
