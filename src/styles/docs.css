@@ -390,3 +390,8 @@ a.depchip:hover{border-color:var(--accent);background:var(--accent-wash);}
 
 /* the tooltip's flex display was overriding the [hidden] attribute */
 .vinetip[hidden]{display:none;}
+
+/* .tbl wraps the table with its own border/radius; the inner <table> must not
+   double it (markdown tables have no wrapper and keep their own border). */
+.tbl table{border:0;border-radius:0;margin:0;}
+.tbl tbody:first-child tr:first-child th,.tbl tbody:first-child tr:first-child td{border-top:0;}
