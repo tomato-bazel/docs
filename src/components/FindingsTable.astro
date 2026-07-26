@@ -1,0 +1,42 @@
+---
+/**
+ * A result set, as a table.
+ *
+ * `vars` drives the column order, and it is the QUERY's order, not alphabetical —
+ * the author chose it so the counterexample reads. `cells` is index-aligned with
+ * it. An empty cell is an unbound SPARQL variable (`OPTIONAL`), not missing data.
+ *
+ * `mono` marks columns to render as code. Left to the caller: which columns are
+ * identifiers varies per gate, and guessing from the value would sometimes be
+ * wrong in a way the reader can see.
+ */
+interface Props {
+  vars: string[];
+  rows: { cells: string[] }[];
+  mono?: string[];
+  empty?: string;
+}
+const {
+  vars,
+  rows,
+  mono = [],
+  empty = "No findings — this invariant currently holds.",
+} = Astro.props;
+const isMono = (v: string) => mono.includes(v);
+---
+{rows.length === 0 ? (
+  <p class="nofind">{empty}</p>
+) : (
+  <div class="tbl"><div class="tbl-scroll"><table>
+    <thead><tr>{vars.map((v) => <th>{v}</th>)}</tr></thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          {vars.map((v, i) => (
+            <td>{r.cells[i] ? (isMono(v) ? <code>{r.cells[i]}</code> : r.cells[i]) : <span class="unbound">—</span>}</td>
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table></div></div>
+)}

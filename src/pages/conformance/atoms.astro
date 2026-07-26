@@ -1,0 +1,160 @@
+---
+import Doc from "../../layouts/Doc.astro";
+import Callout from "../../components/Callout.astro";
+import StatRow from "../../components/StatRow.astro";
+import { report, freshness } from "../../lib/conformance";
+
+const t = report.totals;
+const { atoms, bomNotes, silentUpgrades } = report;
+const fresh = freshness();
+
+// Contested atoms first — they are the actionable half — then the rest,
+// alphabetically within each group. The report's own order is alphabetical.
+const contested = atoms.filter((a) => !a.converged);
+const converged = atoms.filter((a) => a.converged);
+
+const headings = [
+  { depth: 2, slug: "frontier", text: "The frontier" },
+  { depth: 2, slug: "bom", text: "BOM notes" },
+  { depth: 2, slug: "silent", text: "Silent upgrades" },
+];
+const crumbs = [{ label: "Docs", href: "/" }, { label: "Conformance", href: "/conformance/" }, { label: "Third-party atoms" }];
+
+// A long module list is noise in a table cell. Show enough to recognise the
+// shape, and say how many are hidden — never truncate silently.
+const SHOW = 8;
+---
+<Doc
+  title="Third-party atoms"
+  description="The frontier of third-party modules the registry depends on, and whether each is converged on one live version."
+  headings={headings}
+  breadcrumbs={crumbs}
+  wide
+>
+  <p>
+    The <strong>frontier</strong> is the set of third-party modules the registry depends on.
+    Driving it down to a small, single-version set is the convergence goal — and since Bazel
+    8.6.0 / 9.1.0 made <code class="ic">compatibility_level</code> a no-op, it is also the
+    <em>only</em> compatibility mechanism left. With one live version per atom, an
+    incompatible co-selection cannot happen.
+  </p>
+
+  <StatRow
+    stats={[
+      { value: t.atoms, label: "atoms on the frontier", hint: `${t.declaredAtoms} declared here, ${t.atoms - t.declaredAtoms} reached transitively` },
+      { value: t.multiVersionAtoms, label: "live at 2+ versions", tone: t.multiVersionAtoms > 0 ? "warn" : "ok", hint: "each one is a silent-upgrade risk" },
+      { value: `${t.pinnedDeclaredAtoms}/${t.declaredAtoms}`, label: "declared atoms pinned",
+        tone: t.pinnedDeclaredAtoms === t.declaredAtoms ? "ok" : "warn",
+        hint: "the BOM can only govern what we declare" },
+      { value: silentUpgrades.groups.length, label: "distinct silent upgrades", tone: silentUpgrades.groups.length > 0 ? "warn" : "ok", hint: `from ${silentUpgrades.pairs.toLocaleString()} module-atom pairs` },
+    ]}
+  />
+
+  <Callout type="warn" title="compatibility_level is gone, and that changes what C1 is for">
+    <p>
+      Bazel made <code>compatibility_level</code> and <code>max_compatibility_level</code>
+      no-ops — upstream dropped them because raising the level produced version conflicts end
+      users could not resolve. So there is no longer any in-band way for a module to signal a
+      breaking change: MVS takes max-of-minimums, and if A needs <code>x 1.0.0</code> while B
+      needs <code>x 2.0.0</code>, A silently gets 2.0.0. Bazel used to reject that and cannot
+      now. <strong>One live version per atom is therefore the compatibility mechanism, not
+      merely a tidiness goal</strong> — it is the only thing standing between a consumer and a
+      silent breaking upgrade.
+    </p>
+  </Callout>
+
+  <h2 id="frontier">The frontier<a class="anchor" href="#frontier">#</a></h2>
+  <p>
+    <strong>{t.declaredAtoms} atoms are declared</strong> by a module here and
+    {" "}<strong>{t.atoms - t.declaredAtoms} are reached only transitively</strong>. That
+    distinction is how to read the BOM column: the BOM is what <code class="ic">rels deps</code>
+    ratchets our repos onto, so it can only govern atoms our repos actually write down. A
+    transitively reached atom showing <span class="na">n/a</span> is not a gap — there would be
+    nothing for the ratchet to bump.
+  </p>
+
+  <div class="tbl atomtbl"><div class="tbl-scroll"><table>
+    <thead><tr><th>Atom</th><th>Declared</th><th>BOM</th><th>Live versions</th><th>Converged</th></tr></thead>
+    <tbody>
+      {[...contested, ...converged].map((a) => (
+        <tr>
+          <td><code>{a.name}</code></td>
+          <td>{a.declared ? "yes" : <span class="na">transitive</span>}</td>
+          <td>
+            {a.bomVersion
+              ? <code>{a.bomVersion}</code>
+              : a.declared
+                ? <span class="bare">missing</span>
+                : <span class="na">n/a</span>}
+          </td>
+          <td>
+            <span class="lv">
+              {a.live.map((v) => <span><code>{v.version}</code> <span class="n">×{v.count}</span></span>)}
+            </span>
+          </td>
+          <td>{a.converged ? <span class="yes">yes</span> : <span class="no">no</span>}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table></div></div>
+
+  <p style="color:var(--muted);font-size:13.5px">
+    Version order within a row is <strong>lexical, not semantic</strong>. Ordering bzlmod
+    versions correctly needs bzlmod's own comparator — lexically <code class="ic">8.15.2</code>
+    sorts below <code class="ic">8.6.1</code> while semantically 8.6.1 is lower — so these are
+    grouped, not ranked. Reading them as lowest-to-highest would be a mistake worth acting on.
+  </p>
+
+  {bomNotes.length > 0 && (
+    <>
+      <h2 id="bom">BOM notes<a class="anchor" href="#bom">#</a></h2>
+      <p>Why an atom is pinned where it is, from <code class="ic">rules_tomato//bom/versions.json</code>.</p>
+      <div class="tbl"><div class="tbl-scroll"><table>
+        <thead><tr><th>Atom</th><th>Note</th></tr></thead>
+        <tbody>
+          {bomNotes.map((n) => (
+            <tr><td><code>{n.atom}</code></td><td>{n.note}</td></tr>
+          ))}
+        </tbody>
+      </table></div></div>
+    </>
+  )}
+
+  <h2 id="silent">Silent upgrades<a class="anchor" href="#silent">#</a></h2>
+  <p>
+    A module declared one version and MVS gave it a higher one. This is
+    <strong>reported, never gated</strong>: the fix is convergence, not forbidding the
+    upgrade — so this table is the evidence for why C1 matters rather than a list of
+    violations.
+  </p>
+  <p style="color:var(--muted);font-size:13.5px">
+    The report carries {silentUpgrades.pairs.toLocaleString()} (module, atom, declared, got)
+    rows, because the closure names every module that reaches an atom at every version anyone
+    declared. Collapsed to distinct upgrades that is {silentUpgrades.groups.length} — shown in
+    full below, most-affected first.
+  </p>
+
+  <div class="tbl"><div class="tbl-scroll"><table>
+    <thead><tr><th>Atom</th><th>Declared</th><th>Got</th><th>Modules</th></tr></thead>
+    <tbody>
+      {silentUpgrades.groups.map((g) => (
+        <tr>
+          <td><code>{g.atom}</code></td>
+          <td><code>{g.declared}</code></td>
+          <td><code>{g.got}</code></td>
+          <td>
+            <span class="modlist">
+              {g.modules.slice(0, SHOW).join(", ")}
+              {g.modules.length > SHOW && <> … +{g.modules.length - SHOW} more ({g.modules.length} total)</>}
+            </span>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table></div></div>
+
+  <p style="margin-top:28px">
+    <a class="link" href="/conformance/">← Conformance overview</a>
+    {fresh.known && <span style="color:var(--muted)"> · as of {fresh.text}</span>}
+  </p>
+</Doc>

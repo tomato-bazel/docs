@@ -1,6 +1,7 @@
 ---
 import Doc from "../../layouts/Doc.astro";
 import data from "../../data/modules.json";
+import { moduleByName, report as conformance } from "../../lib/conformance";
 
 type Mod = { name: string; latest: string; versions: number; source: string; category: string; description?: string; used_by?: string[] };
 const mods = data.modules as Mod[];
@@ -29,6 +30,19 @@ const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 
     <span class="ga">Open graph →</span>
   </a>
 
+  <a class="graphcta" href="/conformance/">
+    <span class="gi">✓</span>
+    <div>
+      <div class="gt">
+        {conformance.totals.dirtyModules === 0
+          ? "Every module passes every invariant"
+          : `${conformance.totals.dirtyModules} of ${conformance.totals.modules} modules have a conformance finding`}
+      </div>
+      <div class="gd">{conformance.totals.findings} findings across {conformance.totals.gates} machine-checked invariants, proved from the module graph.</div>
+    </div>
+    <span class="ga">Open report →</span>
+  </a>
+
   <div class="modfilter">
     <input id="modq" type="text" placeholder="Filter modules…" aria-label="Filter modules" />
     <span class="ct" id="modct">{data.count} shown</span>
@@ -43,7 +57,16 @@ const rulesCount = groups.find((g) => g.cat === "Bazel rules")?.items.length ?? 
             <a class="modcard" data-name={m.name} data-desc={m.description || ""} href={`/reference/modules/${m.name}/`}>
               <div class="mn">{m.name}</div>
               {m.description && <div class="mdesc">{m.description}</div>}
-              <div class="mm"><span class="mv">{m.latest}</span><span>{m.versions} version{m.versions === 1 ? "" : "s"}</span>{m.used_by && m.used_by.length > 0 && <span>· {m.used_by.length} dependent{m.used_by.length === 1 ? "" : "s"}</span>}</div>
+              <div class="mm">
+                <span class="mv">{m.latest}</span>
+                <span>{m.versions} version{m.versions === 1 ? "" : "s"}</span>
+                {m.used_by && m.used_by.length > 0 && <span>· {m.used_by.length} dependent{m.used_by.length === 1 ? "" : "s"}</span>}
+                {/* Conformance, when the report knows this module. Absent means
+                    not-yet-assessed, and says nothing rather than implying clean. */}
+                {moduleByName[m.name] && (moduleByName[m.name].findingCount > 0
+                  ? <span class="mfind">· {moduleByName[m.name].findingCount} finding{moduleByName[m.name].findingCount === 1 ? "" : "s"}</span>
+                  : <span class="mclean">· clean</span>)}
+              </div>
             </a>
           ))}
         </div>

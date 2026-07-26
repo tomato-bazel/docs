@@ -1,0 +1,26 @@
+---
+/**
+ * A row of headline figures. `hint` is the small line under the value, `tone`
+ * tints the value: "ok" leaf-green, "warn" amber, "bad" tomato, default ink.
+ *
+ * Every number here comes from the report's own `totals`, never re-derived on
+ * the page — if a figure is wrong, the query is wrong.
+ */
+interface Stat {
+  value: string | number;
+  label: string;
+  hint?: string;
+  tone?: "ok" | "warn" | "bad";
+}
+interface Props { stats: Stat[] }
+const { stats } = Astro.props;
+---
+<div class="statrow">
+  {stats.map((s) => (
+    <div class="stat">
+      <div class={`sv${s.tone ? " t-" + s.tone : ""}`}>{s.value}</div>
+      <div class="sl">{s.label}</div>
+      {s.hint && <div class="sh">{s.hint}</div>}
+    </div>
+  ))}
+</div>

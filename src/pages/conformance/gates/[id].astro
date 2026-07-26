@@ -1,0 +1,96 @@
+---
+import { getCollection, render } from "astro:content";
+import Doc from "../../../layouts/Doc.astro";
+import FindingsTable from "../../../components/FindingsTable.astro";
+import { report, type Gate } from "../../../lib/conformance";
+
+export async function getStaticPaths() {
+  const { report } = await import("../../../lib/conformance");
+  return report.gates.map((gate) => ({ params: { id: gate.id }, props: { gate } }));
+}
+const { gate } = Astro.props as { gate: Gate };
+
+// The rationale comes from the gatedocs collection, which tools/gen_conformance.mjs
+// writes from the gate's own `.rq` header comment. Rendering it through Astro
+// rather than from the JSON is what gets code blocks and Shiki — the D2 and D3
+// rationales quote real Bazel errors.
+const docs = await getCollection("gatedocs");
+const entry = docs.find((e) => e.id.replace(/\.md$/, "") === gate.id);
+const Rationale = entry ? (await render(entry)).Content : null;
+
+// Which columns read as identifiers. `module` and `atom` are module names,
+// everything version-shaped or target-shaped is code too; prose columns like
+// S6's `drift` are not.
+const MONO = ["module", "atom", "version", "version_a", "version_b", "target", "toolchain", "repo", "extension", "declared", "got", "directive"];
+
+const headings = [
+  { depth: 2, slug: "why", text: "Why this is an invariant" },
+  { depth: 2, slug: "findings", text: "Findings" },
+];
+const crumbs = [
+  { label: "Docs", href: "/" },
+  { label: "Conformance", href: "/conformance/" },
+  { label: "Invariants", href: "/conformance/gates/" },
+  { label: gate.code },
+];
+
+const n = gate.rows.length;
+const idx = report.gates.findIndex((g) => g.id === gate.id);
+const prev = report.gates[idx - 1];
+const next = report.gates[idx + 1];
+---
+<Doc
+  title={`${gate.code} — ${gate.title}`}
+  description={`${gate.family}. ${n === 0 ? "Currently holds." : `${n} finding${n === 1 ? "" : "s"} in the registry today.`}`}
+  headings={headings}
+  breadcrumbs={crumbs}
+  badge={n === 0 ? "stable" : undefined}
+  wide
+>
+  <p class="asof">
+    <span class="dot" style={n === 0 ? "" : "background:var(--accent)"}></span>
+    {gate.family}
+    {!gate.moduleScoped && <>· registry-level</>}
+    · <a href={gate.sourceUrl}>gates/{gate.id}.rq ↗</a>
+  </p>
+
+  {!gate.moduleScoped && (
+    <p>
+      This is a <strong>registry-level</strong> invariant: it reports that the registry as a
+      whole is inconsistent, not that any one module is at fault. So its findings are not
+      attributed to a module — where a per-module view is meaningful, a companion query
+      supplies it as <a class="link" href="/conformance/atoms/">contested atoms</a>.
+    </p>
+  )}
+
+  <h2 id="why">Why this is an invariant<a class="anchor" href="#why">#</a></h2>
+  {Rationale ? (
+    <div class="rationale"><Rationale /></div>
+  ) : (
+    <p style="color:var(--muted)">This gate's query carries no header comment, so there is no rationale to show — which is itself worth fixing in <a class="link" href={gate.sourceUrl}>the query</a>.</p>
+  )}
+
+  <h2 id="findings">Findings<a class="anchor" href="#findings">#</a></h2>
+  {n > 0 && (
+    <p>
+      <strong>{n} finding{n === 1 ? "" : "s"}.</strong> Each row is a counterexample — the
+      columns are the query's own, in the order it selects them.
+    </p>
+  )}
+  <FindingsTable vars={gate.vars} rows={gate.rows} mono={MONO} />
+
+  <div class="pn">
+    {prev ? (
+      <a href={`/conformance/gates/${prev.id}/`}>
+        <div class="dir">← Previous</div>
+        <div class="ttl">{prev.code} — {prev.title}</div>
+      </a>
+    ) : <span></span>}
+    {next && (
+      <a class="next" href={`/conformance/gates/${next.id}/`}>
+        <div class="dir">Next →</div>
+        <div class="ttl">{next.code} — {next.title}</div>
+      </a>
+    )}
+  </div>
+</Doc>

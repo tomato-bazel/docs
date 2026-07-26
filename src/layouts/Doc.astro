@@ -17,9 +17,23 @@ const { title, description = "tomato-bazel documentation — the Bazel registry 
 
 const path = Astro.url.pathname.replace(/\/+$/, "") || "/";
 const norm = (h: string) => h.replace(/\/+$/, "") || "/";
-// active on the exact page, or on a child page of a section root (e.g. a module
-// detail page keeps "Modules" highlighted).
-const isActive = (href: string) => { const n = norm(href); return n === path || (n !== "/" && path.startsWith(n + "/")); };
+// Exactly ONE item is active: the exact match if there is one, otherwise the
+// LONGEST matching prefix, so a child page keeps its own section highlighted
+// (a module detail page lights "Modules") without also lighting every ancestor.
+//
+// The longest-prefix part is load-bearing once a group has a root page. With a
+// plain startsWith test, /conformance/atoms/ matches both "Third-party atoms"
+// AND the group root "Overview" (/conformance/), and /conformance/gates/<id>/
+// matches "Overview" as well as "Invariants" — so two sidebar entries lit at
+// once, which reads as a bug.
+const items = NAV.flatMap((g) => g.items.map((it) => ({ href: norm(it.href), group: g.group })));
+const activeHref =
+  items.find((it) => it.href === path)?.href ??
+  items
+    .filter((it) => it.href !== "/" && path.startsWith(it.href + "/"))
+    .sort((a, b) => b.href.length - a.href.length)[0]?.href ??
+  null;
+const isActive = (href: string) => norm(href) === activeHref;
 const activeGroup = NAV.find((g) => g.items.some((it) => isActive(it.href)));
 const crumbs: Crumb[] = breadcrumbs ?? [
   { label: "Docs", href: "/" },

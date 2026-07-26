@@ -11,6 +11,12 @@ export const NAV: NavGroup[] = [
   ]},
   { group: "Concepts", items: [
     { title: "Blast radius", href: "/concepts/blast-radius/", badge: "stable", snip: "rdeps — what a change can break." },
+    { title: "Gating", href: "/concepts/gating/", snip: "Zero-row invariants proved from the module graph before a version is admitted." },
+  ]},
+  { group: "Conformance", items: [
+    { title: "Overview", href: "/conformance/", snip: "How the registry is doing against every invariant, right now." },
+    { title: "Invariants", href: "/conformance/gates/", snip: "The gates: what each proves, and what it currently finds." },
+    { title: "Third-party atoms", href: "/conformance/atoms/", snip: "The frontier — one live version per atom is the compatibility mechanism." },
   ]},
   { group: "Reference", items: [
     { title: "Modules", href: "/reference/modules/", snip: "Every module in the registry, generated." },

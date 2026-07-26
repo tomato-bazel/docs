@@ -1,0 +1,51 @@
+---
+/**
+ * How a gate runs, as a figure. The same pipeline gate/README.md draws in ASCII.
+ *
+ * The load-bearing claim is the split: Rust only ever extracts, and every gate is
+ * a Bazel target. So a new invariant is a `.rq` file and a target, not a code
+ * change — and when it fails, the rows it returns ARE the counterexample.
+ */
+---
+<figure class="gfig pipe">
+  <div class="pwrap">
+    <div class="pstage">
+      <div class="ptag">source</div>
+      <div class="pbox">
+        <code>MODULE.bazel</code><code>*.bzl</code><code>source.json</code><code>tarballs</code>
+      </div>
+    </div>
+
+    <div class="parrow" aria-hidden="true"><span>project</span></div>
+
+    <div class="pstage">
+      <div class="ptag rust">Rust — extraction only</div>
+      <div class="pbox one"><code>facts.ttl</code></div>
+    </div>
+
+    <div class="parrow" aria-hidden="true"><span>rdf_dataset</span></div>
+
+    <div class="pstage">
+      <div class="ptag bazel">Bazel — every gate is a target</div>
+      <div class="pbox">
+        <code class="hit">sparql_query_test(*.rq)</code>
+        <code class="soon">rdf_validate_test(shapes)</code>
+      </div>
+      <div class="pnote">
+        one target per invariant · zero rows means it holds
+        <span class="soonnote">the convention tier is not built yet</span>
+      </div>
+    </div>
+
+    <div class="parrow" aria-hidden="true"><span>certify</span></div>
+
+    <div class="pstage">
+      <div class="ptag soon">planned</div>
+      <div class="pbox one"><code class="soon">certificate.binpb</code></div>
+    </div>
+  </div>
+  <figcaption class="gcap">
+    Adding an invariant is <b>one query file plus one target</b> — no Rust rebuild.
+    Dashed boxes are designed, not implemented.
+  </figcaption>
+</figure>
