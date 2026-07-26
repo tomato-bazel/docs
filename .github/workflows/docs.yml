@@ -1,9 +1,13 @@
 name: docs
 
 # Build the docs.tbzl.dev site (Astro + Pagefind full-text search) and publish to
-# GitHub Pages. The Modules reference (src/data/modules.json) is regenerated from
-# the live registry each build — so newly-published modules appear without a code
-# change (also nightly). Replaces the previous mdBook build.
+# GitHub Pages. Two references are regenerated from upstream on each build, so
+# they never drift from what is actually published:
+#
+#   src/data/modules.json      the registry — newly-published modules appear
+#                              without a code change.
+#   src/data/conformance.json  the gate report — /conformance/ and the per-module
+#                              findings on each reference page.
 on:
   push:
     branches: [main]
@@ -17,6 +21,13 @@ on:
       - ".github/workflows/docs.yml"
   schedule:
     - cron: "17 7 * * *"   # nightly — pick up newly-published registry modules
+    - cron: "30 10 * * 1"  # Monday, ~90min after gate's weekly conformance run
+                           # (0 9 * * 1) — comfortable margin for its Bazel
+                           # build. This is a PULL on purpose: a push from gate
+                           # would need a cross-repo PAT held as a secret there,
+                           # and for a weekly artifact that buys a few hours at
+                           # the cost of a credential to rotate. The nightly
+                           # covers it either way.
   workflow_dispatch:
 
 permissions:
@@ -50,6 +61,23 @@ jobs:
         with:
           node-version: "20"
       - run: npm ci
+
+      # The conformance report, from tomato-bazel/gate's Pages. No credentials:
+      # gate is public and publishes the report unauthenticated, the same reason
+      # its own workflow needs no token.
+      #
+      # NOT soft-failed. A stale committed report would render as confident
+      # current numbers, which is worse than a red build — and the report carries
+      # its own generated_at so the page can say how old it is, but only if we
+      # actually fetched it.
+      #
+      # ORDERING: this 404s until gate's conformance-report workflow has run at
+      # least once against the proto-emitting //gates:report. Land the gate change
+      # and `gh workflow run report.yml -R tomato-bazel/gate` BEFORE merging here,
+      # or the first build on main goes red.
+      - name: regenerate the conformance report
+        run: node tools/gen_conformance.mjs --fetch
+
       - run: npm run build   # astro build && pagefind --site dist
 
       - uses: actions/configure-pages@v5

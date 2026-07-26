@@ -1,0 +1,50 @@
+---
+import Doc from "../../../layouts/Doc.astro";
+import Callout from "../../../components/Callout.astro";
+import GateCard from "../../../components/GateCard.astro";
+import { report } from "../../../lib/conformance";
+
+// Group by family, keeping each family in the order gates/BUILD.bazel declares
+// its gates — that order is family-grouped already, so this preserves intent
+// rather than imposing an alphabetical one.
+const families: { family: string; gates: typeof report.gates }[] = [];
+for (const gate of report.gates) {
+  const bucket = families.find((f) => f.family === gate.family);
+  if (bucket) bucket.gates.push(gate);
+  else families.push({ family: gate.family, gates: [gate] });
+}
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const headings = families.map((f) => ({ depth: 2, slug: slug(f.family), text: f.family }));
+const crumbs = [{ label: "Docs", href: "/" }, { label: "Conformance", href: "/conformance/" }, { label: "Invariants" }];
+const t = report.totals;
+---
+<Doc
+  title="Invariants"
+  description="The gates: what each one proves about a module before it enters the registry, and what it currently finds."
+  headings={headings}
+  breadcrumbs={crumbs}
+>
+  <p>
+    {t.gates} invariants, grouped by family. The family letter comes from the gate's id —
+    <strong>S</strong> supply chain, <strong>C</strong> convergence, <strong>D</strong> dev-deps
+    and toolchains — and each gate is one <code class="ic">.rq</code> file plus one Bazel target.
+  </p>
+
+  {families.map((f) => (
+    <>
+      <h2 id={slug(f.family)}>{f.family}<a class="anchor" href={`#${slug(f.family)}`}>#</a></h2>
+      <div class="gategrid">
+        {f.gates.map((gate) => <GateCard gate={gate} />)}
+      </div>
+    </>
+  ))}
+
+  <Callout type="note" title="Two families are designed, not built">
+    <p>
+      <strong>K</strong> (capability) and <strong>V</strong> (semver) exist in the gate's family
+      table and in its design diagram, but have no queries yet — and V1 was
+      <em>dropped</em> deliberately, because <code>compatibility_level</code> is a no-op as of
+      Bazel 8.6.0 / 9.1.0. So is the SHACL convention tier. What is listed above is what runs.
+    </p>
+  </Callout>
+</Doc>

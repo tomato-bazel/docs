@@ -167,7 +167,13 @@
 
   /* reference table */
   .tbl{margin:22px 0;border:1px solid var(--line-2);border-radius:12px;overflow:hidden;}
-  .tbl table{border-collapse:collapse;width:100%;}
+  /* `display:table` is load-bearing, not redundant. The markdown rule below sets
+   `article table{display:block;overflow-x:auto}` so an authored table scrolls,
+   and it wins the display property here because `.tbl table` never declared one.
+   A display:block table shrink-wraps its internal anonymous table box, so a
+   two-column table's header shading stopped short of the container's right edge.
+   Component tables get their scrolling from .tbl-scroll instead. */
+.tbl table{border-collapse:collapse;width:100%;display:table;}
   .tbl th,.tbl td{text-align:left;padding:11px 14px;border-top:1px solid var(--line);font-size:13.5px;vertical-align:top;}
   .tbl thead th{border-top:0;background:var(--raise);font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;}
   .tbl td code{font-family:var(--mono);font-size:12.5px;color:var(--accent);white-space:nowrap;}
@@ -253,7 +259,21 @@
     .main{padding:24px 20px 80px;}
     .ver{display:none;}
   }
-  @media (max-width:560px){ article h1{font-size:30px;} .lead{font-size:17px;} }
+  @media (max-width:560px){
+    article h1{font-size:30px;} .lead{font-size:17px;}
+    /* The header is a flex row of fixed-width controls plus a growable search.
+       A flex item will not shrink below its min-content unless told to, so the
+       search trigger's label + ⌘K hint were pushing the icon cluster past the
+       viewport — 91px of horizontal scroll on every page at 390px wide.
+       At this width the search becomes an ICON BUTTON, matching the theme and
+       GitHub controls beside it. Letting it merely shrink instead leaves a ~30px
+       pill containing one ellipsised letter, which reads as broken. The ⌘K hint
+       goes too: there is no ⌘ on a phone. */
+    .search{flex:0 0 auto;min-width:0;margin-left:auto;}
+    button.search-trigger{width:38px;padding:0;justify-content:center;}
+    button.search-trigger .lbl,button.search-trigger .kbd{display:none;}
+    button.search-trigger .mag{width:17px;height:17px;}
+  }
 
 /* ── MDX / markdown content mapped onto the design ───────────────────────── */
 /* Shiki dual-theme code blocks (themes:{light,dark}, defaultColor:false). Use
@@ -270,9 +290,14 @@ article pre.astro-code::-webkit-scrollbar-thumb{background:var(--line-2);border-
   background:var(--surface);border:1px solid var(--line-2);border-radius:7px;padding:4px 9px;cursor:pointer;opacity:0;transition:opacity .15s;z-index:2;}
 article pre.astro-code:hover .copybtn{opacity:1;} .copybtn:hover{color:var(--text);border-color:var(--faint);}
 
-/* inline code in prose */
+/* inline code in prose.
+   `overflow-wrap` because the content is fetched, not authored here: a module's
+   README can contain an arbitrarily long unbreakable token (a Bazel label like
+   `fvkit//proto/fastverk/plugin/v1/manifest.proto`) and without this it pushes
+   the page into horizontal scroll on a phone. */
 article p code,article li code,article td code:not(.ic),article h2 code,article h3 code{
-  font-family:var(--mono);font-size:.87em;background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:.08em .38em;color:var(--head);}
+  font-family:var(--mono);font-size:.87em;background:var(--raise);border:1px solid var(--line);border-radius:6px;padding:.08em .38em;color:var(--head);
+  overflow-wrap:anywhere;}
 
 /* markdown tables */
 article table{display:block;overflow-x:auto;border-collapse:collapse;width:100%;margin:22px 0;font-size:13.5px;
@@ -411,3 +436,123 @@ a.depchip:hover{border-color:var(--accent);background:var(--accent-wash);}
 .fchip:hover{color:var(--head);border-color:var(--faint);}
 .fchip.on{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 40%,transparent);background:var(--accent-wash);}
 .fchip.on span{color:var(--accent);}
+
+/* ── Conformance ─────────────────────────────────────────────────────────────
+   The registry-conformance section. Everything below styles through the tokens
+   at the top of this file, so it inherits both themes: leaf green = the
+   invariant holds, tomato = findings, amber = a caveat. Nothing here introduces
+   a colour, and nothing needs a dark-mode rule of its own — the one exception
+   is `.pbox code.soon`, which needs a per-theme wash and gets both branches. ── */
+
+/* headline figures */
+.statrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:22px 0;}
+.stat{border:1px solid var(--line);border-radius:12px;padding:14px 16px;background:var(--surface);}
+.stat .sv{font-family:var(--display);font-size:30px;font-weight:600;line-height:1.1;letter-spacing:-.03em;color:var(--head);}
+.stat .sv.t-ok{color:var(--leaf);} .stat .sv.t-warn{color:var(--amber);} .stat .sv.t-bad{color:var(--accent);}
+.stat .sl{font-size:13px;color:var(--text);margin-top:5px;}
+.stat .sh{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.45;}
+
+/* one card per invariant */
+.gategrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin:22px 0;}
+.gcard{display:block;border:1px solid var(--line);border-radius:12px;padding:13px 15px;background:var(--surface);
+  transition:border-color .14s,transform .12s;}
+.gcard:hover{border-color:var(--accent);transform:translateY(-1px);}
+.gcard.clean:hover{border-color:var(--leaf);}
+.gcard .gtop{display:flex;align-items:center;gap:10px;}
+.gcard .gcode{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-wash);
+  border-radius:6px;padding:1px 7px;}
+.gcard.clean .gcode{color:var(--leaf);border-color:color-mix(in srgb,var(--leaf) 35%,transparent);background:var(--leaf-wash);}
+.gcard .gcount{margin-left:auto;font-family:var(--display);font-weight:600;font-size:19px;color:var(--accent);
+  display:inline-flex;align-items:baseline;gap:5px;}
+.gcard .gcount .gcu{font-family:var(--body);font-size:11.5px;font-weight:400;color:var(--muted);}
+.gcard .gtop .badge{margin-left:auto;}
+.gcard .gtitle{font-size:14px;line-height:1.45;color:var(--head);margin-top:9px;}
+.gcard .gmeta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:9px;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;color:var(--faint);}
+.gcard .gscope{border:1px dashed var(--line-2);border-radius:5px;padding:0 5px;cursor:help;}
+
+/* module scoreboard */
+.board{display:flex;flex-direction:column;gap:1px;margin:14px 0 8px;}
+.brow{display:grid;grid-template-columns:minmax(120px,1.1fr) 66px 46px minmax(0,1.4fr);gap:12px;align-items:center;
+  padding:7px 10px;border-radius:8px;border:1px solid transparent;}
+.brow:hover{background:var(--raise);border-color:var(--line);}
+.brow .bn{font-family:var(--mono);font-size:13px;color:var(--head);overflow-wrap:anywhere;}
+.brow .bbar{height:6px;border-radius:999px;background:var(--raise-2);overflow:hidden;}
+.brow .bbar i{display:block;height:100%;border-radius:999px;background:var(--accent-bright);}
+.brow.clean .bbar{background:transparent;}
+.brow .bc{font-family:var(--mono);font-size:12.5px;color:var(--accent);text-align:right;}
+.brow.clean .bc{text-align:left;}
+.brow .bg{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;}
+.gchip{font-family:var(--mono);font-size:10px;letter-spacing:.05em;color:var(--muted);
+  border:1px solid var(--line-2);border-radius:5px;padding:1px 5px;white-space:nowrap;}
+.gchip.cont{border-style:dashed;cursor:help;text-transform:none;letter-spacing:0;}
+
+/* an empty result set is the PASSING state, so say so in leaf, not in grey */
+.nofind{margin:16px 0;padding:12px 15px;border:1px solid color-mix(in srgb,var(--leaf) 32%,transparent);
+  border-left-width:3px;border-radius:10px;background:var(--leaf-wash);color:var(--leaf);font-size:14px;}
+.tbl td .unbound{color:var(--faint);}
+
+/* the freshness line under an h1 — "as of …" */
+/* A mono line of provenance. `overflow-wrap` is load-bearing: the gate source
+   link is a long unbroken path (gates/s6_metadata_directory_drift.rq) and
+   flex-wrap alone cannot break inside a single word. */
+.asof{font-family:var(--mono);font-size:12px;color:var(--muted);margin:14px 0 0;display:flex;gap:10px;
+  flex-wrap:wrap;align-items:center;min-width:0;overflow-wrap:anywhere;}
+.asof a{overflow-wrap:anywhere;min-width:0;}
+.asof .dot{width:6px;height:6px;border-radius:50%;background:var(--leaf);flex:none;}
+.asof.stale .dot{background:var(--amber);}
+.asof a{color:var(--muted);text-decoration:underline;text-decoration-color:var(--line-2);}
+.asof a:hover{color:var(--accent);}
+
+/* the gate pipeline figure */
+.gfig.pipe .pwrap{display:flex;flex-direction:column;align-items:stretch;gap:0;padding:20px 18px;}
+.pstage{border:1px solid var(--line);border-radius:11px;padding:10px 12px;background:var(--bg);}
+.pstage .ptag{font-family:var(--mono);font-size:10px;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--faint);margin-bottom:8px;}
+.pstage .ptag.rust,.pstage .ptag.bazel{color:var(--accent);}
+.pstage .ptag.soon{color:var(--muted);}
+.pbox{display:flex;flex-wrap:wrap;gap:6px;}
+.pbox code{font-family:var(--mono);font-size:11.5px;color:var(--head);background:var(--raise);
+  border:1px solid var(--line);border-radius:6px;padding:3px 7px;}
+.pbox code.hit{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 34%,transparent);background:var(--accent-wash);}
+.pbox code.soon{border-style:dashed;color:var(--muted);background:transparent;}
+.pstage .pnote{font-size:12px;color:var(--muted);margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;}
+.pstage .pnote .soonnote{color:var(--faint);font-style:italic;}
+.parrow{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 0;position:relative;}
+.parrow::before{content:"";width:1px;height:10px;background:var(--line-2);}
+.parrow span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);}
+.parrow::after{content:"";width:1px;height:10px;background:var(--line-2);}
+
+/* the atom frontier */
+.atomtbl td .lv{display:flex;flex-direction:column;gap:3px;}
+.atomtbl td .lv span{font-family:var(--mono);font-size:12px;white-space:nowrap;}
+.atomtbl td .lv .n{color:var(--muted);}
+.atomtbl .no{color:var(--accent);font-weight:600;}
+.atomtbl .yes{color:var(--leaf);}
+.atomtbl .bare{color:var(--amber);font-weight:600;}
+.atomtbl .na{color:var(--faint);}
+.modlist{font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.6;overflow-wrap:anywhere;}
+
+/* the Conformance section on a module's reference page */
+.confsec{margin:16px 0 0;}
+.confsec .cfhead{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-top:24px;}
+.confsec .cfhead .gcode{font-family:var(--mono);font-size:12px;font-weight:600;color:var(--accent);
+  border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);background:var(--accent-wash);
+  border-radius:6px;padding:1px 7px;}
+.confsec .cfhead .cft{font-size:14.5px;color:var(--head);}
+.confsec .cfhead a{color:var(--muted);font-family:var(--mono);font-size:11.5px;}
+.confsec .cfhead a:hover{color:var(--accent);}
+
+/* the finding count beside a module on the modules index */
+.modcard .mfind{color:var(--accent);}
+.modcard .mclean{color:var(--leaf);}
+
+@media (max-width:900px){
+  /* The bar and the gate chips are the first things to go; the name and the
+     count are the row. `auto` rather than a fixed track because the passing
+     state is a "no findings" badge, which is wider than any count. */
+  .brow{grid-template-columns:minmax(0,1fr) auto;gap:8px;}
+  .brow .bbar,.brow .bg{display:none;}
+  .brow .bc,.brow.clean .bc{text-align:right;}
+}

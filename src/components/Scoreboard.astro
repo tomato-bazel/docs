@@ -1,0 +1,69 @@
+---
+/**
+ * The module scoreboard: worst first, so remediation has an order.
+ *
+ * That order is the report's OWN — `modules` arrives sorted by finding count
+ * with a name tiebreak, and this component does not re-sort. Sorting here would
+ * be a second implementation of the same decision, free to disagree with the one
+ * in gate-report.
+ *
+ * Each row links to the module's REFERENCE page, not to a conformance-only page.
+ * A module has one page, and its findings belong next to the `bazel_dep` line
+ * that causes them.
+ */
+interface Module {
+  name: string;
+  findingCount: number;
+  kind: string;
+  findings: { gateId: string }[];
+  contested: unknown[];
+}
+interface Props { modules: Module[]; codeFor: Record<string, string> }
+const { modules, codeFor } = Astro.props;
+const worst = Math.max(1, ...modules.map((m) => m.findingCount));
+const dirty = modules.filter((m) => m.findingCount > 0).length;
+---
+<div class="modfilter">
+  <input id="sbq" type="text" placeholder="Filter modules…" aria-label="Filter modules" />
+  <span class="ct" id="sbct">{dirty} of {modules.length} with findings</span>
+</div>
+
+<div class="board" id="board">
+  {modules.map((m) => (
+    <a class={`brow${m.findingCount === 0 ? " clean" : ""}`} href={`/reference/modules/${m.name}/`} data-name={m.name} data-dirty={m.findingCount > 0 ? "1" : "0"}>
+      <span class="bn">{m.name}</span>
+      <span class="bbar" aria-hidden="true">
+        <i style={`width:${(m.findingCount / worst) * 100}%`}></i>
+      </span>
+      {/* "no findings", not "clean": a module can trip no gate and still appear
+          in the contested column, because convergence is a registry-level
+          property. Calling that row "clean" beside "18 contested" reads as a
+          contradiction. */}
+      <span class="bc">{m.findingCount === 0 ? <span class="badge b-stable">no findings</span> : m.findingCount}</span>
+      <span class="bg">
+        {m.findings.map((f) => <span class="gchip">{codeFor[f.gateId] ?? f.gateId}</span>)}
+        {m.contested.length > 0 && <span class="gchip cont" title="Atoms where this module resolves a different version than someone else does">{m.contested.length} contested</span>}
+      </span>
+    </a>
+  ))}
+</div>
+
+<script is:inline>
+  (function () {
+    var q = document.getElementById("sbq"), ct = document.getElementById("sbct");
+    if (!q) return;
+    var rows = Array.prototype.slice.call(document.querySelectorAll("#board .brow"));
+    var total = rows.length;
+    q.addEventListener("input", function () {
+      var v = q.value.trim().toLowerCase(), shown = 0, shownDirty = 0;
+      rows.forEach(function (r) {
+        var hit = !v || r.dataset.name.toLowerCase().indexOf(v) > -1;
+        r.style.display = hit ? "" : "none";
+        if (hit) { shown++; if (r.dataset.dirty === "1") shownDirty++; }
+      });
+      ct.textContent = shown === total
+        ? shownDirty + " of " + total + " with findings"
+        : shownDirty + " of " + shown + " shown with findings";
+    });
+  })();
+</script>

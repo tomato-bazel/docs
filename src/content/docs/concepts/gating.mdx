@@ -1,0 +1,166 @@
+---
+title: Gating
+description: How a module version is proved against the registry's invariants before it is admitted — zero-row SPARQL gates over a projection of the module graph.
+editPath: concepts/gating.mdx
+---
+
+import Callout from "../../../components/Callout.astro";
+import GatePipeline from "../../../components/GatePipeline.astro";
+
+Publishing to a registry is a promise: this version resolves, and it will keep
+resolving for everyone who depends on it. **Gating** is how that promise gets
+checked — by proving invariants about a module from its own dependency graph,
+mechanically, before the version is admitted.
+
+See what the gates currently find in the
+[conformance report](/conformance/).
+
+## The problem it solves
+
+The registry publishes 74 modules across 314 versions, and until recently
+**nothing validated an entry**. `rels release` computes the integrity hash itself
+and it is never re-verified; there is no PR-triggered check in the registry repo
+at all.
+
+That cost shows up as *reactive yanking* — finding out from a consumer, then
+pulling the version:
+
+- **`rules_cc_host 0.1.0`** — yanked, "cannot work as a `bazel_dep`".
+- **`rules_lang 0.4.2`** — yanked, "breaks consumer package loading".
+
+Both are failures a graph invariant catches at publish time. And the knowledge
+was already written down: the `MODULE.bazel` files in `rules_k8s` and `rules_lean`
+carry careful prose explaining exactly why they register toolchains the way they
+do. Gating turns that prose into something a build can check.
+
+## A gate is a query that must return nothing
+
+The primitive is `sparql_query_test` from
+[`rules_rdf`](/reference/modules/rules_rdf/): run a `.rq` file against a dataset
+and **fail the build if the result set is non-empty**.
+
+Inverting the usual polarity is what makes this work. The query selects
+*violations*, so:
+
+- **zero rows means the invariant holds** — there is nothing to explain;
+- **any row is a counterexample** — the columns name the module, the version and
+  the offending directive, so the failure output *is* the bug report.
+
+A gate is therefore one query file plus one Bazel target. Adding an invariant
+needs no code change and no rebuild of anything.
+
+<Callout type="tip" title="Read a gate">
+  Every gate links to its own `.rq` source, and the rationale you read on a gate's
+  page is **extracted from that file's header comment** — not written alongside it.
+  Since the query is the enforcement mechanism, taking its comment as the
+  documentation makes drift impossible: change the gate and the docs change with
+  it.
+</Callout>
+
+## Rust extracts; Bazel decides
+
+The split is deliberate and it is the whole architecture. Rust does **extraction
+only** — evaluate `MODULE.bazel` with a real Starlark interpreter, resolve the
+module graph, run minimal version selection, project the result to RDF facts.
+Every actual *gate* is a Bazel target over those facts, so policy lives as data in
+`.rq` files rather than compiled into a binary.
+
+<GatePipeline />
+
+Transitive closure comes from SPARQL property paths (`gate:depends_on+`,
+`gate:loads*`) rather than an iterated fixpoint, because the capability transfer
+function is pure union along load edges: `cap(f) = ⋃ { own(g) : f loads* g }` is a
+single query.
+
+One subtlety worth stating, because a zero-row gate has a nasty failure mode: **a
+query that matches nothing because it is malformed looks exactly like one that
+matches nothing because the data is clean.** So every gate is wired twice — once
+against a fixture with no violations, where it must return zero rows, and once
+against a fixture with *known* violations, diffed against a committed golden. Both
+over-matching and under-matching fail.
+
+## The families
+
+The gate's id encodes its family, and the family says what kind of promise is
+being kept.
+
+| | Family | What it protects |
+|---|---|---|
+| **S** | Supply chain | The published artifact is what it claims to be, and resolves standalone |
+| **C** | Convergence | The registry selects one coherent version of each third-party module |
+| **D** | Dev-deps & toolchains | A module does not impose its own build environment on consumers |
+
+Two more are designed but not built: **K** (capability) and the SHACL convention
+tier. A third, **V** (semver), was *dropped* — see below.
+
+## Why convergence is the load-bearing one
+
+`compatibility_level` was Bazel's in-band way for a module to declare "version 2
+breaks version 1's users". As of Bazel 8.6.0 / 9.1.0 it and
+`max_compatibility_level` are **no-ops**; upstream removed them because raising
+the level produced version conflicts end users could not resolve.
+
+The consequence is easy to miss and hard to undo:
+
+<Callout type="warn" title="Nothing rejects an incompatible co-selection any more">
+  MVS takes max-of-minimums. If A needs `x 1.0.0` while B needs `x 2.0.0`, then A
+  **silently gets 2.0.0**. Bazel used to be able to reject that and now cannot, so
+  the consumer finds out at build time — or doesn't, until something subtler
+  breaks.
+</Callout>
+
+So *one live version per atom* is not a tidiness goal. It is the compatibility
+mechanism — the only thing left standing between a consumer and a silent breaking
+upgrade. That is what the C1 gate proves, and it is why the
+[third-party atom frontier](/conformance/atoms/) is tracked as carefully as it is.
+The registry has real instances today: `botnoc` declares `rules_java 8.15.2` and
+receives `9.1.0`.
+
+## The naive version of a gate is usually wrong
+
+D3 is the best example, and worth reading closely because the obvious formulation
+would be useless.
+
+Apparent repo names are module-scoped, so `@crates` appearing in two unrelated
+modules is **not** a conflict. The real hazard is narrower: a name the module
+*chose* via a tag — `oci.pull(name = "distroless_static")` — on an extension
+defined in *another* module. Extension instances, and the repos they generate, are
+shared across the whole module graph. That is the bug `rules_k8s` hit on its first
+consumer, and the fix it shipped — prefix with the module name — is what the gate
+checks. Singletons the extension emits for everyone, like `rust_toolchains`, are
+correctly ignored.
+
+The same care shows up in the exemption mechanism. D2 flags a non-dev
+`register_toolchains`, but `rules_jena` legitimately registers four Jena
+toolchains: being a toolchain implementation is its entire purpose. Providers opt
+out through an allowlist in `declarations.ttl` — reviewable as data, so an
+exemption requires someone to write the module's name down, rather than a
+heuristic buried in a query.
+
+## Where this is going
+
+The design's terminal stage is a **certificate**: a signed record of which
+invariants a version satisfied, so a consumer can verify admission rather than
+trust it. That shapes the projector already — a certificate has to record *why*,
+and a derived boolean throws that away, so the projection stores facts rather than
+verdicts, and reads only the filesystem so a certificate is a function of a
+commit.
+
+<Callout type="note" title="Not built yet, and the gate is not self-hosting">
+  There is no `certify` implementation. And `rules_rdf` and `rules_jena` — the
+  modules that make the gates run — are themselves governed by this registry, so
+  they are the gate's **trusted root**: pinned exactly, certified out-of-band, not
+  allowed to float. Until those pins carry certificates the gate is not
+  self-hosting. That is a known, accepted state, tracked as a 1.0.0 release
+  criterion rather than quietly ignored.
+</Callout>
+
+## One more thing
+
+`gate` passes its own gates. It scopes its Rust and prost toolchain registrations
+to `dev_dependency` so they do not reach consumers, and it namespaces its
+crate\_universe repo as `gate_crates` rather than the `crates` that fourteen other
+registry modules use.
+
+Both are exactly the D2 and D3 findings it reports on everyone else. Publishing a
+module that violates the invariant it enforces is not a defensible position.

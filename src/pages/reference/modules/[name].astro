@@ -2,7 +2,9 @@
 import { getCollection, render } from "astro:content";
 import Doc from "../../../layouts/Doc.astro";
 import ModuleGraph from "../../../components/ModuleGraph.astro";
+import FindingsTable from "../../../components/FindingsTable.astro";
 import data from "../../../data/modules.json";
+import { moduleByName, gateById } from "../../../lib/conformance";
 
 interface Dep { name: string; version: string; dev: boolean; in_registry: boolean; }
 interface VDetail { version: string; integrity: string; url: string; }
@@ -44,11 +46,23 @@ if (mod.has_examples) { const e = byId.get(`${mod.name}/examples`); if (e) Examp
 let ChangelogContent: any = null;
 if (mod.has_changelog) { const e = byId.get(`${mod.name}/changelog`); if (e) ChangelogContent = (await render(e)).Content; }
 
+// Conformance for THIS module, from the gate report. A module has one page, so
+// its findings belong here rather than in a parallel conformance/modules/ tree —
+// next to the bazel_dep lines and the toolchain registrations that cause them.
+// A module absent from the report (published since the last weekly run, or not
+// resolvable) is `undefined`, which renders as "not yet assessed" rather than as
+// a clean bill of health.
+const conf = moduleByName[mod.name];
+const findings = conf?.findings ?? [];
+const contested = conf?.contested ?? [];
+const MONO = ["atom", "version", "version_a", "version_b", "target", "toolchain", "repo", "extension", "declared", "got", "directive"];
+
 const hasDeps = mod.deps.length > 0 || mod.used_by.length > 0;
 const headings = [
   ...readmeHeadings,
   ...(ExamplesContent ? [{ depth: 2, slug: "usage", text: "Usage" }] : []),
   ...(docRenders.length ? [{ depth: 2, slug: "rules", text: "Rules & providers" }, ...ruleHeadings] : []),
+  { depth: 2, slug: "conformance", text: "Conformance" },
   ...(hasDeps ? [{ depth: 2, slug: "dependencies", text: "Dependencies" }] : []),
   { depth: 2, slug: "versions", text: "Versions" },
   ...(ChangelogContent ? [{ depth: 2, slug: "changelog", text: "Changelog" }] : []),
@@ -119,6 +133,77 @@ const recent = [...mod.versions_detail].reverse();
       ))}
     </>
   )}
+
+  <h2 id="conformance">Conformance<a class="anchor" href="#conformance">#</a></h2>
+  <div class="confsec">
+    {!conf ? (
+      <p style="color:var(--muted)">
+        Not yet assessed. The <a class="link" href="/conformance/">conformance report</a> is
+        regenerated weekly from the live registry, so a module published since the last run —
+        or one the resolver cannot resolve — has no findings recorded either way.
+      </p>
+    ) : findings.length === 0 && contested.length === 0 ? (
+      <p class="nofind">
+        No findings — this module passes every gate that applies to it, and resolves the same
+        version of every third-party atom as the rest of the registry.
+      </p>
+    ) : (
+      <>
+        <p>
+          {findings.length > 0 ? (
+            <><strong>{conf.findingCount} finding{conf.findingCount === 1 ? "" : "s"}</strong> across
+            {" "}{findings.length} invariant{findings.length === 1 ? "" : "s"}.</>
+          ) : (
+            <>No gate findings.</>
+          )}
+          {contested.length > 0 && <> {contested.length} contested atom{contested.length === 1 ? "" : "s"}.</>}
+          {" "}See <a class="link" href="/concepts/gating/">how gating works</a> or the
+          {" "}<a class="link" href="/conformance/">full report</a>.
+        </p>
+
+        {findings.map((f) => {
+          const gate = gateById[f.gateId];
+          return (
+            <>
+              <div class="cfhead">
+                <span class="gcode">{gate?.code ?? f.gateId}</span>
+                <span class="cft">{gate?.title ?? f.gateId}</span>
+                <a href={`/conformance/gates/${f.gateId}/`}>why this matters ↗</a>
+              </div>
+              <FindingsTable vars={f.vars} rows={f.rows} mono={MONO} />
+            </>
+          );
+        })}
+
+        {contested.length > 0 && (
+          <>
+            <h3 id="contested">Contested atoms</h3>
+            <p style="color:var(--muted)">
+              Third-party modules where this module resolves a different version than others
+              do. Not a violation of anything this module did — it is the actionable form of a
+              registry-level convergence finding, and the sentence a maintainer can act on.
+            </p>
+            <div class="tbl atomtbl"><div class="tbl-scroll"><table>
+              <thead><tr><th>Atom</th><th>Resolved here</th><th>Elsewhere</th></tr></thead>
+              <tbody>
+                {contested.map((c) => (
+                  <tr>
+                    <td><code>{c.atom}</code></td>
+                    <td><code>{c.resolvedHere}</code></td>
+                    <td>
+                      <span class="lv">
+                        {c.elsewhere.map((e) => <span><code>{e.version}</code> <span class="n">×{e.count}</span></span>)}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table></div></div>
+          </>
+        )}
+      </>
+    )}
+  </div>
 
   {hasDeps && (
     <>

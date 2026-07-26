@@ -1,0 +1,32 @@
+---
+/**
+ * One invariant, as a card. Zero rows is the passing state — a zero-row gate
+ * selects violations, so an empty result set means the invariant holds. That is
+ * why "clean" is a leaf-green badge and a count is tomato: the count IS the bad
+ * news, and there is no separate pass/fail field to render.
+ */
+interface Gate {
+  id: string;
+  code: string;
+  title: string;
+  family: string;
+  moduleScoped: boolean;
+  rows: unknown[];
+}
+interface Props { gate: Gate }
+const { gate } = Astro.props;
+const n = gate.rows.length;
+---
+<a class={`gcard${n === 0 ? " clean" : ""}`} href={`/conformance/gates/${gate.id}/`}>
+  <div class="gtop">
+    <span class="gcode">{gate.code}</span>
+    {n === 0
+      ? <span class="badge b-stable">clean</span>
+      : <span class="gcount">{n}<span class="gcu">{n === 1 ? "finding" : "findings"}</span></span>}
+  </div>
+  <div class="gtitle">{gate.title}</div>
+  <div class="gmeta">
+    <span>{gate.family}</span>
+    {!gate.moduleScoped && <span class="gscope" title="A registry-level invariant: it reports that the registry is inconsistent, not that one module is at fault.">registry-level</span>}
+  </div>
+</a>

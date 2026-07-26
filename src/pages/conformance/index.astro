@@ -1,0 +1,117 @@
+---
+import Doc from "../../layouts/Doc.astro";
+import Callout from "../../components/Callout.astro";
+import StatRow from "../../components/StatRow.astro";
+import GateCard from "../../components/GateCard.astro";
+import Scoreboard from "../../components/Scoreboard.astro";
+import { report, codeFor, freshness, registryLink } from "../../lib/conformance";
+
+const t = report.totals;
+const fresh = freshness();
+const reg = registryLink();
+const headings = [
+  { depth: 2, slug: "invariants", text: "The invariants" },
+  { depth: 2, slug: "modules", text: "Modules" },
+  { depth: 2, slug: "how", text: "How this is produced" },
+];
+const crumbs = [{ label: "Docs", href: "/" }, { label: "Conformance" }];
+
+const pct = (n: number, d: number) => (d === 0 ? "—" : `${Math.round((n / d) * 100)}%`);
+---
+<Doc
+  title="Registry conformance"
+  description={`${t.findings} findings across ${t.gates} machine-checked invariants over the tomato-bazel registry.`}
+  headings={headings}
+  breadcrumbs={crumbs}
+>
+  <p>
+    Every invariant here is a <a class="link" href="/concepts/gating/">zero-row gate</a>: the
+    query selects <em>violations</em>, so an empty result set means the invariant holds and
+    any row is a counterexample you can act on. They run as Bazel targets over a projection
+    of the registry's <code class="ic">MODULE.bazel</code> graph.
+  </p>
+
+  <p class={`asof${fresh.stale ? " stale" : ""}`}>
+    <span class="dot"></span>
+    {fresh.known ? <>as of <b>{fresh.text}</b>{fresh.days > 0 && <> · {fresh.days} day{fresh.days === 1 ? "" : "s"} ago</>}</> : fresh.text}
+    {reg.href && <>· <a href={reg.href}>{reg.label}{reg.sha && <> @ {reg.sha}</>}</a></>}
+  </p>
+
+  {fresh.stale && (
+    <Callout type="warn" title={fresh.known ? "This report is stale" : "This report is unstamped"}>
+      <p>
+        {fresh.known ? (
+          <>The conformance job runs weekly, so anything older than about ten days means a run
+          failed rather than that nothing changed. Check
+          {" "}<a class="link" href="https://github.com/tomato-bazel/gate/actions/workflows/report.yml">gate's
+          conformance-report workflow</a>.</>
+        ) : (
+          <>The report carries no <code>generated_at</code>, which is what a local
+          {" "}<code>bazel build //gates:report</code> produces — provenance is stamped only when CI
+          publishes. Treat these numbers as whatever projection was on disk.</>
+        )}
+      </p>
+    </Callout>
+  )}
+
+  <StatRow
+    stats={[
+      { value: t.findings, label: "findings", tone: t.findings > 0 ? "bad" : "ok",
+        hint: `across ${t.gates} invariants` },
+      { value: `${t.cleanGates}/${t.gates}`, label: "invariants clean",
+        tone: t.cleanGates === t.gates ? "ok" : undefined,
+        hint: t.cleanGates === t.gates ? "the whole registry holds" : "a clean gate returns zero rows" },
+      { value: `${t.modules - t.dirtyModules}/${t.modules}`, label: "modules clean",
+        tone: t.dirtyModules === 0 ? "ok" : undefined,
+        hint: `${pct(t.modules - t.dirtyModules, t.modules)} of the registry` },
+      { value: `${t.atoms - t.multiVersionAtoms}/${t.atoms}`, label: "atoms converged",
+        tone: t.multiVersionAtoms === 0 ? "ok" : "warn",
+        hint: "one live version each" },
+    ]}
+  />
+
+  <h2 id="invariants">The invariants<a class="anchor" href="#invariants">#</a></h2>
+  <p>
+    Five gates today. Each is one <code class="ic">.rq</code> file plus one Bazel target, so
+    adding an invariant needs no code change — and the rationale on each page is extracted
+    from the query's own header comment, which is why the documentation cannot drift from the
+    gate it documents.
+  </p>
+
+  <div class="gategrid">
+    {report.gates.map((gate) => <GateCard gate={gate} />)}
+  </div>
+
+  <p>
+    <a class="link" href="/conformance/gates/">All five in detail →</a>
+  </p>
+
+  <h2 id="modules">Modules<a class="anchor" href="#modules">#</a></h2>
+  <p>
+    <strong>{t.dirtyModules} of {t.modules} modules</strong> have at least one finding.
+    Worst first, because the point of a scoreboard is to say what to fix next. Each row goes
+    to that module's reference page, where its findings sit beside the
+    {" "}<code class="ic">bazel_dep</code> lines that cause them.
+  </p>
+
+  <Scoreboard modules={report.modules} codeFor={codeFor} />
+
+  <h2 id="how">How this is produced<a class="anchor" href="#how">#</a></h2>
+  <p>
+    <a class="link" href="https://github.com/tomato-bazel/gate">tomato-bazel/gate</a> projects
+    the registry's module graph to RDF, runs every <code class="ic">.rq</code> against it as a
+    Bazel target, and emits the result as a
+    {" "}<code class="ic">tomato.gate.v1.ConformanceReport</code>. This site fetches that
+    message and renders it. Nothing is computed here: every count above is a field in the
+    report, and if one is wrong, the query is wrong.
+  </p>
+
+  <Callout type="note" title="Not a judgement">
+    <p>
+      A gate reports; it does not rank blame. Registry-level invariants like C1 say
+      "this atom is live at two versions", not "this module is at fault" — so they are
+      counted here and attributed per-module only where a companion query makes that
+      meaningful, as <a class="link" href="/conformance/atoms/">contested atoms</a>.
+    </p>
+  </Callout>
+</Doc>
