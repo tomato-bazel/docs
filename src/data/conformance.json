@@ -7,48 +7,7 @@
         "directive",
         "target"
       ],
-      "rows": [
-        {
-          "cells": [
-            "rules_huggingface",
-            "0.0.3",
-            "local_path_override",
-            "rules_openapi"
-          ]
-        },
-        {
-          "cells": [
-            "rules_lora",
-            "0.1.3",
-            "local_path_override",
-            "rules_runpod"
-          ]
-        },
-        {
-          "cells": [
-            "rules_schema_org",
-            "0.0.1",
-            "local_path_override",
-            "rules_jena"
-          ]
-        },
-        {
-          "cells": [
-            "rules_schema_org",
-            "0.0.1",
-            "local_path_override",
-            "rules_rdf"
-          ]
-        },
-        {
-          "cells": [
-            "spec",
-            "0.6.0",
-            "local_path_override",
-            "rules_graphviz"
-          ]
-        }
-      ],
+      "rows": [],
       "id": "s4_no_override_in_published_module",
       "code": "S4",
       "title": "a published module must not carry a *_override",
@@ -297,14 +256,14 @@
         {
           "cells": [
             "rules_huggingface",
-            "0.0.3",
+            "0.0.4",
             "//huggingface:hf_default_toolchain"
           ]
         },
         {
           "cells": [
             "rules_huggingface",
-            "0.0.3",
+            "0.0.4",
             "@rust_toolchains//:all"
           ]
         },
@@ -346,28 +305,28 @@
         {
           "cells": [
             "rules_lora",
-            "0.1.3",
+            "0.1.4",
             "@rules_lora//lora/backend:local_toolchain"
           ]
         },
         {
           "cells": [
             "rules_lora",
-            "0.1.3",
+            "0.1.4",
             "@rules_lora//lora/backend:modal_toolchain"
           ]
         },
         {
           "cells": [
             "rules_lora",
-            "0.1.3",
+            "0.1.4",
             "@rules_lora//lora/backend:runpod_toolchain"
           ]
         },
         {
           "cells": [
             "rules_lora",
-            "0.1.3",
+            "0.1.4",
             "@rust_toolchains//:all"
           ]
         },
@@ -439,27 +398,6 @@
             "rules_uv",
             "0.7.4",
             "@rust_toolchains//:all"
-          ]
-        },
-        {
-          "cells": [
-            "spec",
-            "0.6.0",
-            "@rust_toolchains//:all"
-          ]
-        },
-        {
-          "cells": [
-            "spec",
-            "0.6.0",
-            "@spec_lake//:lean_toolchain_def"
-          ]
-        },
-        {
-          "cells": [
-            "spec",
-            "0.6.0",
-            "@tectonic//:tectonic_toolchain_def"
           ]
         },
         {
@@ -1451,446 +1389,6 @@
         {
           "vars": [
             "version",
-            "directive",
-            "target"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.1.3",
-                "local_path_override",
-                "rules_runpod"
-              ]
-            }
-          ],
-          "gateId": "s4_no_override_in_published_module"
-        },
-        {
-          "vars": [
-            "version",
-            "toolchain"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.1.3",
-                "@rules_lora//lora/backend:local_toolchain"
-              ]
-            },
-            {
-              "cells": [
-                "0.1.3",
-                "@rules_lora//lora/backend:modal_toolchain"
-              ]
-            },
-            {
-              "cells": [
-                "0.1.3",
-                "@rules_lora//lora/backend:runpod_toolchain"
-              ]
-            },
-            {
-              "cells": [
-                "0.1.3",
-                "@rust_toolchains//:all"
-              ]
-            }
-          ],
-          "gateId": "d2_undeclared_toolchain_leak"
-        },
-        {
-          "vars": [
-            "repo",
-            "extension"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "crates",
-                "@rules_rust//crate_universe:extension.bzl"
-              ]
-            }
-          ],
-          "gateId": "d3_unnamespaced_extension_repo"
-        }
-      ],
-      "contested": [
-        {
-          "elsewhere": [
-            {
-              "version": "2.2.0",
-              "count": 3
-            }
-          ],
-          "atom": "apple_support",
-          "resolvedHere": "1.24.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "1.9.0",
-              "count": 3
-            }
-          ],
-          "atom": "bazel_skylib",
-          "resolvedHere": "1.8.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.30.0",
-              "count": 7
-            },
-            {
-              "version": "0.44.0",
-              "count": 1
-            },
-            {
-              "version": "0.51.0",
-              "count": 2
-            }
-          ],
-          "atom": "gazelle",
-          "resolvedHere": "0.36.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.12.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "nlohmann_json",
-          "resolvedHere": "3.6.1"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "34.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "protobuf",
-          "resolvedHere": "33.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.39.1",
-              "count": 7
-            }
-          ],
-          "atom": "rules_go",
-          "resolvedHere": "0.60.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "6.8",
-              "count": 7
-            }
-          ],
-          "atom": "rules_jvm_external",
-          "resolvedHere": "6.7"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.0.1",
-              "count": 1
-            }
-          ],
-          "atom": "rules_python",
-          "resolvedHere": "1.7.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.6.1",
-              "count": 3
-            }
-          ],
-          "atom": "rules_swift",
-          "resolvedHere": "3.1.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.0.0-20230516-61a97ef",
-              "count": 1
-            }
-          ],
-          "atom": "upb",
-          "resolvedHere": "0.0.0-20220923-a547704"
-        }
-      ],
-      "name": "rules_lora",
-      "version": "0.1.3",
-      "homepage": "https://github.com/tomato-bazel/rules_lora",
-      "integrity": "sha256-KoEJJCAp2mB5Lc2l+1sHH9YdhOdFm33chRx7z3/yYT4=",
-      "kind": "rules",
-      "findingCount": 6
-    },
-    {
-      "findings": [
-        {
-          "vars": [
-            "version",
-            "directive",
-            "target"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.6.0",
-                "local_path_override",
-                "rules_graphviz"
-              ]
-            }
-          ],
-          "gateId": "s4_no_override_in_published_module"
-        },
-        {
-          "vars": [
-            "version",
-            "toolchain"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.6.0",
-                "@rust_toolchains//:all"
-              ]
-            },
-            {
-              "cells": [
-                "0.6.0",
-                "@spec_lake//:lean_toolchain_def"
-              ]
-            },
-            {
-              "cells": [
-                "0.6.0",
-                "@tectonic//:tectonic_toolchain_def"
-              ]
-            }
-          ],
-          "gateId": "d2_undeclared_toolchain_leak"
-        },
-        {
-          "vars": [
-            "repo",
-            "extension"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "crates",
-                "@rules_rust//crate_universe:extension.bzl"
-              ]
-            },
-            {
-              "cells": [
-                "maven",
-                "@rules_jvm_external//:extensions.bzl"
-              ]
-            }
-          ],
-          "gateId": "d3_unnamespaced_extension_repo"
-        }
-      ],
-      "contested": [
-        {
-          "elsewhere": [
-            {
-              "version": "2.2.0",
-              "count": 3
-            }
-          ],
-          "atom": "apple_support",
-          "resolvedHere": "1.24.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.8.1",
-              "count": 1
-            }
-          ],
-          "atom": "aspect_bazel_lib",
-          "resolvedHere": "2.22.5"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.1.3",
-              "count": 1
-            }
-          ],
-          "atom": "aspect_rules_js",
-          "resolvedHere": "3.1.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.0.0",
-              "count": 12
-            }
-          ],
-          "atom": "bazel_lib",
-          "resolvedHere": "3.2.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "1.9.0",
-              "count": 3
-            }
-          ],
-          "atom": "bazel_skylib",
-          "resolvedHere": "1.8.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "5.3.2.bcr.1",
-              "count": 12
-            }
-          ],
-          "atom": "gawk",
-          "resolvedHere": "5.3.2.bcr.3"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.1.0",
-              "count": 12
-            }
-          ],
-          "atom": "jq.bzl",
-          "resolvedHere": "0.4.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.12.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "nlohmann_json",
-          "resolvedHere": "3.6.1"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.0.5",
-              "count": 2
-            }
-          ],
-          "atom": "package_metadata",
-          "resolvedHere": "0.0.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "34.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "protobuf",
-          "resolvedHere": "33.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "6.8",
-              "count": 7
-            }
-          ],
-          "atom": "rules_jvm_external",
-          "resolvedHere": "6.7"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "6.3.0",
-              "count": 1
-            },
-            {
-              "version": "6.7.3",
-              "count": 1
-            }
-          ],
-          "atom": "rules_nodejs",
-          "resolvedHere": "6.7.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.0.1",
-              "count": 1
-            }
-          ],
-          "atom": "rules_python",
-          "resolvedHere": "1.7.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.6.1",
-              "count": 3
-            }
-          ],
-          "atom": "rules_swift",
-          "resolvedHere": "3.1.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.5.1",
-              "count": 11
-            },
-            {
-              "version": "0.6.0",
-              "count": 1
-            }
-          ],
-          "atom": "tar.bzl",
-          "resolvedHere": "0.10.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.0.0-20230516-61a97ef",
-              "count": 1
-            }
-          ],
-          "atom": "upb",
-          "resolvedHere": "0.0.0-20220923-a547704"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.1.1",
-              "count": 12
-            }
-          ],
-          "atom": "yq.bzl",
-          "resolvedHere": "0.3.4"
-        }
-      ],
-      "name": "spec",
-      "version": "0.6.0",
-      "homepage": "https://github.com/fastverk/spec",
-      "integrity": "sha256-OQqyj8GMh7eUpfNZDT6sd3LccmVVYTfCbTFju7Bo1go=",
-      "kind": "other",
-      "findingCount": 6
-    },
-    {
-      "findings": [
-        {
-          "vars": [
-            "version",
             "toolchain"
           ],
           "rows": [
@@ -2278,6 +1776,174 @@
           "rows": [
             {
               "cells": [
+                "0.1.4",
+                "@rules_lora//lora/backend:local_toolchain"
+              ]
+            },
+            {
+              "cells": [
+                "0.1.4",
+                "@rules_lora//lora/backend:modal_toolchain"
+              ]
+            },
+            {
+              "cells": [
+                "0.1.4",
+                "@rules_lora//lora/backend:runpod_toolchain"
+              ]
+            },
+            {
+              "cells": [
+                "0.1.4",
+                "@rust_toolchains//:all"
+              ]
+            }
+          ],
+          "gateId": "d2_undeclared_toolchain_leak"
+        },
+        {
+          "vars": [
+            "repo",
+            "extension"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "crates",
+                "@rules_rust//crate_universe:extension.bzl"
+              ]
+            }
+          ],
+          "gateId": "d3_unnamespaced_extension_repo"
+        }
+      ],
+      "contested": [
+        {
+          "elsewhere": [
+            {
+              "version": "2.2.0",
+              "count": 3
+            }
+          ],
+          "atom": "apple_support",
+          "resolvedHere": "1.24.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "1.9.0",
+              "count": 3
+            }
+          ],
+          "atom": "bazel_skylib",
+          "resolvedHere": "1.8.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.30.0",
+              "count": 7
+            },
+            {
+              "version": "0.44.0",
+              "count": 1
+            },
+            {
+              "version": "0.51.0",
+              "count": 2
+            }
+          ],
+          "atom": "gazelle",
+          "resolvedHere": "0.36.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.12.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "nlohmann_json",
+          "resolvedHere": "3.6.1"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "34.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "protobuf",
+          "resolvedHere": "33.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.39.1",
+              "count": 7
+            }
+          ],
+          "atom": "rules_go",
+          "resolvedHere": "0.60.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "6.8",
+              "count": 7
+            }
+          ],
+          "atom": "rules_jvm_external",
+          "resolvedHere": "6.7"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.0.1",
+              "count": 1
+            }
+          ],
+          "atom": "rules_python",
+          "resolvedHere": "1.7.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.6.1",
+              "count": 3
+            }
+          ],
+          "atom": "rules_swift",
+          "resolvedHere": "3.1.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.0.0-20230516-61a97ef",
+              "count": 1
+            }
+          ],
+          "atom": "upb",
+          "resolvedHere": "0.0.0-20220923-a547704"
+        }
+      ],
+      "name": "rules_lora",
+      "version": "0.1.4",
+      "homepage": "https://github.com/tomato-bazel/rules_lora",
+      "integrity": "sha256-I5j9aQPH98erPTkOO62b9ZTSvx63aLC4s0z14+i1HDU=",
+      "kind": "rules",
+      "findingCount": 5
+    },
+    {
+      "findings": [
+        {
+          "vars": [
+            "version",
+            "toolchain"
+          ],
+          "rows": [
+            {
+              "cells": [
                 "0.2.1",
                 "//rust:prost_toolchain"
               ]
@@ -2531,149 +2197,6 @@
       "version": "0.2.1",
       "homepage": "https://github.com/mattmarshall/meridian",
       "integrity": "sha256-r6dRYxFrgAKDQ/1D4sSJlN4rhuJnlWZBPd8f4QRzjpc=",
-      "kind": "rules",
-      "findingCount": 5
-    },
-    {
-      "findings": [
-        {
-          "vars": [
-            "version",
-            "directive",
-            "target"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.0.1",
-                "local_path_override",
-                "rules_jena"
-              ]
-            },
-            {
-              "cells": [
-                "0.0.1",
-                "local_path_override",
-                "rules_rdf"
-              ]
-            }
-          ],
-          "gateId": "s4_no_override_in_published_module"
-        },
-        {
-          "vars": [
-            "repo",
-            "extension"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "dcterms_ttl",
-                "@rules_rdf//rdf:extensions.bzl"
-              ]
-            },
-            {
-              "cells": [
-                "schemaorg_ttl",
-                "@rules_rdf//rdf:extensions.bzl"
-              ]
-            },
-            {
-              "cells": [
-                "skos_rdf",
-                "@rules_rdf//rdf:extensions.bzl"
-              ]
-            }
-          ],
-          "gateId": "d3_unnamespaced_extension_repo"
-        }
-      ],
-      "contested": [
-        {
-          "elsewhere": [
-            {
-              "version": "2.2.0",
-              "count": 3
-            }
-          ],
-          "atom": "apple_support",
-          "resolvedHere": "1.24.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "1.9.0",
-              "count": 3
-            }
-          ],
-          "atom": "bazel_skylib",
-          "resolvedHere": "1.8.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.12.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "nlohmann_json",
-          "resolvedHere": "3.6.1"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "34.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "protobuf",
-          "resolvedHere": "33.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "6.8",
-              "count": 7
-            }
-          ],
-          "atom": "rules_jvm_external",
-          "resolvedHere": "6.7"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.0.1",
-              "count": 1
-            }
-          ],
-          "atom": "rules_python",
-          "resolvedHere": "1.7.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.6.1",
-              "count": 3
-            }
-          ],
-          "atom": "rules_swift",
-          "resolvedHere": "3.1.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.0.0-20230516-61a97ef",
-              "count": 1
-            }
-          ],
-          "atom": "upb",
-          "resolvedHere": "0.0.0-20220923-a547704"
-        }
-      ],
-      "name": "rules_schema_org",
-      "version": "0.0.1",
-      "homepage": "https://github.com/tomato-bazel/rules_schema_org",
-      "integrity": "sha256-AZ/brGExGKo80xJS91aONE11Up+SDjjRALnBJp4Js18=",
       "kind": "rules",
       "findingCount": 5
     },
@@ -3416,179 +2939,6 @@
         {
           "vars": [
             "version",
-            "directive",
-            "target"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.0.3",
-                "local_path_override",
-                "rules_openapi"
-              ]
-            }
-          ],
-          "gateId": "s4_no_override_in_published_module"
-        },
-        {
-          "vars": [
-            "version",
-            "toolchain"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "0.0.3",
-                "//huggingface:hf_default_toolchain"
-              ]
-            },
-            {
-              "cells": [
-                "0.0.3",
-                "@rust_toolchains//:all"
-              ]
-            }
-          ],
-          "gateId": "d2_undeclared_toolchain_leak"
-        },
-        {
-          "vars": [
-            "repo",
-            "extension"
-          ],
-          "rows": [
-            {
-              "cells": [
-                "hf_crates",
-                "@rules_rust//crate_universe:extension.bzl"
-              ]
-            }
-          ],
-          "gateId": "d3_unnamespaced_extension_repo"
-        }
-      ],
-      "contested": [
-        {
-          "elsewhere": [
-            {
-              "version": "2.2.0",
-              "count": 3
-            }
-          ],
-          "atom": "apple_support",
-          "resolvedHere": "1.24.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "1.9.0",
-              "count": 3
-            }
-          ],
-          "atom": "bazel_skylib",
-          "resolvedHere": "1.8.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.30.0",
-              "count": 7
-            },
-            {
-              "version": "0.44.0",
-              "count": 1
-            },
-            {
-              "version": "0.51.0",
-              "count": 2
-            }
-          ],
-          "atom": "gazelle",
-          "resolvedHere": "0.36.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.12.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "nlohmann_json",
-          "resolvedHere": "3.6.1"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "34.0.bcr.1",
-              "count": 3
-            }
-          ],
-          "atom": "protobuf",
-          "resolvedHere": "33.4"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.39.1",
-              "count": 7
-            }
-          ],
-          "atom": "rules_go",
-          "resolvedHere": "0.60.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "6.8",
-              "count": 7
-            }
-          ],
-          "atom": "rules_jvm_external",
-          "resolvedHere": "6.7"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "2.0.1",
-              "count": 1
-            }
-          ],
-          "atom": "rules_python",
-          "resolvedHere": "1.7.0"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "3.6.1",
-              "count": 3
-            }
-          ],
-          "atom": "rules_swift",
-          "resolvedHere": "3.1.2"
-        },
-        {
-          "elsewhere": [
-            {
-              "version": "0.0.0-20230516-61a97ef",
-              "count": 1
-            }
-          ],
-          "atom": "upb",
-          "resolvedHere": "0.0.0-20220923-a547704"
-        }
-      ],
-      "name": "rules_huggingface",
-      "version": "0.0.3",
-      "homepage": "https://github.com/tomato-bazel/rules_huggingface",
-      "integrity": "sha256-Es7wr682ywLGZH/YuiquHQd8h+10nuB4vJf32HrccQQ=",
-      "kind": "rules",
-      "findingCount": 4
-    },
-    {
-      "findings": [
-        {
-          "vars": [
-            "version",
             "toolchain"
           ],
           "rows": [
@@ -4072,6 +3422,281 @@
       "homepage": "https://github.com/meridian-ux/meridian-tui",
       "integrity": "sha256-JayWqM3vh49hqFZyESGwgSdMJaBvWbqwSpyMJ3tp900=",
       "kind": "other",
+      "findingCount": 3
+    },
+    {
+      "findings": [
+        {
+          "vars": [
+            "version",
+            "toolchain"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "0.0.4",
+                "//huggingface:hf_default_toolchain"
+              ]
+            },
+            {
+              "cells": [
+                "0.0.4",
+                "@rust_toolchains//:all"
+              ]
+            }
+          ],
+          "gateId": "d2_undeclared_toolchain_leak"
+        },
+        {
+          "vars": [
+            "repo",
+            "extension"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "hf_crates",
+                "@rules_rust//crate_universe:extension.bzl"
+              ]
+            }
+          ],
+          "gateId": "d3_unnamespaced_extension_repo"
+        }
+      ],
+      "contested": [
+        {
+          "elsewhere": [
+            {
+              "version": "2.2.0",
+              "count": 3
+            }
+          ],
+          "atom": "apple_support",
+          "resolvedHere": "1.24.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "1.9.0",
+              "count": 3
+            }
+          ],
+          "atom": "bazel_skylib",
+          "resolvedHere": "1.8.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.30.0",
+              "count": 7
+            },
+            {
+              "version": "0.44.0",
+              "count": 1
+            },
+            {
+              "version": "0.51.0",
+              "count": 2
+            }
+          ],
+          "atom": "gazelle",
+          "resolvedHere": "0.36.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.12.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "nlohmann_json",
+          "resolvedHere": "3.6.1"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "34.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "protobuf",
+          "resolvedHere": "33.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.39.1",
+              "count": 7
+            }
+          ],
+          "atom": "rules_go",
+          "resolvedHere": "0.60.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "6.8",
+              "count": 7
+            }
+          ],
+          "atom": "rules_jvm_external",
+          "resolvedHere": "6.7"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.0.1",
+              "count": 1
+            }
+          ],
+          "atom": "rules_python",
+          "resolvedHere": "1.7.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.6.1",
+              "count": 3
+            }
+          ],
+          "atom": "rules_swift",
+          "resolvedHere": "3.1.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.0.0-20230516-61a97ef",
+              "count": 1
+            }
+          ],
+          "atom": "upb",
+          "resolvedHere": "0.0.0-20220923-a547704"
+        }
+      ],
+      "name": "rules_huggingface",
+      "version": "0.0.4",
+      "homepage": "https://github.com/tomato-bazel/rules_huggingface",
+      "integrity": "sha256-7IRxl7VxSQIQicmcOvUXgDH4k5DcZby/NYHLjDKYWWI=",
+      "kind": "rules",
+      "findingCount": 3
+    },
+    {
+      "findings": [
+        {
+          "vars": [
+            "repo",
+            "extension"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "dcterms_ttl",
+                "@rules_rdf//rdf:extensions.bzl"
+              ]
+            },
+            {
+              "cells": [
+                "schemaorg_ttl",
+                "@rules_rdf//rdf:extensions.bzl"
+              ]
+            },
+            {
+              "cells": [
+                "skos_rdf",
+                "@rules_rdf//rdf:extensions.bzl"
+              ]
+            }
+          ],
+          "gateId": "d3_unnamespaced_extension_repo"
+        }
+      ],
+      "contested": [
+        {
+          "elsewhere": [
+            {
+              "version": "2.2.0",
+              "count": 3
+            }
+          ],
+          "atom": "apple_support",
+          "resolvedHere": "1.24.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "1.9.0",
+              "count": 3
+            }
+          ],
+          "atom": "bazel_skylib",
+          "resolvedHere": "1.8.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.12.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "nlohmann_json",
+          "resolvedHere": "3.6.1"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "34.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "protobuf",
+          "resolvedHere": "33.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "6.8",
+              "count": 7
+            }
+          ],
+          "atom": "rules_jvm_external",
+          "resolvedHere": "6.7"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.0.1",
+              "count": 1
+            }
+          ],
+          "atom": "rules_python",
+          "resolvedHere": "1.7.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.6.1",
+              "count": 3
+            }
+          ],
+          "atom": "rules_swift",
+          "resolvedHere": "3.1.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.0.0-20230516-61a97ef",
+              "count": 1
+            }
+          ],
+          "atom": "upb",
+          "resolvedHere": "0.0.0-20220923-a547704"
+        }
+      ],
+      "name": "rules_schema_org",
+      "version": "0.0.3",
+      "homepage": "https://github.com/tomato-bazel/rules_schema_org",
+      "integrity": "sha256-xDHCuQi81EEp6ZEHmajL+6FaH07ko3EFFUNOi2A1kPo=",
+      "kind": "rules",
       "findingCount": 3
     },
     {
@@ -5601,6 +5226,217 @@
       "homepage": "https://github.com/tomato-bazel/rules_uv",
       "integrity": "sha256-vlPl/TGBHaNF+cbwr0NjDRakMCFK1JfdWBNnmThgb8o=",
       "kind": "rules",
+      "findingCount": 2
+    },
+    {
+      "findings": [
+        {
+          "vars": [
+            "repo",
+            "extension"
+          ],
+          "rows": [
+            {
+              "cells": [
+                "crates",
+                "@rules_rust//crate_universe:extension.bzl"
+              ]
+            },
+            {
+              "cells": [
+                "maven",
+                "@rules_jvm_external//:extensions.bzl"
+              ]
+            }
+          ],
+          "gateId": "d3_unnamespaced_extension_repo"
+        }
+      ],
+      "contested": [
+        {
+          "elsewhere": [
+            {
+              "version": "2.2.0",
+              "count": 3
+            }
+          ],
+          "atom": "apple_support",
+          "resolvedHere": "1.24.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.8.1",
+              "count": 1
+            }
+          ],
+          "atom": "aspect_bazel_lib",
+          "resolvedHere": "2.22.5"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.1.3",
+              "count": 1
+            }
+          ],
+          "atom": "aspect_rules_js",
+          "resolvedHere": "3.1.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.0.0",
+              "count": 12
+            }
+          ],
+          "atom": "bazel_lib",
+          "resolvedHere": "3.2.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "1.9.0",
+              "count": 3
+            }
+          ],
+          "atom": "bazel_skylib",
+          "resolvedHere": "1.8.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "5.3.2.bcr.1",
+              "count": 12
+            }
+          ],
+          "atom": "gawk",
+          "resolvedHere": "5.3.2.bcr.3"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.1.0",
+              "count": 12
+            }
+          ],
+          "atom": "jq.bzl",
+          "resolvedHere": "0.4.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.12.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "nlohmann_json",
+          "resolvedHere": "3.6.1"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.0.5",
+              "count": 2
+            }
+          ],
+          "atom": "package_metadata",
+          "resolvedHere": "0.0.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "34.0.bcr.1",
+              "count": 3
+            }
+          ],
+          "atom": "protobuf",
+          "resolvedHere": "33.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "6.8",
+              "count": 7
+            }
+          ],
+          "atom": "rules_jvm_external",
+          "resolvedHere": "6.7"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "6.3.0",
+              "count": 1
+            },
+            {
+              "version": "6.7.3",
+              "count": 1
+            }
+          ],
+          "atom": "rules_nodejs",
+          "resolvedHere": "6.7.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "2.0.1",
+              "count": 1
+            }
+          ],
+          "atom": "rules_python",
+          "resolvedHere": "1.7.0"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "3.6.1",
+              "count": 3
+            }
+          ],
+          "atom": "rules_swift",
+          "resolvedHere": "3.1.2"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.5.1",
+              "count": 11
+            },
+            {
+              "version": "0.6.0",
+              "count": 1
+            }
+          ],
+          "atom": "tar.bzl",
+          "resolvedHere": "0.10.4"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.0.0-20230516-61a97ef",
+              "count": 1
+            }
+          ],
+          "atom": "upb",
+          "resolvedHere": "0.0.0-20220923-a547704"
+        },
+        {
+          "elsewhere": [
+            {
+              "version": "0.1.1",
+              "count": 12
+            }
+          ],
+          "atom": "yq.bzl",
+          "resolvedHere": "0.3.4"
+        }
+      ],
+      "name": "spec",
+      "version": "0.6.3",
+      "homepage": "https://github.com/fastverk/spec",
+      "integrity": "sha256-sG8PW7rpraLrlVUpojfi6Rx/R/qHvOrUNIADgp7pkp4=",
+      "kind": "other",
       "findingCount": 2
     },
     {
@@ -13095,7 +12931,7 @@
       "live": [
         {
           "version": "4.1.0",
-          "count": 3
+          "count": 4
         }
       ],
       "name": "hermetic_cc_toolchain",
@@ -13691,7 +13527,7 @@
     }
   ],
   "silentUpgrades": {
-    "pairs": 5434,
+    "pairs": 5435,
     "groups": [
       {
         "atom": "abseil-cpp",
@@ -19668,6 +19504,20 @@
         ]
       },
       {
+        "atom": "rules_cc",
+        "declared": "0.2.14",
+        "got": "0.2.17",
+        "modules": [
+          "botnoc",
+          "brando",
+          "forge",
+          "meridian",
+          "spec",
+          "tomato_brand",
+          "tracker"
+        ]
+      },
+      {
         "atom": "rules_jvm_external",
         "declared": "6.3",
         "got": "6.8",
@@ -19720,19 +19570,6 @@
           "meridian_web",
           "pinax",
           "rules_meridian"
-        ]
-      },
-      {
-        "atom": "rules_cc",
-        "declared": "0.2.14",
-        "got": "0.2.17",
-        "modules": [
-          "botnoc",
-          "brando",
-          "forge",
-          "meridian",
-          "tomato_brand",
-          "tracker"
         ]
       },
       {
@@ -20197,8 +20034,8 @@
       },
       {
         "atom": "rules_rdf",
-        "declared": "0.2.0",
-        "got": "0.3.0",
+        "declared": "0.3.0",
+        "got": "0.4.0",
         "modules": [
           "rules_schema_org"
         ]
@@ -20221,12 +20058,12 @@
       }
     ]
   },
-  "generatedFrom": "https://github.com/tomato-bazel/bazel-registry@6676f55d97a884c42654b6f2ed9eebc51b0ae6f7",
-  "generatedAt": "2026-07-26T16:36:40Z",
+  "generatedFrom": "https://github.com/tomato-bazel/bazel-registry@389e0ae8b33221ef89cc055027d6ceda493db90a",
+  "generatedAt": "2026-07-26T20:17:11Z",
   "totals": {
-    "findings": 135,
+    "findings": 127,
     "gates": 5,
-    "cleanGates": 0,
+    "cleanGates": 1,
     "modules": 78,
     "dirtyModules": 40,
     "atoms": 63,
